@@ -42,5 +42,7 @@ public final class Constants {
 
     public static XboxController driveController = new XboxController(0);
 
+    public static int IntakeButton = 0;
+
 
 }
