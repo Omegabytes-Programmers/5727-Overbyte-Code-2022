@@ -4,14 +4,39 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+//import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class PneumaticsSubsystem extends SubsystemBase {
+
+  private PneumaticHub pneumaticHub;
+  private DoubleSolenoid intakeSolenoids;
+  private DoubleSolenoid shooterSolenoids;
+  //private Solenoid motorCoolerSolenoid;
+
+
   /** Creates a new PneumaticsSubsystem. */
-  public PneumaticsSubsystem() {}
+  public PneumaticsSubsystem() {
+    pneumaticHub = new PneumaticHub();
+    intakeSolenoids = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.intakeExtendPort, Constants.intakeRetractPort);
+    shooterSolenoids = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.shooterExtendPort, Constants.shooterRetractPort);
+  }
+
+  public DoubleSolenoid getIntakeSolenoids(){
+    return intakeSolenoids;
+  }
+
+  public DoubleSolenoid getShooterSolenoids(){
+    return shooterSolenoids;
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    
   }
 }

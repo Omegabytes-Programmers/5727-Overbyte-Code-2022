@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -24,7 +27,7 @@ public class DriveSubsystem extends SubsystemBase {
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0);
 
-  private ADIS16470_IMU gyro = new ADIS16470_IMU();
+  //private ADIS16470_IMU gyro = new ADIS16470_IMU();
 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
           new Translation2d(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0),
@@ -32,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
           new Translation2d(-Constants.wheelBase / 2.0, Constants.wheelBase / 2.0),
           new Translation2d(-Constants.wheelBase / 2.0, -Constants.wheelBase / 2.0)
   );
-  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getAngle()));  // <--- gyro.getAngle()
+  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(0.0));  // 0.0 <--- gyro.getAngle()
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
   
@@ -54,12 +57,31 @@ public class DriveSubsystem extends SubsystemBase {
     rrm = Mk4SwerveModuleHelper.createFalcon500(Mk4SwerveModuleHelper.GearRatio.L2, Constants.rrdmPort, Constants.rrsmPort, Constants.rrePort, Constants.rreo);
     rlm = Mk4SwerveModuleHelper.createFalcon500(Mk4SwerveModuleHelper.GearRatio.L2, Constants.rldmPort, Constants.rlsmPort, Constants.rlePort, Constants.rleo);
 
-    
 
+    CANCoder flEncoder = new CANCoder(Constants.flePort);
+    CANCoder frEncoder = new CANCoder(Constants.frePort);
+    CANCoder rrEncoder = new CANCoder(Constants.rrePort);
+    CANCoder rlEncoder = new CANCoder(Constants.rlePort);
+
+    System.out.println(flEncoder.getAbsolutePosition());
+    System.out.println(frEncoder.getAbsolutePosition());
+    System.out.println(rrEncoder.getAbsolutePosition());
+    System.out.println(rlEncoder.getAbsolutePosition());
+
+    for (int i = 0; i < 8; i++){
+      TalonFX motor = new TalonFX(i);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255);
+    }
   }
 
   public void zeroGyroscope() {
-    odometry.resetPosition(new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)), Rotation2d.fromDegrees(gyro.getAngle())); // <--- 
+    odometry.resetPosition(new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)), Rotation2d.fromDegrees(0.0)); //0.0 <--- gyro.getAngle()
   }
 
   public Rotation2d getRotation() {
@@ -81,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
       if (canDrive){
-        odometry.update(Rotation2d.fromDegrees(gyro.getAngle()),
+        odometry.update(Rotation2d.fromDegrees(0.0), //0.0 <--- gyro.getAngle()
                 new SwerveModuleState(flm.getDriveVelocity(), new Rotation2d(flm.getSteerAngle())),
                 new SwerveModuleState(frm.getDriveVelocity(), new Rotation2d(frm.getSteerAngle())),
                 new SwerveModuleState(rlm.getDriveVelocity(), new Rotation2d(rlm.getSteerAngle())),

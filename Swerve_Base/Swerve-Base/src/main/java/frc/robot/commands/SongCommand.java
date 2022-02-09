@@ -27,7 +27,7 @@ public class SongCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //driveSubsystem.stop();
+    driveSubsystem.stop();
     orchestra = new Orchestra();
     for (int i = 0; i < Constants.talonCount; i++){
       orchestra.addInstrument(new TalonFX(i));
@@ -45,7 +45,7 @@ public class SongCommand extends CommandBase {
   public void end(boolean interrupted) {
     orchestra.stop();
     orchestra = null;
-    //driveSubsystem.start();
+    driveSubsystem.start();
   }
 
   // Returns true when the command should end.

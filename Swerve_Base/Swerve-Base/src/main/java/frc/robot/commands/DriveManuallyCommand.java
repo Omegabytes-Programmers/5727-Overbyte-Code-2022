@@ -24,6 +24,10 @@ public class DriveManuallyCommand extends CommandBase {
       double translationXPercent = Constants.driveController.getRawAxis(1);
       double translationYPercent = Constants.driveController.getRawAxis(0);
       double rotationPercent = Constants.driveController.getRawAxis(4);
+      System.out.println(translationXPercent);
+      System.out.println(translationYPercent);
+      System.out.println(rotationPercent);
+
 
       drivetrain.drive(
               ChassisSpeeds.fromFieldRelativeSpeeds(
