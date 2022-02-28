@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    if (Constants.manipController.getAButtonReleased()){
-      System.out.println((1 - Constants.topController.getRawAxis(3)));
-      System.out.println(-(1 - Constants.bottomController.getRawAxis(3)));
+    if (Constants.driveController.getAButtonReleased()){
+      System.out.println(1 - ((1 + Constants.topController.getRawAxis(3)) / 2));
+      System.out.println(-(1 - ((1 + Constants.bottomController.getRawAxis(3)) / 2)));
       
     }
   }

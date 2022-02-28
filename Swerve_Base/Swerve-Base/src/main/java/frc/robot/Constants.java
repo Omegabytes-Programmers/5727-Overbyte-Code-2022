@@ -110,17 +110,24 @@ public final class Constants {
     };
  
     public static ShooterConfiguration[] shootingTable = {
-        new ShooterConfiguration(4.0, 1.0, -0.25984251499176025, false),
-        new ShooterConfiguration(30.17, 1.0, -0.35433071851730347 , false),
-        new ShooterConfiguration(25.32, 0.6614173054695129, -0.7952755689620972, false),
-        new ShooterConfiguration(25.32, 0.5826771855354309, -0.7952755689620972, true),
-        new ShooterConfiguration(20.99, 0.5826771855354309, -0.7952755689620972, true),
-        new ShooterConfiguration(17.25, 0.5984252095222473, -0.8582677245140076, true),
-        new ShooterConfiguration(14.90, 0.5354330539703369, -0.8110235929489136, true),
-        new ShooterConfiguration(12.48, 0.6692913174629211, -0.7086614370346069, true),
-        new ShooterConfiguration(10.37, 0.6771653294563293, -0.7716535329818726, true),
-        new ShooterConfiguration(8.18, 0.7086614370346069, -0.8110235929489136, true),
-        new ShooterConfiguration(5.91, 0.7086614370346069, -0.8110235929489136, true)
+        new ShooterConfiguration(6.0, 1.0, -0.22, false),
+        new ShooterConfiguration(7.0, 1.0, -0.27, false),
+        new ShooterConfiguration(8.0, 1.0, -0.37, false),
+        new ShooterConfiguration(9.0, 1.0, -0.53, false),
+        new ShooterConfiguration(10.0, 1.0, -0.60, false),
+        new ShooterConfiguration(9.0, 0.67, -0.67, true),
+        new ShooterConfiguration(10.0, 0.67, -0.67, true),
+        new ShooterConfiguration(11.0, 0.69, -0.69, true),
+        new ShooterConfiguration(12.0, 0.71, -0.71, true),
+        new ShooterConfiguration(13.0, 0.73, -0.73, true),
+        new ShooterConfiguration(14.0, 0.75, -0.75, true),
+        new ShooterConfiguration(15.0, 0.77, -0.77, true),
+        new ShooterConfiguration(16.0, 0.78, -0.78, true),
+        new ShooterConfiguration(17.0, 0.79, -0.79, true),
+        new ShooterConfiguration(18.0, 0.81, -0.81, true),
+        new ShooterConfiguration(19.0, 0.84, -0.84, true),
+        new ShooterConfiguration(20.0, 0.86, -0.86, true)
+
         
 
   

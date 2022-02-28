@@ -30,8 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     if (canShoot){
       if (Constants.driveController.getRawButton(Constants.readyToShootButton)){
-        topShooterMotor.set(TalonFXControlMode.PercentOutput, 1 - Constants.topController.getRawAxis(3));
-        bottomShooterMotor.set(TalonFXControlMode.PercentOutput, 1 - Constants.bottomController.getRawAxis(3));
+        topShooterMotor.set(TalonFXControlMode.PercentOutput, 1 - ((1 + Constants.topController.getRawAxis(3)) / 2));
+        bottomShooterMotor.set(TalonFXControlMode.PercentOutput, -(1 - ((1 + Constants.bottomController.getRawAxis(3)) / 2)));
         shooterSolenoids.set(Value.kForward);
       }else{
         topShooterMotor.set(TalonFXControlMode.PercentOutput, 0);
