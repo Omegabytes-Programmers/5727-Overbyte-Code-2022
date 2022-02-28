@@ -14,7 +14,7 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   
-  private boolean canIntake;
+  private boolean canIntake = true;
   private TalonFX intakeMotor;
   private DoubleSolenoid intakeSolenoids;
   
@@ -34,9 +34,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (true){
-      if (Constants.driveController.getRawButton(Constants.IntakeButton)){
-        intakeMotor.set(TalonFXControlMode.PercentOutput, 1);
+    if (canIntake){
+      if (Constants.driveController.getRawButton(Constants.intakeButton)){
+        intakeMotor.set(TalonFXControlMode.PercentOutput, -.75);
         intakeSolenoids.set(Value.kForward);
       }else{
         intakeMotor.set(TalonFXControlMode.PercentOutput, 0);

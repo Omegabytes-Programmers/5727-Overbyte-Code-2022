@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -25,10 +24,14 @@ public class RobotContainer {
   private final PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  @SuppressWarnings("unused")
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids());
+  @SuppressWarnings("unused")
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getShooterSolenoids());
+  @SuppressWarnings("unused")
   private final StorageSubsystem storageSubsystem = new StorageSubsystem();
-
+  @SuppressWarnings("unused")
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem);
 
