@@ -18,20 +18,20 @@ import edu.wpi.first.wpilibj2.command.Command;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer { // Coconut.jpg
   // The robot's subsystems and commands are defined here...
   //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final StorageSubsystem storageSubsystem = new StorageSubsystem();
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   @SuppressWarnings("unused")
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids());
-  @SuppressWarnings("unused")
-  private final StorageSubsystem storageSubsystem = new StorageSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids(), storageSubsystem);
   @SuppressWarnings("unused")
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getHub(), pneumaticsSubsystem.getShooterSolenoids(), visionSubsystem, storageSubsystem);
-
+  @SuppressWarnings("unused")
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
@@ -58,6 +58,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new SongCommand(driveSubsystem);
+    return new AutuCommand(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem);
   }
 }

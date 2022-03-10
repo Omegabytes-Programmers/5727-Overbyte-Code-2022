@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+// conection terminated
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +25,7 @@ public class DriveManuallyCommand extends CommandBase {
       addRequirements(drivetrain);
 
       locateTimer = new Timer();
+      locateTimer.start();
       
   }
 
@@ -32,7 +33,7 @@ public class DriveManuallyCommand extends CommandBase {
     public void execute() {
         double translationXPercent = Constants.driveController.getRawAxis(1);
         double translationYPercent = Constants.driveController.getRawAxis(0);
-        double rotationPercent = Constants.driveController.getRawAxis(4);
+        double rotationPercent = -Constants.driveController.getRawAxis(4);
 
         translationXPercent *= .65;
         translationYPercent *= .65;
@@ -50,35 +51,36 @@ public class DriveManuallyCommand extends CommandBase {
             rotationPercent = 0.0;
         }
 
-        if (rotationPercent == 0.0 && locateTimer.get() >= 2.5){
-            double x = vision.getPosition();
-            //double y = vision.getAngle();
-
-
-
-            if (Math.abs(x) >= 3.0){
-                rotationPercent = .15 * Math.signum(x);
-            }
-        }
-
-        if (rotationPercent != 0.0 || (intake.isIntaking() && locateTimer.get() < 2.5)){
+        if (rotationPercent != 0.0 || (intake.isIntaking() && locateTimer.get() < 1.5)){
             locateTimer.reset();
         }
 
+        if ((Constants.driveController.getRawButton(Constants.readyToShootButton)) || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
+            double x = vision.getPosition();
+            //double y = vision.getAngle();
+            //System.out.println("It is hitting");
+
+
+            if (Math.abs(x) >= 3.0){
+                rotationPercent = .15 * -Math.signum(x);
+            }
+        }
+
+        // Coconut.jpg
         drivetrain.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
                 translationYPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
                 rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
                 drivetrain.getRotation()
-            )
+            ), Constants.driveController.getRawButton(Constants.robotOrientButton)
         );
     }
 
     @Override
     public void end(boolean interrupted) {
         // Stop the drivetrain
-        drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0), false);
     }
 }
 

@@ -23,7 +23,7 @@ public class VisionSubsystem extends SubsystemBase {
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
   }
-
+// Coconut.jpg
   public double getAngle(){
     return ty.getDouble(0.0);
   }

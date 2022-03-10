@@ -14,8 +14,10 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   
+  private StorageSubsystem storage;
   private boolean canIntake = true;
   private boolean intaking = false;
+  private boolean stopped = true;
   private TalonFX intakeMotor;
   private DoubleSolenoid intakeSolenoids;
   
@@ -24,30 +26,41 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void stop(){
-    canIntake = false;
+    if (!stopped){
+      intakeMotor.set(TalonFXControlMode.PercentOutput, 0); // Coconut.jpg
+      intakeSolenoids.set(Value.kReverse);
+      storage.stop();
+      intaking = false;
+      stopped = true;
+    }
   }
 
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem(DoubleSolenoid intakeSolenoids) {
+  public IntakeSubsystem(DoubleSolenoid intakeSolenoids, StorageSubsystem storage) {
     intakeMotor = new TalonFX(Constants.intakeMotorPort);
     this.intakeSolenoids = intakeSolenoids;
+    this.storage = storage;
   }
 
   public boolean isIntaking(){
     return intaking;
   }
 
+  public void intake(){
+    intakeMotor.set(TalonFXControlMode.PercentOutput, -.75);
+    intakeSolenoids.set(Value.kForward);
+    intaking = true;
+    stopped = false;
+    storage.intake();
+  }
+
   @Override
   public void periodic() {
     if (canIntake){
       if (Constants.driveController.getRawButton(Constants.intakeButton)){
-        intakeMotor.set(TalonFXControlMode.PercentOutput, -.75);
-        intakeSolenoids.set(Value.kForward);
-        intaking = true;
+        intake();
       }else{
-        intakeMotor.set(TalonFXControlMode.PercentOutput, 0);
-        intakeSolenoids.set(Value.kReverse);
-        intaking = false;
+        stop();
       }
     }
   }

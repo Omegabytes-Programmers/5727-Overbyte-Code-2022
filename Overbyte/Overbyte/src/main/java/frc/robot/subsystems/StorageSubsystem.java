@@ -30,8 +30,8 @@ public class StorageSubsystem extends SubsystemBase {
 
 
   public void feedShooter(){
-    feederWheel.set(TalonFXControlMode.PercentOutput, -0.5);
-    feederBelt.set(TalonSRXControlMode.PercentOutput, -0.5);
+    feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
+    feederBelt.set(TalonSRXControlMode.PercentOutput, -0.25);
   }
 
   public void stop(){
@@ -43,11 +43,13 @@ public class StorageSubsystem extends SubsystemBase {
 
   public void intake(){
     if (stopLidar.get()){
-      feederWheel.set(TalonFXControlMode.PercentOutput, -0.5);
+      feederWheel.set(TalonFXControlMode.PercentOutput, -0.1);
+    }else{
+      feederWheel.set(TalonFXControlMode.PercentOutput, 0.0);
     }
     feederBelt.set(TalonSRXControlMode.PercentOutput, -0.5);
   }
-
+// Coconut.jpg
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
