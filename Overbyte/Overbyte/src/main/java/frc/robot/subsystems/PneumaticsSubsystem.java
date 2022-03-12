@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class PneumaticsSubsystem extends SubsystemBase {
-  @SuppressWarnings("unused")
   private PneumaticHub pneumaticHub;
   private DoubleSolenoid intakeSolenoids;
   private DoubleSolenoid shooterSolenoids;

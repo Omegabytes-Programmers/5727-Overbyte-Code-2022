@@ -14,10 +14,12 @@ public class ClimberSubsystem extends SubsystemBase {
   private TalonFX leftClimberMotor;
   private TalonFX rightClimberMotor;
 
+  /*
   private boolean leftClimberExtended = false;
   private boolean leftClimberRetracted = false;
   private boolean rightClimberExtended = false;
   private boolean rightClimberRetracted = false;
+  */
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {

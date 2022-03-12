@@ -30,7 +30,16 @@ public class StorageSubsystem extends SubsystemBase {
 
 
   public void feedShooter(){
-    feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
+    if (!stopLidar.get()){
+      shootTimer.start();
+      if (shootTimer.hasElapsed(.25)){
+        feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
+      }else{
+        feederWheel.set(TalonFXControlMode.PercentOutput, 0.0);
+      }
+    }else{
+      feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
+    }
     feederBelt.set(TalonSRXControlMode.PercentOutput, -0.25);
   }
 

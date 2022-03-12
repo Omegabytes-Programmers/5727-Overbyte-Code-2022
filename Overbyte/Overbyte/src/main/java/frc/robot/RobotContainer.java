@@ -26,9 +26,7 @@ public class RobotContainer { // Coconut.jpg
   private final StorageSubsystem storageSubsystem = new StorageSubsystem();
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  @SuppressWarnings("unused")
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids(), storageSubsystem);
-  @SuppressWarnings("unused")
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getHub(), pneumaticsSubsystem.getShooterSolenoids(), visionSubsystem, storageSubsystem);
   @SuppressWarnings("unused")
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
