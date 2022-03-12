@@ -60,10 +60,10 @@ public class ClimberSubsystem extends SubsystemBase {
     } else if (Constants.driveController.getRawAxis(Constants.retractLiftAxis) > 0.1){
       retract(Constants.driveController.getRawAxis(Constants.retractLiftAxis));
 
-    /*}else if (Constants.resetController.getRawButton(Constants.resetLeftButton)){
+    }else if (Constants.resetController.getRawButton(Constants.resetLeftButton)){
       resetLeft();
     }else if (Constants.resetController.getRawButton(Constants.resetRightButton)){
-      resetRight();*/
+      resetRight();
     }else{
       stop();
     }

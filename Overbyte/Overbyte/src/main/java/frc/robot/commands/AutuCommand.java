@@ -57,17 +57,16 @@ public class AutuCommand extends CommandBase {
       //translationYPercent *= .65;
       //rotationPercent *= .5;
 
-      if (Timer.getMatchTime() > 13.5){
+      if (Timer.getMatchTime() > 13.8){
         intake.intake();
       }else{
-        intake.stop();
         translationXPercent = 0;
       }
       System.out.println(Timer.getMatchTime());
 
 
       if (Timer.getMatchTime() < 12 && Timer.getMatchTime() > 10){
-
+        intake.stop();
         double x = vision.getPosition();
 
 

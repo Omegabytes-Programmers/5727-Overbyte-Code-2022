@@ -70,6 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
       motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255);
       motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255);
     }*/
+
   }
 
   public void zeroGyroscope() {
@@ -95,6 +96,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (Constants.manipController.getRawButtonReleased(Constants.resetGyroButton)){
+      zeroGyroscope();
+    }
+
+  
     if (canDrive){
       odometry.update(Rotation2d.fromDegrees(robotOrient ? 0.0 : gyro.getAngle()), //0.0 <--- gyro.getAngle()
               new SwerveModuleState(flm.getDriveVelocity(), new Rotation2d(flm.getSteerAngle())),

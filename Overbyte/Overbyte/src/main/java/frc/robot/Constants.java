@@ -78,6 +78,7 @@ public final class Constants {
 
     public static int overwriteShootCloseButton = 5;
     public static int overwriteShootFarButton = 6;
+    public static int resetGyroButton = 1;
     public static int expelBallButton = 3;
     public static int extendLiftAxis = 2;
     public static int retractLiftAxis = 3;

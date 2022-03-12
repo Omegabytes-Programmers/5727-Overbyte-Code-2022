@@ -55,10 +55,12 @@ public class ShooterSubsystem extends SubsystemBase {
       if (shootTimer.get() > 0.5){
         storageSubsystem.feedShooter();
       }
+      visionSubsystem.takeSnapshots();
     }else{
       //shootTimer.stop();
       //shootTimer.reset();
       //storageSubsystem.stop();
+      visionSubsystem.stopSnapshots();
     }
   }
 
@@ -68,6 +70,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shootTimer.stop();
     shootTimer.reset();
     storageSubsystem.stop();
+    visionSubsystem.stopSnapshots();
   }
 
   public boolean isHoodUp(){

@@ -15,13 +15,19 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry tx;
   NetworkTableEntry ty;
   NetworkTableEntry ta;
+  NetworkTableEntry stream;
+  NetworkTableEntry snapshot;
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
-    table.getEntry("stream").setNumber(2);
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
+    stream = table.getEntry("stream");
+    snapshot = table.getEntry("snapshot");
+
+    stream.setNumber(2);
+    snapshot.setNumber(1);
   }
 // Coconut.jpg
   public double getAngle(){
@@ -30,6 +36,21 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getPosition(){
     return tx.getDouble(0.0);
+  }
+
+
+  public void takeSnapshots(){
+    /*if (table.getEntry("snapshot").getNumber(0).intValue() != 1) {
+      System.out.println("Enabled Snapshoting");
+      table.getEntry("snapshot").setNumber(1);
+    }*/
+  }
+
+  public void stopSnapshots(){
+    /*if (table.getEntry("snapshot").getNumber(1).intValue() != 0){
+      System.out.println("DIsabled Snapshoting");
+      table.getEntry("snapshot").setNumber(0);
+    }*/
   }
 
   @Override
