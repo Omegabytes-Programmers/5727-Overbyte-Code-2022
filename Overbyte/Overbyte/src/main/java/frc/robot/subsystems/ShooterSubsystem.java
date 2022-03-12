@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     stopped = true;
     shootTimer = new Timer();
   }
-// Coconut.jpg
+ 
   public void shoot(ShooterConfiguration shooterConfig){
     double compressorOffset = pneumaticHub.getCompressor() ? .01 : 0.0;
 

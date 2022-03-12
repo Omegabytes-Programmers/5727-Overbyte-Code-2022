@@ -58,7 +58,7 @@ public class StorageSubsystem extends SubsystemBase {
     }
     feederBelt.set(TalonSRXControlMode.PercentOutput, -0.5);
   }
-// Coconut.jpg
+ 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

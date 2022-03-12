@@ -30,7 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stop(){
     if (!stopped){
       storageTimer.start();
-      intakeMotor.set(TalonFXControlMode.PercentOutput, 0); // Coconut.jpg
+      intakeMotor.set(TalonFXControlMode.PercentOutput, 0);  
       intakeSolenoids.set(Value.kReverse);
       intaking = false;
       if (storageTimer.hasElapsed(1.5)){

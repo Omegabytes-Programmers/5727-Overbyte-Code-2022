@@ -47,10 +47,10 @@ public final class Constants {
     public static int rrePort = 2;
     public static int rlePort = 3;
 
-    public static double fleo = Math.toRadians(-37.6171875);
-    public static double freo = Math.toRadians(-38.232421875);
-    public static double rreo = Math.toRadians(-16.083984375);
-    public static double rleo = Math.toRadians(-194.677734375);
+    public static double fleo = Math.toRadians(-34.98046875); // -37.6171875
+    public static double freo = Math.toRadians(-37.177734375); // -38.232421875
+    public static double rreo = Math.toRadians(-252.685546875); /// Change this value -16.083984375
+    public static double rleo = Math.toRadians(-195.46875); // -194.677734375
 
     public static int talonCount = 14;
 
@@ -117,7 +117,7 @@ public final class Constants {
         new VisionConfiguration(1.07, 19.0),
         new VisionConfiguration(0.0, 20.0)
     };
-// Coconut.jpg
+ 
     public static ShooterConfiguration[] shootingTable = {
         new ShooterConfiguration(6.0, 1.0, -0.22, false),
         new ShooterConfiguration(7.0, 1.0, -0.27, false),

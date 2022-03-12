@@ -5,7 +5,7 @@
 package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-//import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    /*CANCoder fle = new CANCoder(Constants.flePort);
+    CANCoder fle = new CANCoder(Constants.flePort);
     CANCoder fre = new CANCoder(Constants.frePort);
     CANCoder rre = new CANCoder(Constants.rrePort);
     CANCoder rle = new CANCoder(Constants.rlePort);
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
       System.out.println("RR: " + rre.getAbsolutePosition());
       System.out.println("RL: " + rle.getAbsolutePosition());
 
-    }*/
+    }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -120,4 +120,4 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 }
-// Coconut.jpg
+ 

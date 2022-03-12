@@ -29,7 +29,7 @@ public class VisionSubsystem extends SubsystemBase {
     stream.setNumber(2);
     snapshot.setNumber(1);
   }
-// Coconut.jpg
+ 
   public double getAngle(){
     return ty.getDouble(0.0);
   }

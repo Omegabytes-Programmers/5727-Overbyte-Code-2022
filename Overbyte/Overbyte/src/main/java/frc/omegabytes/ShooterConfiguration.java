@@ -18,7 +18,7 @@ public class ShooterConfiguration {
         this.bottomMotorSpeed = bottomMotorSpeed; 
         this.hoodUp = hoodUp;
     }
-// Coconut.jpg
+ 
     public double getDistance() {
         return distance;
     }

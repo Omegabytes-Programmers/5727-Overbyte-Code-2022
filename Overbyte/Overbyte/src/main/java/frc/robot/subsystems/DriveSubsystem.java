@@ -30,7 +30,7 @@ public class DriveSubsystem extends SubsystemBase {
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0);
 
   private ADIS16470_IMU gyro = new ADIS16470_IMU();
-// Coconut.jpg
+ 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
           new Translation2d(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0),
           new Translation2d(Constants.wheelBase / 2.0, -Constants.wheelBase / 2.0),

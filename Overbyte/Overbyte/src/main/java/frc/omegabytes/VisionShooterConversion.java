@@ -106,7 +106,7 @@ public class VisionShooterConversion {
 
         return topMotor;
     }
-// Coconut.jpg
+ 
     private int getDistanceIndex(double distance, boolean isHoodUp){
         int index = -1;
         boolean hoodUp;

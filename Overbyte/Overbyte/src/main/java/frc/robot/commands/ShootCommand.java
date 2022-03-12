@@ -20,7 +20,7 @@ public class ShootCommand extends CommandBase {
     addRequirements(visionSubsystem);
     addRequirements(shooterSubsystem);
   }
-  // Coconut.jpg
+   
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}

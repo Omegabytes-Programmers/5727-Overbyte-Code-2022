@@ -66,7 +66,7 @@ public class DriveManuallyCommand extends CommandBase {
             }
         }
 
-        // Coconut.jpg
+         
         drivetrain.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 

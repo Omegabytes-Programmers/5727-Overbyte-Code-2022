@@ -17,7 +17,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   private DoubleSolenoid shooterSolenoids;
   //private Solenoid motorCoolerSolenoid;
 
-// Coconut.jpg
+ 
   /** Creates a new PneumaticsSubsystem. */
   public PneumaticsSubsystem() {
     pneumaticHub = new PneumaticHub();
