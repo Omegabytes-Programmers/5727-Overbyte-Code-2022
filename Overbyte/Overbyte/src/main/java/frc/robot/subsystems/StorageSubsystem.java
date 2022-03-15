@@ -16,49 +16,93 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class StorageSubsystem extends SubsystemBase {
-  private TalonFX feederWheel;
-  private TalonSRX feederBelt;
-  private DigitalInput stopLidar;
+  private TalonFX wheel;
+  private TalonSRX belt;
+  private DigitalInput topProxSensor;
+  private DigitalInput bottomProxSensor;
   private Timer shootTimer;
   /** Creates a new StorageSubsystem. */
   public StorageSubsystem() {
-    feederWheel = new TalonFX(Constants.storageWheelMotorPort);
-    feederBelt = new TalonSRX(Constants.storageConveyorPort);
-    stopLidar = new DigitalInput(Constants.stopLidarPort);
-    shootTimer = new Timer();
+    wheel = new TalonFX(Constants.storageWheelMotorPort);
+    belt = new TalonSRX(Constants.storageBeltMotorPort);
+    topProxSensor = new DigitalInput(Constants.storageTopProxSensorPort);
+    bottomProxSensor = new DigitalInput(Constants.storageBottomProxSensorPort);
   }
 
-
-  public void feedShooter(){
-    if (!stopLidar.get()){
-      shootTimer.start();
-      if (shootTimer.hasElapsed(.25)){
-        feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
-      }else{
-        feederWheel.set(TalonFXControlMode.PercentOutput, 0.0);
-      }
-    }else{
-      feederWheel.set(TalonFXControlMode.PercentOutput, -0.25);
-    }
-    feederBelt.set(TalonSRXControlMode.PercentOutput, -0.25);
+  public boolean getTopProxSensor(){
+    return !topProxSensor.get();
   }
 
-  public void stop(){
-    feederWheel.set(TalonFXControlMode.PercentOutput, 0.0);
-    feederBelt.set(TalonSRXControlMode.PercentOutput, 0.0);
-    shootTimer.stop();
-    shootTimer.reset();
+  public boolean getBottomProxSensor(){
+    return !bottomProxSensor.get();
+  }
+
+  public void setWheelSpeed(double speedPercent){
+    wheel.set(TalonFXControlMode.PercentOutput, speedPercent);
+  }
+
+  public void setBeltSpeed(double speedPercent){
+    belt.set(TalonSRXControlMode.PercentOutput, speedPercent);
   }
 
   public void intake(){
-    if (stopLidar.get()){
-      feederWheel.set(TalonFXControlMode.PercentOutput, -0.1);
+    if (getTopProxSensor()){
+      wheel.set(TalonFXControlMode.PercentOutput, -0.1);
     }else{
-      feederWheel.set(TalonFXControlMode.PercentOutput, 0.0);
+      wheel.set(TalonFXControlMode.PercentOutput, 0.0);
     }
-    feederBelt.set(TalonSRXControlMode.PercentOutput, -0.5);
+    belt.set(TalonSRXControlMode.PercentOutput, -0.5);
   }
- 
+
+  public void feedShooter(){
+    if (!getTopProxSensor()){
+      shootTimer.start();
+      if (shootTimer.hasElapsed(.25)){
+        wheel.set(TalonFXControlMode.PercentOutput, -0.25);
+      }else{
+        wheel.set(TalonFXControlMode.PercentOutput, 0.0);
+      }
+    }else{
+      wheel.set(TalonFXControlMode.PercentOutput, -0.25);
+    }
+    belt.set(TalonSRXControlMode.PercentOutput, -0.25);
+  }
+
+  public void wheelFeed(){
+    setWheelSpeed(-0.25);
+  }
+
+  public void wheelntake(){
+    setWheelSpeed(-0.1);
+  }
+
+  public void wheelStop(){
+    setWheelSpeed(0.0);
+  }
+
+  public void beltFeed(){
+    setBeltSpeed(-0.25);
+  }
+
+  public void beltIntake(){
+    setBeltSpeed(-0.5);
+  }
+
+  public void beltReverse(){
+    setBeltSpeed(0.75);
+  }
+
+  public void beltStop(){
+    setBeltSpeed(0.0);
+  }
+
+
+
+  public void stop(){
+    wheelStop();
+    beltStop();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

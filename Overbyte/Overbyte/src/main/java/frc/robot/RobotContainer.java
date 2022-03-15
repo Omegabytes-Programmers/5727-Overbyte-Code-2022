@@ -6,11 +6,24 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
 //import frc.robot.commands.ExampleCommand;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutuCommand;
+import frc.robot.commands.DriveManuallyCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.Climber.ClimberMoveCommand;
+import frc.robot.commands.Climber.ResetLeftClimberCommand;
+import frc.robot.commands.Climber.ResetRightClimberCommand;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.StorageSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,18 +39,20 @@ public class RobotContainer {
   private final StorageSubsystem storageSubsystem = new StorageSubsystem();
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids(), storageSubsystem);
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getHub(), pneumaticsSubsystem.getShooterSolenoids(), visionSubsystem, storageSubsystem);
-  @SuppressWarnings("unused")
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getShooterSolenoids());
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
+  private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     driveSubsystem.setDefaultCommand(driveManuallyCommand);
+    climberSubsystem.setDefaultCommand(climberMoveCommand);
     configureButtonBindings();
   }
 
@@ -47,7 +62,19 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    JoystickButton readyToShootButton = new JoystickButton(Constants.driveController, Constants.readyToShootButton);
+    JoystickButton intakeButton = new JoystickButton(Constants.driveController, Constants.intakeButton);
+    JoystickButton resetLeftClimberButton = new JoystickButton(Constants.manipController, Constants.resetLeftButton);
+    JoystickButton resetRightClimberButton = new JoystickButton(Constants.manipController, Constants.resetRightButton);
+    
+  
+
+    readyToShootButton.whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
+    intakeButton.whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
+    resetLeftClimberButton.whenPressed(new ResetLeftClimberCommand(climberSubsystem));
+    resetRightClimberButton.whenPressed(new ResetRightClimberCommand(climberSubsystem)); 
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

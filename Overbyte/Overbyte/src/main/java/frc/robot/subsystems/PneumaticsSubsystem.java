@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 //import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -13,16 +14,30 @@ import frc.robot.Constants;
 
 public class PneumaticsSubsystem extends SubsystemBase {
   private PneumaticHub pneumaticHub;
+  private Compressor compressor;
   private DoubleSolenoid intakeSolenoids;
   private DoubleSolenoid shooterSolenoids;
-  //private Solenoid motorCoolerSolenoid;
+ 
 
  
   /** Creates a new PneumaticsSubsystem. */
   public PneumaticsSubsystem() {
     pneumaticHub = new PneumaticHub();
+    compressor = new Compressor(PneumaticsModuleType.REVPH);
     intakeSolenoids = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.intakeExtendPort, Constants.intakeRetractPort);
     shooterSolenoids = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.shooterExtendPort, Constants.shooterRetractPort);
+  }
+
+  public void start(){
+    compressor.enableDigital();
+  }
+
+  public void stop(){
+    compressor.disable();
+  }
+
+  public boolean get(){
+    return pneumaticHub.getCompressor();
   }
 
   public DoubleSolenoid getIntakeSolenoids(){
@@ -32,10 +47,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   public DoubleSolenoid getShooterSolenoids(){
     return shooterSolenoids;
   }
-
-  public PneumaticHub getHub(){
-    return pneumaticHub;
-  }
+  
   @Override
   public void periodic() {
     

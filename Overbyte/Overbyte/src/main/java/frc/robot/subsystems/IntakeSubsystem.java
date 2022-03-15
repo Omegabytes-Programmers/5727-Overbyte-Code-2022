@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -16,15 +17,50 @@ import frc.robot.Constants;
 public class IntakeSubsystem extends SubsystemBase {
   
   private StorageSubsystem storage;
-  private boolean canIntake = true;
   private boolean intaking = false;
   private boolean stopped = true;
   private TalonFX intakeMotor;
   private DoubleSolenoid intakeSolenoids;
+  private DigitalInput rightProxSensor;
+  private DigitalInput leftProxSensor;
   private Timer storageTimer;
-  
-  public void start(){
-    canIntake = true;
+
+  /** Creates a new IntakeSubsystem. */
+  public IntakeSubsystem(DoubleSolenoid intakeSolenoids, StorageSubsystem storage) {
+    intakeMotor = new TalonFX(Constants.intakeMotorPort);
+    this.intakeSolenoids = intakeSolenoids;
+    this.storage = storage;
+    rightProxSensor = new DigitalInput(Constants.intakeRightProxSensorPort);
+    leftProxSensor = new DigitalInput(Constants.intakeLeftProxSensorPort);
+    storageTimer = new Timer();
+  }
+
+  public boolean getProxSensor(){
+    return !rightProxSensor.get() || !leftProxSensor.get(); // Inverting the value as the sensor returns true when no ball is in the way 
+  }
+
+  public boolean isExtended(){
+    return (intakeSolenoids.get() == Value.kForward) ? true : false;
+  }
+
+  public void runIntake(){
+    setIntakeSpeed(-0.75);
+  }
+
+  public void stopIntake(){
+    setIntakeSpeed(0.0);
+  }
+
+  public void setIntakeSpeed(double speedPercent){
+    intakeMotor.set(TalonFXControlMode.PercentOutput, 0);
+  }
+
+  public void extend(){
+    intakeSolenoids.set(Value.kForward);
+  }
+
+  public void retract(){
+    intakeSolenoids.set(Value.kForward);
   }
 
   public void stop(){
@@ -40,14 +76,6 @@ public class IntakeSubsystem extends SubsystemBase {
         storage.intake();
       }
     }
-  }
-
-  /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem(DoubleSolenoid intakeSolenoids, StorageSubsystem storage) {
-    intakeMotor = new TalonFX(Constants.intakeMotorPort);
-    this.intakeSolenoids = intakeSolenoids;
-    this.storage = storage;
-    storageTimer = new Timer();
   }
 
   public boolean isIntaking(){
@@ -66,12 +94,5 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (canIntake){
-      if (Constants.driveController.getRawButton(Constants.intakeButton)){
-        intake();
-      }else{
-        stop();
-      }
-    }
   }
 }

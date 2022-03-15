@@ -14,36 +14,17 @@ public class ClimberSubsystem extends SubsystemBase {
   private TalonFX leftClimberMotor;
   private TalonFX rightClimberMotor;
 
-  /*
-  private boolean leftClimberExtended = false;
-  private boolean leftClimberRetracted = false;
-  private boolean rightClimberExtended = false;
-  private boolean rightClimberRetracted = false;
-  */
-
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     leftClimberMotor = new TalonFX(Constants.leftClimberMotorPort);
     rightClimberMotor = new TalonFX(Constants.rightClimberMotorPort);
   }
 
-  public void extend(double speed){
+  public void move(double speed){
     leftClimberMotor.set(TalonFXControlMode.PercentOutput, speed * 1.0);
     rightClimberMotor.set(TalonFXControlMode.PercentOutput, speed * -1.0);
     leftClimberMotor.getStatorCurrent();
     rightClimberMotor.getStatorCurrent();
-  }
-
-  public void retract(double speed){
-    leftClimberMotor.set(TalonFXControlMode.PercentOutput, speed * -0.8);
-    rightClimberMotor.set(TalonFXControlMode.PercentOutput, speed * 0.8);
-    leftClimberMotor.getStatorCurrent();
-    rightClimberMotor.getStatorCurrent();
-  }
-
-  public void stop(){
-    leftClimberMotor.set(TalonFXControlMode.PercentOutput, 0.0);
-    rightClimberMotor.set(TalonFXControlMode.PercentOutput, 0.0);
   }
 
   public void resetLeft(){
@@ -54,21 +35,20 @@ public class ClimberSubsystem extends SubsystemBase {
     rightClimberMotor.set(TalonFXControlMode.PercentOutput, 0.15);
   }  
 
+  public void stopLeft(){
+    leftClimberMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+  }
+
+  public void stopRight(){
+    rightClimberMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+  }
+
+  public void stop(){
+    stopLeft();
+    stopRight();
+  }
+
   @Override
   public void periodic() {
-    if (Constants.driveController.getRawAxis(Constants.extendLiftAxis) > 0.1){
-      extend(Constants.driveController.getRawAxis(Constants.extendLiftAxis));
-
-    } else if (Constants.driveController.getRawAxis(Constants.retractLiftAxis) > 0.1){
-      retract(Constants.driveController.getRawAxis(Constants.retractLiftAxis));
-
-    }else if (Constants.resetController.getRawButton(Constants.resetLeftButton)){
-      resetLeft();
-    }else if (Constants.resetController.getRawButton(Constants.resetRightButton)){
-      resetRight();
-    }else{
-      stop();
-    }
-    // This method will be called once per scheduler run
   }
 }

@@ -33,7 +33,7 @@ public final class Constants {
 
     public static int intakeMotorPort = 8;
     
-    public static int storageConveyorPort = 14; // Talon.
+    public static int storageBeltMotorPort = 14; // Talon.
     public static int storageWheelMotorPort = 9;
 
     public static int topShooterMotorPort = 10;
@@ -96,7 +96,10 @@ public final class Constants {
     public static int shooterRetractPort = 1;
     public static int motorCoolerPort = 4;
 
-    public static int stopLidarPort = 9;
+    public static int storageTopProxSensorPort = 1;
+    public static int storageBottomProxSensorPort = 0;
+    public static int intakeLeftProxSensorPort = 2;
+    public static int intakeRightProxSensorPort = 3;
 
     public static double deadzone = 0.05;
 

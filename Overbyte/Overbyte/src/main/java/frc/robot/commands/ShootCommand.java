@@ -4,38 +4,139 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class ShootCommand extends CommandBase {
-  VisionSubsystem visionSubsystem;
-  ShooterSubsystem shooterSubsystem;
+  private VisionSubsystem vision;
+  private PneumaticsSubsystem pneumatics;
+  private ShooterSubsystem shooter;
+  private StorageSubsystem storage;
+  private IntakeSubsystem intake;
+  private double distance;
+  private Timer shootTimer;
+  private Timer storageTimer;
+  private Timer timeoutTimer;
+  private Double timeoutThreshold;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(VisionSubsystem visionSubsystem, ShooterSubsystem shooterSubsystem) {
-    this.visionSubsystem = visionSubsystem;
-    this.shooterSubsystem = shooterSubsystem;
+  public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, double distance){
+    this.vision = vision;
+    this.pneumatics = pneumatics;
+    this.shooter = shooter;
+    this.storage = storage;
+    this.intake = intake;
+    this.distance = distance;
+
+    shootTimer = new Timer();
+    storageTimer = new Timer();
+    timeoutTimer = new Timer();
+    timeoutThreshold = 1.0;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(visionSubsystem);
-    addRequirements(shooterSubsystem);
+    addRequirements(vision);
+    addRequirements(shooter);
+    addRequirements(storage);   
   }
    
   // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+  @Override 
+  public void initialize() {
+    shootTimer.reset();
+    storageTimer.reset();
+    timeoutTimer.reset();
+
+    shootTimer.start();
+    storageTimer.start();
+    timeoutTimer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (!RobotState.isTest()){
+      
+      boolean hasTarget;
+      if (distance == 0.0){
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+      }else{
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
+      }
+
+      //System.out.println("Has Target: " + (hasTarget ? "True" : "False"));
+      //System.out.println("Intake: " + (intake.getProxSensor() ? "True" : "False"));
+      //System.out.println("Bottom: " + (storage.getBottomProxSensor() ? "True" : "False"));
+      //System.out.println("Top: " + (storage.getTopProxSensor() ? "True" : "False"));
+
+
+      if (hasTarget){
+        pneumatics.stop();
+
+        if (storage.getTopProxSensor()){
+          storageTimer.reset();
+          timeoutTimer.reset();
+        }else{
+          if (storage.getBottomProxSensor() || intake.getProxSensor()){
+            timeoutTimer.reset();
+          }
+        }
+
+        if (intake.getProxSensor() && !intake.isExtended()){
+          intake.runIntake();
+        }else if (!intake.getProxSensor() && !intake.isExtended()){
+          intake.stopIntake();
+        }
+
+        if (shootTimer.get() >= 0.75){
+          storage.wheelFeed();
+        }
+
+        if (storageTimer.get() > 0.5){
+          storage.beltFeed();
+        }else{
+          storage.beltReverse();
+        }
+      }else{
+        shootTimer.reset();
+        storageTimer.reset();
+
+        shooter.stop();
+        storage.stop();
+        intake.stop();
+        pneumatics.start();
+      }
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (!RobotState.isTest()){
+      shooter.stop();
+      storage.stop();
+      intake.stop();
+      pneumatics.start();
+    }
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(!Constants.driveController.getRawButton(Constants.readyToShootButton)){
+      timeoutThreshold = 0.25;
+    }
+
+    if (RobotState.isTest()){
+      timeoutThreshold = -0.1;
+    }
+    
+    return timeoutTimer.get() > timeoutThreshold;
   }
 }
