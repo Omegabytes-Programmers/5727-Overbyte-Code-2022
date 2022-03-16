@@ -43,7 +43,8 @@ public class ShootCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vision);
     addRequirements(shooter);
-    addRequirements(storage);   
+    addRequirements(storage);
+    addRequirements(intake);
   }
    
   // Called when the command is initially scheduled.
@@ -56,6 +57,8 @@ public class ShootCommand extends CommandBase {
     shootTimer.start();
     storageTimer.start();
     timeoutTimer.start();
+
+    timeoutThreshold = 1.0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -71,9 +74,7 @@ public class ShootCommand extends CommandBase {
       }
 
       //System.out.println("Has Target: " + (hasTarget ? "True" : "False"));
-      //System.out.println("Intake: " + (intake.getProxSensor() ? "True" : "False"));
-      //System.out.println("Bottom: " + (storage.getBottomProxSensor() ? "True" : "False"));
-      //System.out.println("Top: " + (storage.getTopProxSensor() ? "True" : "False"));
+
 
 
       if (hasTarget){
@@ -88,21 +89,22 @@ public class ShootCommand extends CommandBase {
           }
         }
 
-        if (intake.getProxSensor() && !intake.isExtended()){
-          intake.runIntake();
-        }else if (!intake.getProxSensor() && !intake.isExtended()){
-          intake.stopIntake();
-        }
+        intake.runIntake();
 
         if (shootTimer.get() >= 0.75){
           storage.wheelFeed();
+          
+          if (storageTimer.get() > 0.2){
+            storage.beltFeed();
+          }else{
+            storage.beltReverse();
+          }
+        }else{
+          storage.wheelStop();
+          storage.beltStop();
         }
 
-        if (storageTimer.get() > 0.5){
-          storage.beltFeed();
-        }else{
-          storage.beltReverse();
-        }
+
       }else{
         shootTimer.reset();
         storageTimer.reset();

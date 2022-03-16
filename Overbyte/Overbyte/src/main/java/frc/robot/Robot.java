@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    System.out.println(m_robotContainer.getDriveTrain().getGyroRotation());
     /*CANCoder fle = new CANCoder(Constants.flePort);
     CANCoder fre = new CANCoder(Constants.frePort);
     CANCoder rre = new CANCoder(Constants.rrePort);
@@ -115,7 +116,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    
+
   }
 
   /** This function is called periodically during test mode. */

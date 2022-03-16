@@ -15,51 +15,58 @@ public class IntakeCommand extends CommandBase {
   private IntakeSubsystem intake;
   private StorageSubsystem storage;
   private Timer timeoutTimer;
-  private Double timeoutTime;
+  private Double timeoutThreshold;
   /** Creates a new IntakeCommand. */
   public IntakeCommand(IntakeSubsystem intake, StorageSubsystem storage) {
     this.intake = intake;
     this.storage = storage;
 
     timeoutTimer = new Timer();
-    timeoutTime = 3.5;
+    timeoutThreshold = 3.5;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
+    addRequirements(storage);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timeoutTimer.reset();
+    timeoutThreshold = 3.5;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!RobotState.isTest()){
+    if (!RobotState.isTest() && Constants.driveController.getRawButton(Constants.intakeButton)){
+      intake.runIntake();
       if (!(storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+        System.out.println("Intaking");
         if (!intake.isExtended()){
           intake.extend();
-          intake.runIntake();
+          
         }
       }else{
+        System.out.println("Not intaking");
         if (intake.isExtended()){
           intake.retract();
-          intake.stopIntake();
         }
       }
+    }
     
-      if (!Constants.driveController.getRawButton(Constants.readyToShootButton)){
-        if (!storage.getTopProxSensor()){
-          storage.wheelntake();
-        }else{
-          storage.wheelStop();
-        }
+    if (!storage.getTopProxSensor()){
+      storage.wheelntake();
+    }else{
+      storage.wheelStop();
+    }
 
-        if (!storage.getBottomProxSensor()){
-          storage.beltIntake();
-        }else{
-          storage.beltStop();
-        }
+    if (!storage.getBottomProxSensor()){
+      storage.beltIntake();
+    }else{
+      if (storage.getTopProxSensor()){
+        storage.beltStop();
+      }else{
+        storage.beltIntake();
       }
     }
   }
@@ -76,6 +83,11 @@ public class IntakeCommand extends CommandBase {
         storage.stop();
       }
     }
+
+    if (interrupted){
+      intake.retract();
+    }
+
   }
 
   // Returns true when the command should end.
@@ -86,13 +98,16 @@ public class IntakeCommand extends CommandBase {
       if (intake.isExtended()){
         intake.retract();
         intake.stopIntake();
-      }
+      }      
+    }else{
+      timeoutTimer.reset();
     }
 
     if(((storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))) || RobotState.isTest()){
-      timeoutTime = 0.0;
+      timeoutThreshold = -0.1;
     }
 
-    return timeoutTimer.get() >= timeoutTime;
+
+    return timeoutTimer.get() >= timeoutThreshold;
   }
 }

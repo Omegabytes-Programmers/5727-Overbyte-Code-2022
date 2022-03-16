@@ -81,6 +81,10 @@ public class DriveSubsystem extends SubsystemBase {
       return odometry.getPoseMeters().getRotation();
   }
 
+  public double getGyroRotation(){
+    return gyro.getAngle();
+  }
+  
   public void drive(ChassisSpeeds chassisSpeeds, boolean robotOrient) {
       this.chassisSpeeds = chassisSpeeds;
       this.robotOrient = robotOrient;

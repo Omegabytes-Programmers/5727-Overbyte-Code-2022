@@ -11,18 +11,21 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class AutuCommand extends CommandBase {
   private final DriveSubsystem drivetrain;
   private final VisionSubsystem vision;
   private final IntakeSubsystem intake;
+  private final StorageSubsystem storage;
   private final ShooterSubsystem shooter;
   /** Creates a new AutuCommand. */
-  public AutuCommand(DriveSubsystem drivetrain, VisionSubsystem vision, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  public AutuCommand(DriveSubsystem drivetrain, VisionSubsystem vision, IntakeSubsystem intake, StorageSubsystem storage, ShooterSubsystem shooter) {
     this.drivetrain = drivetrain;
     this.vision = vision;
     this.intake = intake;
+    this.storage = storage;
     this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -56,7 +59,8 @@ public class AutuCommand extends CommandBase {
       //rotationPercent *= .5;
 
       if (Timer.getMatchTime() > 13.8){
-        intake.intake();
+        intake.runIntake();
+        intake.extend();
       }else{
         translationXPercent = 0;
       }
@@ -79,8 +83,18 @@ public class AutuCommand extends CommandBase {
       if (Timer.getMatchTime() < 10 && Timer.getMatchTime() > 6){
         double y = vision.getAngle();
         shooter.shoot(Constants.vsConversion.getValuesFromAngle(y, shooter.isHoodUp()));
+
+        if (Timer.getMatchTime() < 8){
+          storage.beltFeed();
+          storage.wheelFeed();
+        }else{
+          storage.beltStop();
+          storage.wheelStop();
+        }
+        
       }else{
         shooter.stop();
+        storage.stop();
       }
 
       System.out.println(translationXPercent);

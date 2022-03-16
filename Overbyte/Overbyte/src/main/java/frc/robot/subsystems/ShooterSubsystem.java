@@ -62,7 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (canShoot){
+    /*if (canShoot){
       if (Constants.manipController.getRawButton(Constants.overwriteShootCloseButton)){
         shoot(Constants.vsConversion.getValuesFromDistance(Constants.closeShootDistance, isHoodUp()));
         stopped = false;
@@ -75,6 +75,6 @@ public class ShooterSubsystem extends SubsystemBase {
           stopped = true;
         }
       }
-    }
+    }*/
   }
 }

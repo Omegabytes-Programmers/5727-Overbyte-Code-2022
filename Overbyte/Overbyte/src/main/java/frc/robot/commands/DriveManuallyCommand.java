@@ -35,8 +35,8 @@ public class DriveManuallyCommand extends CommandBase {
         double translationYPercent = Constants.driveController.getRawAxis(0);
         double rotationPercent = -Constants.driveController.getRawAxis(4);
 
-        translationXPercent *= .65;
-        translationYPercent *= .65;
+        translationXPercent *= .8;
+        translationYPercent *= .8;
         rotationPercent *= .5;
 
         if (Math.abs(translationXPercent) < Constants.deadzone){
@@ -62,7 +62,7 @@ public class DriveManuallyCommand extends CommandBase {
 
 
             if (Math.abs(x) >= 3.0){
-                rotationPercent = .15 * -Math.signum(x);
+                rotationPercent = .1 * -Math.signum(x);
             }
         }
 

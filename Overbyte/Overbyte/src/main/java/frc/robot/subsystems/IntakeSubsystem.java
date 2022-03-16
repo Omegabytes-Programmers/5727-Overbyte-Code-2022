@@ -33,6 +33,9 @@ public class IntakeSubsystem extends SubsystemBase {
     rightProxSensor = new DigitalInput(Constants.intakeRightProxSensorPort);
     leftProxSensor = new DigitalInput(Constants.intakeLeftProxSensorPort);
     storageTimer = new Timer();
+
+    retract();
+    stopIntake();
   }
 
   public boolean getProxSensor(){
@@ -45,14 +48,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void runIntake(){
     setIntakeSpeed(-0.75);
+    intaking = true;
   }
 
   public void stopIntake(){
     setIntakeSpeed(0.0);
+    intaking = false;
   }
 
   public void setIntakeSpeed(double speedPercent){
-    intakeMotor.set(TalonFXControlMode.PercentOutput, 0);
+    intakeMotor.set(TalonFXControlMode.PercentOutput, speedPercent);
   }
 
   public void extend(){
@@ -60,39 +65,21 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void retract(){
-    intakeSolenoids.set(Value.kForward);
+    intakeSolenoids.set(Value.kReverse);
   }
 
   public void stop(){
-    if (!stopped){
-      storageTimer.start();
-      intakeMotor.set(TalonFXControlMode.PercentOutput, 0);  
-      intakeSolenoids.set(Value.kReverse);
-      intaking = false;
-      if (storageTimer.hasElapsed(1.5)){
-        storage.stop();
-        stopped = true;
-      }else{
-        storage.intake();
-      }
-    }
+    retract();
+    stopIntake();
   }
 
   public boolean isIntaking(){
     return intaking;
   }
 
-  public void intake(){
-    intakeMotor.set(TalonFXControlMode.PercentOutput, -.75);
-    intakeSolenoids.set(Value.kForward);
-    intaking = true;
-    stopped = false;
-    storage.intake();
-    storageTimer.stop();
-    storageTimer.reset();
-  }
 
   @Override
   public void periodic() {
+    //System.out.println("Intake: " + (getProxSensor() ? "Has " : "No ") + "Ball");
   }
 }

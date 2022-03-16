@@ -49,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void stopSnapshots(){
     /*if (table.getEntry("snapshot").getNumber(1).intValue() != 0){
-      System.out.println("DIsabled Snapshoting");
+      System.out.println("Disabled Snapshoting");
       table.getEntry("snapshot").setNumber(0);
     }*/
   }
@@ -62,6 +62,10 @@ public class VisionSubsystem extends SubsystemBase {
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
+
+    //System.out.println(x);
+    //System.out.println(y);
+    //System.out.println(area);
 
     //post to smart dashboard periodically
     SmartDashboard.putNumber("LimelightX", x);

@@ -89,7 +89,7 @@ public class StorageSubsystem extends SubsystemBase {
   }
 
   public void beltReverse(){
-    setBeltSpeed(0.75);
+    setBeltSpeed(0.5);
   }
 
   public void beltStop(){
@@ -106,13 +106,7 @@ public class StorageSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    /*if (Constants.driveController.getRawButton(Constants.readyToShootButton)){
-      shootTimer.start();
-      if (shootTimer.get() > 0.5){
-        feedShooter();
-      }
-    }else{
-      stop();
-    }*/
+    //System.out.println("Top: " + (getTopProxSensor() ? "Has " : "No ") + "Ball");
+    //System.out.println("Bottom: " + (getBottomProxSensor() ? "Has " : "No ") + "Ball");
   }
 }

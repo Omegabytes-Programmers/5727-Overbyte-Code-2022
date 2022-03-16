@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.XboxController;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AutuCommand;
 import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.Auto.AutoCommand;
 import frc.robot.commands.Climber.ClimberMoveCommand;
 import frc.robot.commands.Climber.ResetLeftClimberCommand;
 import frc.robot.commands.Climber.ResetRightClimberCommand;
@@ -63,17 +63,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    JoystickButton readyToShootButton = new JoystickButton(Constants.driveController, Constants.readyToShootButton);
-    JoystickButton intakeButton = new JoystickButton(Constants.driveController, Constants.intakeButton);
-    JoystickButton resetLeftClimberButton = new JoystickButton(Constants.manipController, Constants.resetLeftButton);
-    JoystickButton resetRightClimberButton = new JoystickButton(Constants.manipController, Constants.resetRightButton);
-    
-  
-
-    readyToShootButton.whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
-    intakeButton.whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
-    resetLeftClimberButton.whenPressed(new ResetLeftClimberCommand(climberSubsystem));
-    resetRightClimberButton.whenPressed(new ResetRightClimberCommand(climberSubsystem)); 
+    new JoystickButton(Constants.driveController, Constants.readyToShootButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
+    new JoystickButton(Constants.driveController, Constants.intakeButton).whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
+    new JoystickButton(Constants.manipController, Constants.resetLeftButton).whenPressed(new ResetLeftClimberCommand(climberSubsystem));
+    new JoystickButton(Constants.manipController, Constants.resetRightButton).whenPressed(new ResetRightClimberCommand(climberSubsystem)); 
+    //new JoystickButton(Constants.driveController, Constants.readyToShootButton).and(new JoystickButton(Constants.driveController, Constants.intakeButton)).whenPressed(new ShootAndIntakeCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
   }
 
   /**
@@ -83,6 +77,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new AutuCommand(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem);
+    return new AutoCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem);
+  }
+
+  public DriveSubsystem getDriveTrain(){
+    return driveSubsystem;
   }
 }

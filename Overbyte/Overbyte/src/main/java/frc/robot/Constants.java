@@ -96,8 +96,8 @@ public final class Constants {
     public static int shooterRetractPort = 1;
     public static int motorCoolerPort = 4;
 
-    public static int storageTopProxSensorPort = 1;
-    public static int storageBottomProxSensorPort = 0;
+    public static int storageTopProxSensorPort = 0;
+    public static int storageBottomProxSensorPort = 1;
     public static int intakeLeftProxSensorPort = 2;
     public static int intakeRightProxSensorPort = 3;
 
