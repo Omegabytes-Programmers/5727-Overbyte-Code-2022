@@ -22,25 +22,28 @@ public class AutoCommand extends CommandBase {
   private ShooterSubsystem shooter;
   private StorageSubsystem storage;
   private IntakeSubsystem intake;
+  private double driveTime;
   private Timer autoTimer;
 
   /** Creates a new AutoCommand. */
-  public AutoCommand(DriveSubsystem drive, VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake) {
+  public AutoCommand(DriveSubsystem drive, double driveTime){//VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake) {
     this.drive = drive;
-    this.vision = vision;
+    this.driveTime = driveTime;
+    /*this.vision = vision;
     this.pneumatics = pneumatics;
     this.shooter = shooter;
     this.storage = storage;
-    this.intake = intake;
+    this.intake = intake;*/
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
-    addRequirements(vision);
+    /*addRequirements(vision);
     addRequirements(pneumatics);
     addRequirements(shooter);
     addRequirements(storage);
-    addRequirements(intake);
+    addRequirements(intake);*/
     
     autoTimer = new Timer();
+
   }
 
   // Called when the command is initially scheduled.
@@ -57,31 +60,34 @@ public class AutoCommand extends CommandBase {
     double translationYPercent = 0.0;
     double rotationPercent = 0.0;
 
+    //System.out.println(autoTimer.get());
+
     System.out.println(autoTimer.get());
-    if (autoTimer.get() < 0.35){
+
+    if (autoTimer.get() < driveTime){
       translationXPercent = 0.4;
     }
 
-    if (autoTimer.get() < 1.7){
-      intake.runIntake();
-      intake.extend();
-    }
+    //if (autoTimer.get() < 1.7){
+    //  intake.runIntake();
+    //  intake.extend();
+    //}
 
-    if (autoTimer.get() > 1.7 && autoTimer.get() < 1.8){
-      intake.stopIntake();
-      intake.retract();
-    }
+    //if (autoTimer.get() > 1.7 && autoTimer.get() < 1.8){
+    //  intake.stopIntake();
+    //  intake.retract();
+    //}
 
-    if (autoTimer.get() > 1.8 && autoTimer.get() < 3.0){
-      double x = vision.getPosition();
-      
-      if (Math.abs(x) >= 3.0){
-        rotationPercent = .1 * -Math.signum(x);
-      }
-    }
+    //if (autoTimer.get() > 1.8 && autoTimer.get() < 3.0){
+    //  double x = vision.getPosition();
+    //  
+    //  if (Math.abs(x) >= 3.0){
+    //    rotationPercent = .1 * -Math.signum(x);
+    //  }
+    //}
 
-    if (autoTimer.get() > 3.0 && autoTimer.get() < 6.0){
-      shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+    //if (autoTimer.get() > 3.0 && autoTimer.get() < 4.0){
+      /*shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
       intake.runIntake();
       storage.wheelntake();
       storage.beltIntake();
@@ -91,10 +97,10 @@ public class AutoCommand extends CommandBase {
       shooter.stop();
       intake.stop();
       storage.stop();
-
+      */
       //TODO: Fix this to rotate to the proper angle
 
-    }
+    //}
 
 
 
@@ -105,18 +111,27 @@ public class AutoCommand extends CommandBase {
           rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
           drive.getRotation()
       ), true
-  );
+    );
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     autoTimer.stop();
+    drive.drive(
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          0 *  DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          0 *  DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+          drive.getRotation()
+      ), true
+    );
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return autoTimer.get() > driveTime;
   }
 }

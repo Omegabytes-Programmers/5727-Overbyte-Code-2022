@@ -9,30 +9,25 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   
-  private StorageSubsystem storage;
+
   private boolean intaking = false;
-  private boolean stopped = true;
   private TalonFX intakeMotor;
   private DoubleSolenoid intakeSolenoids;
   private DigitalInput rightProxSensor;
   private DigitalInput leftProxSensor;
-  private Timer storageTimer;
 
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem(DoubleSolenoid intakeSolenoids, StorageSubsystem storage) {
+  public IntakeSubsystem(DoubleSolenoid intakeSolenoids) {
     intakeMotor = new TalonFX(Constants.intakeMotorPort);
     this.intakeSolenoids = intakeSolenoids;
-    this.storage = storage;
     rightProxSensor = new DigitalInput(Constants.intakeRightProxSensorPort);
     leftProxSensor = new DigitalInput(Constants.intakeLeftProxSensorPort);
-    storageTimer = new Timer();
 
     retract();
     stopIntake();

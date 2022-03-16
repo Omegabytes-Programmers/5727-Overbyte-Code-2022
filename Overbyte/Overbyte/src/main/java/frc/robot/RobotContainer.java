@@ -4,16 +4,24 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 //import frc.robot.commands.ExampleCommand;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.Auto.AimToShootCommand;
 import frc.robot.commands.Auto.AutoCommand;
+import frc.robot.commands.Auto.DriveAutonomouslyCommand;
+import frc.robot.commands.Auto.IntakeAutonomouslyCommand;
+import frc.robot.commands.Auto.ShootAutonomouslyCommand;
 import frc.robot.commands.Climber.ClimberMoveCommand;
 import frc.robot.commands.Climber.ResetLeftClimberCommand;
 import frc.robot.commands.Climber.ResetRightClimberCommand;
@@ -40,7 +48,7 @@ public class RobotContainer {
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids(), storageSubsystem);
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(pneumaticsSubsystem.getIntakeSolenoids());
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(pneumaticsSubsystem.getShooterSolenoids());
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
@@ -77,7 +85,71 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new AutoCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem);
+    //return new AutoCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem);
+    return new SequentialCommandGroup(
+      new DriveAutonomouslyCommand(
+        driveSubsystem,
+        Constants.autoPoseBall2
+      ),
+      new ParallelCommandGroup(
+        new AutoCommand(
+          driveSubsystem,
+          0.4
+        ),
+        new IntakeAutonomouslyCommand(
+          intakeSubsystem,
+          storageSubsystem,
+          1.5
+        )
+      ),
+      new AimToShootCommand(
+        driveSubsystem,
+        visionSubsystem,
+        1.0
+      ),
+      new ShootAutonomouslyCommand(
+        visionSubsystem,
+        pneumaticsSubsystem,
+        shooterSubsystem,
+        storageSubsystem,
+        intakeSubsystem
+      ),
+      new DriveAutonomouslyCommand(
+        driveSubsystem,
+        Constants.autoPoseBall3
+      ),
+      new ParallelCommandGroup(
+        new AutoCommand(
+          driveSubsystem,
+          1.3
+        ),
+        new IntakeAutonomouslyCommand(
+          intakeSubsystem,
+          storageSubsystem,
+          2.3
+        )
+      ),
+      new DriveAutonomouslyCommand(
+        driveSubsystem,
+        Constants.autoPoseShoot3
+      ),
+      new AimToShootCommand(
+        driveSubsystem,
+        visionSubsystem,
+        0.5
+      ),
+      new ShootAutonomouslyCommand(
+        visionSubsystem,
+        pneumaticsSubsystem,
+        shooterSubsystem,
+        storageSubsystem,
+        intakeSubsystem
+      ),
+      new DriveAutonomouslyCommand(
+        driveSubsystem,
+        Constants.autoPoseBall4
+      )
+    );
   }
 
   public DriveSubsystem getDriveTrain(){

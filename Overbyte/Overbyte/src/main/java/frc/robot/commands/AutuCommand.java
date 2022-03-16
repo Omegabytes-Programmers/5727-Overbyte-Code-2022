@@ -97,7 +97,6 @@ public class AutuCommand extends CommandBase {
         storage.stop();
       }
 
-      System.out.println(translationXPercent);
       drivetrain.drive(
           ChassisSpeeds.fromFieldRelativeSpeeds(
               translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 

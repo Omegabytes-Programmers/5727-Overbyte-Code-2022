@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.omegabytes.ShooterConfiguration;
 import frc.omegabytes.VisionConfiguration;
@@ -47,10 +49,10 @@ public final class Constants {
     public static int rrePort = 2;
     public static int rlePort = 3;
 
-    public static double fleo = Math.toRadians(-34.98046875); // -37.6171875
-    public static double freo = Math.toRadians(-37.177734375); // -38.232421875
-    public static double rreo = Math.toRadians(-252.685546875); /// Change this value -16.083984375
-    public static double rleo = Math.toRadians(-195.46875); // -194.677734375
+    public static double fleo = Math.toRadians(-44.47265625);
+    public static double freo = Math.toRadians(-39.990234375);
+    public static double rreo = Math.toRadians(-245.830078125);
+    public static double rleo = Math.toRadians(-199.248046875);
 
     public static int talonCount = 14;
 
@@ -146,5 +148,10 @@ public final class Constants {
 
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
+
+    public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
+    public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-30));
+    public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(45));
+    public static Pose2d autoPoseBall4 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(10));
 }
 

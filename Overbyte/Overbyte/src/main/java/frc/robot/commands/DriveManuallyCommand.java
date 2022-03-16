@@ -37,7 +37,7 @@ public class DriveManuallyCommand extends CommandBase {
 
         translationXPercent *= .8;
         translationYPercent *= .8;
-        rotationPercent *= .5;
+        rotationPercent *= .4;
 
         if (Math.abs(translationXPercent) < Constants.deadzone){
             translationXPercent = 0.0;
@@ -57,9 +57,6 @@ public class DriveManuallyCommand extends CommandBase {
 
         if ((Constants.driveController.getRawButton(Constants.readyToShootButton)) || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
             double x = vision.getPosition();
-            //double y = vision.getAngle();
-            //System.out.println("It is hitting");
-
 
             if (Math.abs(x) >= 3.0){
                 rotationPercent = .1 * -Math.signum(x);

@@ -17,16 +17,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private DoubleSolenoid shooterSolenoids;
   private TalonFX topShooterMotor;
   private TalonFX bottomShooterMotor;
-  private boolean canShoot;
-  private boolean stopped;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem(DoubleSolenoid shooterSolenoids) {
     this.shooterSolenoids = shooterSolenoids;
     topShooterMotor = new TalonFX(Constants.topShooterMotorPort);
     bottomShooterMotor = new TalonFX(Constants.bottomShooterMotorPort);
-    canShoot = true;
-    stopped = true;
   }
  
   public boolean shoot(ShooterConfiguration shooterConfig){
@@ -62,19 +58,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /*if (canShoot){
-      if (Constants.manipController.getRawButton(Constants.overwriteShootCloseButton)){
-        shoot(Constants.vsConversion.getValuesFromDistance(Constants.closeShootDistance, isHoodUp()));
-        stopped = false;
-      }else if (Constants.manipController.getRawButton(Constants.overwriteShootFarButton)){
-        shoot(Constants.vsConversion.getValuesFromDistance(Constants.farShootDistance, isHoodUp()));
-        stopped = false;
-      }else{
-        if (!stopped){
-          stop();
-          stopped = true;
-        }
-      }
-    }*/
+    
   }
 }

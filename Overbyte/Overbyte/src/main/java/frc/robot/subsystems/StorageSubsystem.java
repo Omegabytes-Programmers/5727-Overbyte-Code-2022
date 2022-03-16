@@ -89,7 +89,7 @@ public class StorageSubsystem extends SubsystemBase {
   }
 
   public void beltReverse(){
-    setBeltSpeed(0.5);
+    setBeltSpeed(0.30);
   }
 
   public void beltStop(){
