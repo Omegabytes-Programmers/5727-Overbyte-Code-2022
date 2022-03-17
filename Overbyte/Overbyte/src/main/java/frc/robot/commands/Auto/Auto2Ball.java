@@ -31,7 +31,7 @@ public class Auto2Ball extends SequentialCommandGroup {
       new ParallelCommandGroup(
         new AutoCommand(
           driveSubsystem,
-          0.4
+          0.5
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
