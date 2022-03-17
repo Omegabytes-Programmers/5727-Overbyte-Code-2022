@@ -34,7 +34,7 @@ public class Auto2BallLeft extends SequentialCommandGroup {
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
-          1.5
+          4.0
         )
       ),
       new AimToShootCommand(

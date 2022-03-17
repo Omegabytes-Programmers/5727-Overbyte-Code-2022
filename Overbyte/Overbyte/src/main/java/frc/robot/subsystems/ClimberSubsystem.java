@@ -27,6 +27,14 @@ public class ClimberSubsystem extends SubsystemBase {
     rightClimberMotor.getStatorCurrent();
   }
 
+  public void moveLeft(double speed){
+    leftClimberMotor.set(TalonFXControlMode.PercentOutput, speed * 1.0);
+  }
+
+  public void moveRight(double speed){
+    rightClimberMotor.set(TalonFXControlMode.PercentOutput, speed * 1.0);
+  }
+
   public void resetLeft(){
     leftClimberMotor.set(TalonFXControlMode.PercentOutput, -0.15);
   }  

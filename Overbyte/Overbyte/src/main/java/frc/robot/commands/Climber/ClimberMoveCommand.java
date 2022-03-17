@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Climber;
 
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -25,7 +27,12 @@ public class ClimberMoveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
-    climber.move(Constants.driveController.getRawAxis(Constants.extendLiftAxis) - Constants.driveController.getRawAxis(Constants.retractLiftAxis));
+    if (RobotState.isTeleop()){
+      climber.move(Constants.driveController.getRawAxis(Constants.extendLiftAxis) - Constants.driveController.getRawAxis(Constants.retractLiftAxis));
+    }else{
+      climber.moveLeft(-Constants.driveController.getRawAxis(Constants.extendLiftAxis) * 0.2);
+      climber.moveRight(-Constants.driveController.getRawAxis(Constants.retractLiftAxis) * 0.2);
+    }
   }
 
   // Called once the command ends or is interrupted.

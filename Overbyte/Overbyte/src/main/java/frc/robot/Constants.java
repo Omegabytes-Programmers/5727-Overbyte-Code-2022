@@ -51,8 +51,7 @@ public final class Constants {
 
     public static double fleo = Math.toRadians(-44.47265625);   // 177.539
     public static double freo = Math.toRadians(-39.990234375);  // 178.770
-    public static double rreo = Math.toRadians(-240.0); // 18.457
-//  public static double rreo = Math.toRadians(-245.830078125);
+    public static double rreo = Math.toRadians(-245.830078125);
     public static double rleo = Math.toRadians(-199.248046875); // 181.230
 
     public static int talonCount = 14;
@@ -84,8 +83,8 @@ public final class Constants {
     public static int extendLiftAxis = 2;
     public static int retractLiftAxis = 3;
 
-    public static int resetLeftButton = 5;
-    public static int resetRightButton = 6;
+    public static int resetLeftButton = 3;
+    public static int resetRightButton = 2;
     
     public static int ball1Toggle = 6; // If we run out of buttons 1
     public static int ball2Toggle = 7; // If we run out of buttons 2
@@ -151,7 +150,7 @@ public final class Constants {
     public static double farShootDistance = 10.59;
 
     public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
-    public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+    public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-7));
     public static Pose2d autoPoseBall2Right = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(5));
     public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-30));
     public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(45));

@@ -15,6 +15,7 @@ public class ResetRightClimberCommand extends CommandBase {
   public ResetRightClimberCommand(ClimberSubsystem climber) {
     this.climber = climber;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -24,22 +25,24 @@ public class ResetRightClimberCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
-    if (!RobotState.isTest()){
+    if (RobotState.isTest()){
       climber.resetRight();
     }
+    System.out.println("Hit run");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!RobotState.isTest()){
+    if (RobotState.isTest()){
       climber.stopRight();
     }
+    System.out.println("Hit stop");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!Constants.driveController.getRawButton(Constants.resetRightButton) || RobotState.isTest());
+    return (!Constants.manipController.getRawButton(Constants.resetRightButton) || !RobotState.isTest());
   }
 }

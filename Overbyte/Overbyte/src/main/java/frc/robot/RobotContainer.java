@@ -68,9 +68,10 @@ public class RobotContainer {
 
     // Send auto commands to SmartDashboard
     chooser.setDefaultOption("2 Ball Auto", auto2BallCommand);
-    chooser.addOption("3 Ball Auto", auto3BallCommand);
     chooser.addOption("2 Ball Left", auto2BallLeft);
     chooser.addOption("2 Ball Right", auto2BallRight);
+    chooser.addOption("3 Ball Auto", auto3BallCommand);
+
     SmartDashboard.putData(chooser);
   }
 
@@ -84,7 +85,10 @@ public class RobotContainer {
     new JoystickButton(Constants.driveController, Constants.readyToShootButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
     new JoystickButton(Constants.driveController, Constants.intakeButton).whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
     new JoystickButton(Constants.manipController, Constants.resetLeftButton).whenPressed(new ResetLeftClimberCommand(climberSubsystem));
-    new JoystickButton(Constants.manipController, Constants.resetRightButton).whenPressed(new ResetRightClimberCommand(climberSubsystem)); 
+    new JoystickButton(Constants.manipController, Constants.resetRightButton).whenPressed(new ResetRightClimberCommand(climberSubsystem));
+    new JoystickButton(Constants.manipController, Constants.overwriteShootCloseButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, Constants.closeShootDistance));
+    new JoystickButton(Constants.manipController, Constants.overwriteShootFarButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, Constants.farShootDistance));
+
     //new JoystickButton(Constants.driveController, Constants.readyToShootButton).and(new JoystickButton(Constants.driveController, Constants.intakeButton)).whenPressed(new ShootAndIntakeCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
     new JoystickButton(Constants.manipController, Constants.resetGyroButton).whenReleased(()->driveSubsystem.zeroGyroscope());
   }
@@ -95,6 +99,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    //return auto2BallRight;
     return chooser.getSelected();
   }
 
