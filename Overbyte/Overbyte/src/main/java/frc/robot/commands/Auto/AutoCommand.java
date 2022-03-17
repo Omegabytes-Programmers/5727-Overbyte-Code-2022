@@ -62,8 +62,6 @@ public class AutoCommand extends CommandBase {
 
     //System.out.println(autoTimer.get());
 
-    System.out.println(autoTimer.get());
-
     if (autoTimer.get() < driveTime){
       translationXPercent = 0.4;
     }

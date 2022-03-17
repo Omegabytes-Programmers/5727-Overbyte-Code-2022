@@ -62,7 +62,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void zeroGyroscope() {
-    odometry.resetPosition(new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)), Rotation2d.fromDegrees(gyro.getAngle())); //0.0 <--- gyro.getAngle()
+    this.zeroGyroscope(0.0);
+  }
+
+  public void zeroGyroscope(double robotDegrees) {
+    odometry.resetPosition(new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(robotDegrees)), Rotation2d.fromDegrees(gyro.getAngle()));
   }
 
   public Rotation2d getRotation() {
