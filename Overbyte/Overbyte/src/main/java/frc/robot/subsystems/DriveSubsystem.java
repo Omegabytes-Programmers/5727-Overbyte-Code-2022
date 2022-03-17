@@ -113,8 +113,5 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Constants.manipController.getRawButtonReleased(Constants.resetGyroButton)){
-      zeroGyroscope();
-    }
   }
 }
