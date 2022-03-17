@@ -79,13 +79,17 @@ public class DriveAutonomouslyCommand extends CommandBase {
     currentX = currentPose.getTranslation().getX();
     currentY = currentPose.getTranslation().getY();
 
-    System.out.println(Math.abs(currentRotation - targetRotation));
     currentRotation = currentPose.getRotation().getRadians();
     
-
     translationXPercent = 0.0 * translationXController.calculate(currentX);
     translationYPercent = 0.0 * translationYController.calculate(currentY);
     rotationPercent = 0.3 * rotationController.calculate(currentRotation);
+    double rotationPercentMin = 0.10;
+    if (Math.abs(rotationPercent) < rotationPercentMin) {
+      rotationPercent = rotationPercentMin * Math.signum(rotationPercent);
+    }
+
+    System.out.println("Angle Error: " + Math.abs(currentRotation - targetRotation) + "; Rotation percent = " + rotationPercent);
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -94,7 +98,7 @@ public class DriveAutonomouslyCommand extends CommandBase {
           rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
           drive.getRotation()
       ), false
-  );
+    );
 
 
   }
@@ -109,11 +113,13 @@ public class DriveAutonomouslyCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("Current Angle: " + currentRotation + "; Target = " + targetRotation);
     if (Math.abs(currentRotation - targetRotation) < 0.05){
+      System.out.println("In place");
       inPlace++;
     }else{
       inPlace = 0;
     }
-    return inPlace > 5 || timeoutTimer.get() > 2.5;
+    return inPlace > 5 || timeoutTimer.get() > 5;
   }
 }
