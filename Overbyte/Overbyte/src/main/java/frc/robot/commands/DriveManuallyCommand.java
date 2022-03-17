@@ -55,7 +55,7 @@ public class DriveManuallyCommand extends CommandBase {
             locateTimer.reset();
         }
 
-        if ((Constants.driveController.getRawButton(Constants.readyToShootButton)) || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
+        if ((Constants.driveController.getRawButton(Constants.readyToShootButton))) { // || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
             double x = vision.getPosition();
 
             if (Math.abs(x) >= 3.0){
