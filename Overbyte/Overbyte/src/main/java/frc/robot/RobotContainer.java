@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.commands.ExampleCommand;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,6 +59,10 @@ public class RobotContainer {
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
   private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
+  private final Auto2Ball auto2BallCommand = new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+
+  SendableChooser<Command> chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,6 +70,11 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveManuallyCommand);
     climberSubsystem.setDefaultCommand(climberMoveCommand);
     configureButtonBindings();
+
+    // Send auto commands to SmartDashboard
+    chooser.setDefaultOption("2 Ball Auto", auto2BallCommand);
+    chooser.addOption("3 Ball Auto", auto3BallCommand);
+    SmartDashboard.putData(chooser);
   }
 
   /**
@@ -86,8 +97,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
-    //return new AutoCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem);
+    return chooser.getSelected();
   }
 
   public DriveSubsystem getDriveTrain(){
