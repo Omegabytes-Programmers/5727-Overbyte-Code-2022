@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,20 +11,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.commands.ExampleCommand;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.Auto.AimToShootCommand;
 import frc.robot.commands.Auto.Auto2Ball;
+import frc.robot.commands.Auto.Auto2BallLeft;
+import frc.robot.commands.Auto.Auto2BallRight;
 import frc.robot.commands.Auto.Auto3Ball;
-import frc.robot.commands.Auto.AutoCommand;
-import frc.robot.commands.Auto.DriveAutonomouslyCommand;
-import frc.robot.commands.Auto.IntakeAutonomouslyCommand;
-import frc.robot.commands.Auto.ShootAutonomouslyCommand;
 import frc.robot.commands.Climber.ClimberMoveCommand;
 import frc.robot.commands.Climber.ResetLeftClimberCommand;
 import frc.robot.commands.Climber.ResetRightClimberCommand;
@@ -60,6 +53,8 @@ public class RobotContainer {
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
   private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
   private final Auto2Ball auto2BallCommand = new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto2BallLeft auto2BallLeft = new Auto2BallLeft(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto2BallRight auto2BallRight = new Auto2BallRight(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
 
   SendableChooser<Command> chooser = new SendableChooser<>();
@@ -74,6 +69,8 @@ public class RobotContainer {
     // Send auto commands to SmartDashboard
     chooser.setDefaultOption("2 Ball Auto", auto2BallCommand);
     chooser.addOption("3 Ball Auto", auto3BallCommand);
+    chooser.addOption("2 Ball Left", auto2BallLeft);
+    chooser.addOption("2 Ball Right", auto2BallRight);
     SmartDashboard.putData(chooser);
   }
 

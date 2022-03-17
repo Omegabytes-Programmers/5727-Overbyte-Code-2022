@@ -151,6 +151,8 @@ public final class Constants {
     public static double farShootDistance = 10.59;
 
     public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
+    public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+    public static Pose2d autoPoseBall2Right = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(5));
     public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-30));
     public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(45));
     public static Pose2d autoPoseBall4 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(10));

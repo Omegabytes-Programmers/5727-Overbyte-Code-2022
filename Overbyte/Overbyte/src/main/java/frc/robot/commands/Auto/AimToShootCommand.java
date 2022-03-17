@@ -42,7 +42,7 @@ public class AimToShootCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double x = vision.getPosition();
+    x = vision.getPosition();
 
     double rotationPercent = 0;
     if (Math.abs(x) >= 3.0){

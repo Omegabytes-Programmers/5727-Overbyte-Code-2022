@@ -78,7 +78,7 @@ public class DriveAutonomouslyCommand extends CommandBase {
 
     currentX = currentPose.getTranslation().getX();
     currentY = currentPose.getTranslation().getY();
-s
+
     currentRotation = currentPose.getRotation().getRadians();
     
     translationXPercent = 0.0 * translationXController.calculate(currentX);
