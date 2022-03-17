@@ -18,6 +18,8 @@ import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.Auto.AimToShootCommand;
+import frc.robot.commands.Auto.Auto2Ball;
+import frc.robot.commands.Auto.Auto3Ball;
 import frc.robot.commands.Auto.AutoCommand;
 import frc.robot.commands.Auto.DriveAutonomouslyCommand;
 import frc.robot.commands.Auto.IntakeAutonomouslyCommand;
@@ -84,72 +86,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
+    return new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
     //return new AutoCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem);
-    return new SequentialCommandGroup(
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall2
-      ),
-      new ParallelCommandGroup(
-        new AutoCommand(
-          driveSubsystem,
-          0.4
-        ),
-        new IntakeAutonomouslyCommand(
-          intakeSubsystem,
-          storageSubsystem,
-          1.5
-        )
-      ),
-      new AimToShootCommand(
-        driveSubsystem,
-        visionSubsystem,
-        1.0
-      ),
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem,
-        intakeSubsystem
-      ),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall3
-      ),
-      new ParallelCommandGroup(
-        new AutoCommand(
-          driveSubsystem,
-          1.3
-        ),
-        new IntakeAutonomouslyCommand(
-          intakeSubsystem,
-          storageSubsystem,
-          2.3
-        )
-      ),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseShoot3
-      ),
-      new AimToShootCommand(
-        driveSubsystem,
-        visionSubsystem,
-        0.5
-      ),
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem,
-        intakeSubsystem
-      ),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall4
-      )
-    );
   }
 
   public DriveSubsystem getDriveTrain(){
