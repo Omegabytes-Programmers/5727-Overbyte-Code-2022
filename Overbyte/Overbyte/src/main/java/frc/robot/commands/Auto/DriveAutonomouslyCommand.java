@@ -9,15 +9,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveAutonomouslyCommand extends CommandBase {
   private DriveSubsystem drive;
 
   
-  private PIDController translationXController = new PIDController(1.2, 0, 0); //10
-  private PIDController translationYController = new PIDController(1.2, 0, 0);
-  private PIDController rotationController = new PIDController(1.2, 0, 0); // 1.2
+  
+  private PIDController translationXController = new PIDController(0.8, 0, 0); //10
+  private PIDController translationYController = new PIDController(0.8, 0, 0);
+  private PIDController rotationController = new PIDController(0.5, 0, 0); // 1.2
 
   private double targetX;
   private double targetY;
@@ -33,16 +35,19 @@ public class DriveAutonomouslyCommand extends CommandBase {
   private double translationYPercent;
   private double rotationPercent;
 
-  private Timer timeoutTimer;
-  private int inPlace = 0;
+  private double translationXError = 1000;
+  private double translationYError = 1000;
+  private double rotationError = 1000;
+
+  private Timer timeoutTimer = new Timer();
+  private double expectedTime = 0.0;
 
   /** Creates a new DriveAutonomouslyCommand. */
-  public DriveAutonomouslyCommand(DriveSubsystem drive, Pose2d endPose) {
+  public DriveAutonomouslyCommand(DriveSubsystem drive, Pose2d endPose, double expectedTime) {
     this.drive = drive;
+    this.expectedTime = expectedTime;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
-
-    timeoutTimer = new Timer();
 
     targetX = endPose.getTranslation().getX();
     targetY = endPose.getTranslation().getY();
@@ -80,24 +85,33 @@ public class DriveAutonomouslyCommand extends CommandBase {
     currentY = currentPose.getTranslation().getY();
 
     currentRotation = currentPose.getRotation().getRadians();
+
+    translationXError = (currentX - targetX);
+    translationYError = (currentY - targetY);
+    rotationError = (currentRotation - targetRotation);
     
-    translationXPercent = 0.1 + translationXController.calculate(currentX);
-    translationYPercent = 0.1 + translationYController.calculate(currentY);
-    rotationPercent = 0.1 + rotationController.calculate(currentRotation);
-    double rotationPercentMin = 0.10;
+    translationXPercent = (Math.signum(translationXError) * Constants.translationFeedForward) + translationXController.calculate(currentX);
+    translationYPercent = (Math.signum(translationYError) * Constants.translationFeedForward) + translationYController.calculate(currentY);
+    rotationPercent = (Math.signum(rotationError) * Constants.rotationFeedForward) + rotationController.calculate(currentRotation);
+
+    System.out.println(translationXPercent);
+    System.out.println(translationYPercent);
+    System.out.println(rotationPercent);
+
+    /*double rotationPercentMin = 0.10;           // With the feedforward value this may not be needed
     if (Math.abs(rotationPercent) < rotationPercentMin) {
       rotationPercent = rotationPercentMin * Math.signum(rotationPercent);
-    }
+    }*/
 
     System.out.println("Angle Error: " + Math.abs(currentRotation - targetRotation) + "; Rotation percent = " + rotationPercent);
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
-          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+          translationXPercent * Constants.maxVelocity, 
+          translationYPercent * Constants.maxVelocity, 
+          rotationPercent * Constants.maxAngularVelocity, 
           drive.getRotation()
-      ), false
+      )
     );
 
 
@@ -106,20 +120,13 @@ public class DriveAutonomouslyCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.drive(new ChassisSpeeds(0, 0, 0), false);
+    drive.drive(new ChassisSpeeds(0, 0, 0));
     System.out.println("Reached end of auto drive");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("Current Angle: " + currentRotation + "; Target = " + targetRotation);
-    if (Math.abs(currentRotation - targetRotation) < 0.05){
-      System.out.println("In place");
-      inPlace++;
-    }else{
-      inPlace = 0;
-    }
-    return inPlace > 5 || timeoutTimer.get() > 2.5;
+    return ((Math.abs(translationXPercent) <= 0.05 && Math.abs(translationYPercent) <= 0.05 && Math.abs(rotationPercent) <= 0.02) || (timeoutTimer.get() > expectedTime));
   }
 }

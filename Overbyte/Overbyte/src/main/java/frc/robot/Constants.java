@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -54,11 +56,7 @@ public final class Constants {
     public static double rreo = Math.toRadians(-251.71875);
     public static double rleo = Math.toRadians(-197.666015625); // 181.230
 
-    
     public static int talonCount = 14;
-
-    public static double wheelBase = 14.0;
-
 
     public static XboxController driveController = new XboxController(0);
     public static XboxController manipController = new XboxController(1);
@@ -150,10 +148,24 @@ public final class Constants {
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
 
-    public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
+    public static Pose2d autoPoseBall2 = new Pose2d(0.1, 2.6, Rotation2d.fromDegrees(90));
     public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-7));
     public static Pose2d autoPoseBall2Right = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(5));
-    public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-22.5));
-    public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(27));
-    public static Pose2d autoPoseBall4 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(10));
+    public static Pose2d autoPoseBall3 = new Pose2d(4.2, 0.0, Rotation2d.fromDegrees(-22.5));
+    public static Pose2d autoPoseShoot3 = new Pose2d(4.2, 0.0, Rotation2d.fromDegrees(27));
+    public static Pose2d autoPoseBall4 = new Pose2d(8.0, 1.3, Rotation2d.fromDegrees(10));
+
+    public static double translationFeedForward = 0.1;
+    public static double rotationFeedForward = 0.1;
+
+    public static double maxVoltage = 12.0;
+    public static double maxAutoVoltage = 8.0;
+    public static double wheelBase = .572;
+
+    public static double maxVelocity = (6380.0 / 60.0 * 
+        SdsModuleConfigurations.MK4_L2.getDriveReduction() * 
+        SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
+    
+    public static double maxAngularVelocity = maxVelocity /
+        Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
 }

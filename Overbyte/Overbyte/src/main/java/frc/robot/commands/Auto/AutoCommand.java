@@ -110,11 +110,11 @@ public class AutoCommand extends CommandBase {
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
-          translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          translationYPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+          translationXPercent * Constants.maxVelocity, 
+          translationYPercent * Constants.maxVelocity, 
+          rotationPercent * Constants.maxAngularVelocity, 
           drive.getRotation()
-      ), true
+      )
     );
   }
 
@@ -124,11 +124,11 @@ public class AutoCommand extends CommandBase {
     autoTimer.stop();
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
-          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          0 *  DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          0 *  DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+          0 * Constants.maxVelocity, 
+          0 *  Constants.maxVelocity, 
+          0 *  Constants.maxAngularVelocity, 
           drive.getRotation()
-      ), true
+      )
     );
 
   }

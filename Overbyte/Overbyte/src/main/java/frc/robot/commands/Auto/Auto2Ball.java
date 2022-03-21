@@ -21,18 +21,11 @@ import frc.robot.subsystems.VisionSubsystem;
 public class Auto2Ball extends SequentialCommandGroup {
   public Auto2Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
-      new InstantCommand(()->driveSubsystem.zeroGyroscope(0)),
-      new PrintCommand("DEBUG: Ready"),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall2
-      ),
-      new PrintCommand("DEBUG: In autoPoseBall2"),
-      new WaitCommand(1.25),
       new ParallelCommandGroup(
-        new AutoCommand(
+        new DriveAutonomouslyCommand(
           driveSubsystem,
-          0.5
+          Constants.autoPoseBall2,
+          2.0
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
