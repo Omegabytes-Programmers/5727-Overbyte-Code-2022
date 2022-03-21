@@ -67,10 +67,10 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Send auto commands to SmartDashboard
-    chooser.setDefaultOption("2 Ball Auto", auto2BallCommand);
+    chooser.setDefaultOption("3 Ball Auto", auto3BallCommand);
     chooser.addOption("2 Ball Left", auto2BallLeft);
-    chooser.addOption("2 Ball Right", auto2BallRight);
-    chooser.addOption("3 Ball Auto", auto3BallCommand);
+    chooser.addOption("2 Ball Center", auto2BallRight);
+    chooser.addOption("2 Ball Right", auto2BallCommand);
 
     SmartDashboard.putData(chooser);
   }

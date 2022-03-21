@@ -69,7 +69,7 @@ public class StorageSubsystem extends SubsystemBase {
   }
 
   public void wheelFeed(){
-    setWheelSpeed(-0.25);
+    setWheelSpeed(-0.5);
   }
 
   public void wheelntake(){

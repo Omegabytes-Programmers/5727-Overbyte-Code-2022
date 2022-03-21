@@ -26,12 +26,12 @@ public class Auto3Ball extends SequentialCommandGroup {
       new ParallelCommandGroup(
         new AutoCommand(
           driveSubsystem,
-          1.3
+          1.4
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
-          2.3
+          2.5
         )
       ),
       new DriveAutonomouslyCommand(

@@ -28,6 +28,7 @@ public class Auto2Ball extends SequentialCommandGroup {
         Constants.autoPoseBall2
       ),
       new PrintCommand("DEBUG: In autoPoseBall2"),
+      new WaitCommand(1.25),
       new ParallelCommandGroup(
         new AutoCommand(
           driveSubsystem,

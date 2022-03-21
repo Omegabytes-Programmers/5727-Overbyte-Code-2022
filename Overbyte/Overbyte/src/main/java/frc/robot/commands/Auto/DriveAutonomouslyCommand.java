@@ -81,9 +81,9 @@ public class DriveAutonomouslyCommand extends CommandBase {
 
     currentRotation = currentPose.getRotation().getRadians();
     
-    translationXPercent = 0.0 * translationXController.calculate(currentX);
-    translationYPercent = 0.0 * translationYController.calculate(currentY);
-    rotationPercent = 0.3 * rotationController.calculate(currentRotation);
+    translationXPercent = 0.1 + translationXController.calculate(currentX);
+    translationYPercent = 0.1 + translationYController.calculate(currentY);
+    rotationPercent = 0.1 + rotationController.calculate(currentRotation);
     double rotationPercentMin = 0.10;
     if (Math.abs(rotationPercent) < rotationPercentMin) {
       rotationPercent = rotationPercentMin * Math.signum(rotationPercent);
@@ -93,8 +93,8 @@ public class DriveAutonomouslyCommand extends CommandBase {
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
-          translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-          translationYPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
+          0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
           rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
           drive.getRotation()
       ), false

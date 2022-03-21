@@ -17,6 +17,9 @@ public class DriveManuallyCommand extends CommandBase {
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
   private final Timer locateTimer;
+  private double translationXPercent;
+  private double translationYPercent;
+  private double rotationPercent;
 
   public DriveManuallyCommand(DriveSubsystem drivetrain, IntakeSubsystem intake, VisionSubsystem vision){
       this.drivetrain = drivetrain;
@@ -31,13 +34,11 @@ public class DriveManuallyCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double translationXPercent = Constants.driveController.getRawAxis(1);
-        double translationYPercent = Constants.driveController.getRawAxis(0);
-        double rotationPercent = -Constants.driveController.getRawAxis(4);
+        translationXPercent = Constants.driveController.getRawAxis(1);
+        translationYPercent = Constants.driveController.getRawAxis(0);
+        rotationPercent = -Constants.driveController.getRawAxis(4);
 
-        translationXPercent *= .8;
-        translationYPercent *= .8;
-        rotationPercent *= .4;
+
 
         if (Math.abs(translationXPercent) < Constants.deadzone){
             translationXPercent = 0.0;
@@ -50,6 +51,10 @@ public class DriveManuallyCommand extends CommandBase {
         if (Math.abs(rotationPercent) < Constants.deadzone){
             rotationPercent = 0.0;
         }
+
+        translationXPercent *= .8;
+        translationYPercent *= .8;
+        rotationPercent *= .4;
 
         if (rotationPercent != 0.0 || (intake.isIntaking() && locateTimer.get() < 1.5)){
             locateTimer.reset();

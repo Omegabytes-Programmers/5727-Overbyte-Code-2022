@@ -49,11 +49,12 @@ public final class Constants {
     public static int rrePort = 2;
     public static int rlePort = 3;
 
-    public static double fleo = Math.toRadians(-44.47265625);   // 177.539
-    public static double freo = Math.toRadians(-39.990234375);  // 178.770
-    public static double rreo = Math.toRadians(-245.830078125);
-    public static double rleo = Math.toRadians(-199.248046875); // 181.230
+    public static double fleo = Math.toRadians(-42.5390625);   // 177.539
+    public static double freo = Math.toRadians(-38.232421875);  // 178.770
+    public static double rreo = Math.toRadians(-251.71875);
+    public static double rleo = Math.toRadians(-197.666015625); // 181.230
 
+    
     public static int talonCount = 14;
 
     public static double wheelBase = 14.0;
@@ -152,8 +153,7 @@ public final class Constants {
     public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
     public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-7));
     public static Pose2d autoPoseBall2Right = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(5));
-    public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-30));
-    public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(45));
+    public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-22.5));
+    public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(27));
     public static Pose2d autoPoseBall4 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(10));
 }
-
