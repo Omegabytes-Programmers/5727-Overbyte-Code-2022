@@ -12,16 +12,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ClimberMoveCommand;
 import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ReverseIntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.Auto.Auto2Ball;
 import frc.robot.commands.Auto.Auto2BallLeft;
 import frc.robot.commands.Auto.Auto2BallRight;
 import frc.robot.commands.Auto.Auto3Ball;
-import frc.robot.commands.Climber.ClimberMoveCommand;
-import frc.robot.commands.Climber.ResetLeftClimberCommand;
-import frc.robot.commands.Climber.ResetRightClimberCommand;
+import frc.robot.commands.Auto.Auto45Ball;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -56,7 +56,9 @@ public class RobotContainer {
   private final Auto2BallLeft auto2BallLeft = new Auto2BallLeft(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto2BallRight auto2BallRight = new Auto2BallRight(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto45Ball auto45BallCommand = new Auto45Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -67,7 +69,8 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Send auto commands to SmartDashboard
-    chooser.setDefaultOption("3 Ball Auto", auto3BallCommand);
+    chooser.setDefaultOption("45 Ball Auto", auto45BallCommand);
+    chooser.addOption("3 Ball Auto", auto3BallCommand);
     chooser.addOption("2 Ball Left", auto2BallLeft);
     chooser.addOption("2 Ball Center", auto2BallRight);
     chooser.addOption("2 Ball Right", auto2BallCommand);
@@ -84,12 +87,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(Constants.driveController, Constants.readyToShootButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
     new JoystickButton(Constants.driveController, Constants.intakeButton).whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
-    new JoystickButton(Constants.manipController, Constants.resetLeftButton).whenPressed(new ResetLeftClimberCommand(climberSubsystem));
-    new JoystickButton(Constants.manipController, Constants.resetRightButton).whenPressed(new ResetRightClimberCommand(climberSubsystem));
+    new JoystickButton(Constants.driveController, Constants.halfSpeedButton).whenReleased(()->driveSubsystem.toggleHalfSpeed());
+    new JoystickButton(Constants.driveController, Constants.robotOrientedButton).whenReleased(()->driveSubsystem.toggleRobotOriented());
+    
     new JoystickButton(Constants.manipController, Constants.overwriteShootCloseButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, Constants.closeShootDistance));
     new JoystickButton(Constants.manipController, Constants.overwriteShootFarButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, Constants.farShootDistance));
-
-    //new JoystickButton(Constants.driveController, Constants.readyToShootButton).and(new JoystickButton(Constants.driveController, Constants.intakeButton)).whenPressed(new ShootAndIntakeCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
+    new JoystickButton(Constants.manipController, Constants.expelBallButton).whenPressed(new ReverseIntakeCommand(intakeSubsystem));
     new JoystickButton(Constants.manipController, Constants.resetGyroButton).whenReleased(()->driveSubsystem.zeroGyroscope());
   }
 

@@ -4,9 +4,7 @@
 
 package frc.robot.commands.Auto;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -19,30 +17,24 @@ import frc.robot.subsystems.VisionSubsystem;
 public class Auto2BallLeft extends SequentialCommandGroup {
   public Auto2BallLeft(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
-      new PrintCommand("DEBUG: Ready"),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall2Left,
-        2.0
-      ),
-      new PrintCommand("DEBUG: In autoPoseBall2"),
       new ParallelCommandGroup(
-        new AutoCommand(
+        new DriveAutonomouslyCommand(
           driveSubsystem,
-          0.5
+          Constants.autoPoseBall2Left,
+          2.0
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
+          false,
           4.0
         )
       ),
-      new AimToShootCommand(
+      new DriveAutonomouslyCommand(
         driveSubsystem,
-        visionSubsystem,
-        1.0
+        Constants.autoPoseShootLeft,
+        2.0
       ),
-      new PrintCommand("DEBUG: Moved to shoot"),
       new ShootAutonomouslyCommand(
         visionSubsystem,
         pneumaticsSubsystem,

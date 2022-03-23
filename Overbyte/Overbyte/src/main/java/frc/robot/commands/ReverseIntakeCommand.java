@@ -2,20 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Climber;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class ResetRightClimberCommand extends CommandBase {
-  private ClimberSubsystem climber;
-  /** Creates a new ResetLeftClimberCommand. */
-  public ResetRightClimberCommand(ClimberSubsystem climber) {
-    this.climber = climber;
+public class ReverseIntakeCommand extends CommandBase {
+
+  private IntakeSubsystem intake;
+
+  /** Creates a new ReverseIntakeCommand. */
+  public ReverseIntakeCommand(IntakeSubsystem intake) {
+    this.intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climber);
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -24,25 +25,19 @@ public class ResetRightClimberCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute(){
-    if (RobotState.isTest()){
-      climber.resetRight();
-    }
-    System.out.println("Hit run");
+  public void execute() {
+    intake.reverseIntake();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (RobotState.isTest()){
-      climber.stopRight();
-    }
-    System.out.println("Hit stop");
+    intake.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!Constants.manipController.getRawButton(Constants.resetRightButton) || !RobotState.isTest());
+    return !Constants.manipController.getRawButton(Constants.expelBallButton);
   }
 }

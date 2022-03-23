@@ -69,13 +69,24 @@ public class DriveManuallyCommand extends CommandBase {
             }
         }
 
+        if (Math.abs(translationXPercent) < Constants.deadzone){
+            translationXPercent = 0.0;
+        }
+        
+        if (Math.abs(translationYPercent) < Constants.deadzone){
+            translationYPercent = 0.0;
+        }
+        
+        if (Math.abs(rotationPercent) < Constants.deadzone){
+            rotationPercent = 0.0;
+        }
          
         drive.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                translationXPercent * Constants.maxVelocity, 
-                translationYPercent * Constants.maxVelocity,
-                rotationPercent * Constants.maxAngularVelocity,
-                (Constants.driveController.getRawButton(Constants.robotOrientButton) ? Rotation2d.fromDegrees(0.0) : drive.getGyroscopeRotation())
+                translationXPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0), 
+                translationYPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
+                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
+                (drive.isRobotOriented() ? Rotation2d.fromDegrees(0.0) : drive.getGyroscopeRotation())
             )
         );
     }

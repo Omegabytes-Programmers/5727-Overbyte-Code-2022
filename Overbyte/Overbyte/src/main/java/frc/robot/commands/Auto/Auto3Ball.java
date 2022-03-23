@@ -5,10 +5,8 @@
 package frc.robot.commands.Auto;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.*;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
@@ -29,18 +27,19 @@ public class Auto3Ball extends SequentialCommandGroup {
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
-          2.5
+          true,
+          3.0
         )
       ),
       new DriveAutonomouslyCommand(
         driveSubsystem,
-        Constants.autoPoseShoot3,
+        Constants.autoPoseShoot2,
         0.5
       ),
       new AimToShootCommand(
-        driveSubsystem,
-        visionSubsystem,
-        0.5
+        driveSubsystem, 
+        visionSubsystem, 
+        0.75
       ),
       new ShootAutonomouslyCommand(
         visionSubsystem,
@@ -48,18 +47,6 @@ public class Auto3Ball extends SequentialCommandGroup {
         shooterSubsystem,
         storageSubsystem,
         intakeSubsystem
-      ),
-      new ParallelCommandGroup(
-        new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall4,
-        3.0
-        ),
-        new IntakeAutonomouslyCommand(
-          intakeSubsystem,
-          storageSubsystem,
-          10.0
-        )
       )
     );
   }

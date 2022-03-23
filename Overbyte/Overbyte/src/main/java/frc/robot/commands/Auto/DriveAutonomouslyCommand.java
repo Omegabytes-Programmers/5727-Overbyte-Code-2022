@@ -17,8 +17,8 @@ public class DriveAutonomouslyCommand extends CommandBase {
 
   
   
-  private PIDController translationXController = new PIDController(0.8, 0, 0); //10
-  private PIDController translationYController = new PIDController(0.8, 0, 0);
+  private PIDController translationXController = new PIDController(0.9, 0, 0); //10
+  private PIDController translationYController = new PIDController(0.9, 0, 0);
   private PIDController rotationController = new PIDController(0.5, 0, 0); // 1.2
 
   private double targetX;
@@ -127,6 +127,6 @@ public class DriveAutonomouslyCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((Math.abs(translationXPercent) <= 0.05 && Math.abs(translationYPercent) <= 0.05 && Math.abs(rotationPercent) <= 0.02) || (timeoutTimer.get() > expectedTime));
+    return ((Math.abs(translationXPercent) <= 0.1 && Math.abs(translationYPercent) <= 0.1 && Math.abs(rotationPercent) <= 0.1) || (timeoutTimer.get() > expectedTime));
   }
 }

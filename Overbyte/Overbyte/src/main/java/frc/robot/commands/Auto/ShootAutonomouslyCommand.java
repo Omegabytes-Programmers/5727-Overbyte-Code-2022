@@ -35,7 +35,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
     shootTimer = new Timer();
     storageTimer = new Timer();
     timeoutTimer = new Timer();
-    timeoutThreshold = 1.0;
+    timeoutThreshold = 0.25;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vision);
@@ -55,7 +55,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
     storageTimer.start();
     timeoutTimer.start();
 
-    timeoutThreshold = .5;
+    timeoutThreshold = .25;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -78,10 +78,10 @@ public class ShootAutonomouslyCommand extends CommandBase {
 
         intake.runIntake();
 
-        if (shootTimer.get() >= 0.1){
+        if (shootTimer.get() >= 0.25){
           storage.wheelFeed();
           
-          if (storageTimer.get() > 0.2){
+          if (storageTimer.get() > 0.1){
             storage.beltFeed();
           }else{
             storage.beltReverse();
