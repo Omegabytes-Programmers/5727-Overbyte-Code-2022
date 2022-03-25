@@ -20,7 +20,7 @@ aspect_min = 1
 aspect_max = 7
 min_fill_pct = 20
 morph_op = cv2.MORPH_CLOSE
-morph_kernel_size = 3
+morph_kernel_size = 4
 xdiff_min = 1.3
 xdiff_max = 3
 ydiff_max = 3.5
@@ -77,7 +77,8 @@ def runPipeline(image, llrobot):
             # Ensure that the contour is within the size bounds
             area_pct = 100.0 * area / img_area
             if (area_pct > area_max_pct or area_pct < area_min_pct):
-                print("Rejected contour with {:4f} percent area".format(area_pct))
+                if counter == 0:
+                    print("Rejected contour with {:4f} percent area".format(area_pct))
                 if area_pct > 0:
                     cv2.drawContours(image, [cnt], 0, colors['red'], 1)
                 continue
@@ -121,9 +122,7 @@ def runPipeline(image, llrobot):
                 cv2.drawContours(image, [box], 0, colors['cyan'], 1)
                 continue
 
-            # Show the bounding box in blue
             good_contours.append([cnt, box, cx, cy, w, h])
-            cv2.circle(image, (int(cx), int(cy)), 3, colors['green'], -1)
             
         if counter == 0:
             print("Good contours: {}".format(len(good_contours)))
@@ -133,60 +132,68 @@ def runPipeline(image, llrobot):
         for cnt_info in good_sorted:
             (cnt, box, cx, cy, w, h) = cnt_info
             cv2.drawContours(image, [box], 0, colors['blue'], 1)
-            #cv2.circle(image, (cx, cy), 2, colors['green'], -1)
-            print("Good: {} x {} @ {}, {}".format(w, h, cx, cy))
+            if counter == 0:
+                print("Good: {} x {} @ {}, {}".format(w, h, cx, cy))
             left = None
             # Look at all other contours (room for optimization!)
             for other in reversed(left_sorted):
                 xdiff = (cx - other[2]) / w
                 ydiff = abs(cy - other[3]) / h
-                print("DIFF = {:2.2f}, {:2.2f}".format(xdiff, ydiff))
+                if counter == 0:
+                    print("DIFF = {:2.2f}, {:2.2f}".format(xdiff, ydiff))
                 if xdiff < xdiff_min:
-                    print("Xdiff Min")
                     continue
                 if xdiff > xdiff_max:
-                    print("Xdiff MAX")
                     break
                 if ydiff > ydiff_max:
-                    print("YDIFF too much")
                     continue
-                print("Match")
                 left = other
                 break
             
             # Found a target to the left 
             if left is not None:
-                print("Found left")
+                if counter == 0:
+                    print("Found left")
                 
                 # Record best match it nothing found yet
                 if best is None:
-                    print("New best")
+                    if counter == 0:
+                        print("New best")
                     best = [left, cnt_info]
                 
                 # Add to the best match if this is a continuation
                 elif best[-1][2] == left[2] and best[-1][3] == left[3]:
-                    print("Added to best")
+                    if counter == 0:
+                        print("Added to best")
                     best.append(cnt_info)
                 
                 # Consider if this can replace the best match (should be rare)
                 elif len(best) <= 2 and cy < best[-1][3]:
-                    print("Replaced best")
+                    if counter == 0:
+                        print("Replaced best")
                     best = [left, cnt_info]
                 
             # Add counter to list of those processed and on the left
             left_sorted.append(cnt_info)    
 
     if best is not None:
-        print("Best count: {}".format(len(best)))
-        cv2.putText(image, 'Go Omegabytes!', (0, 230), cv2.FONT_HERSHEY_SIMPLEX, .5, colors['green'], 1, cv2.LINE_AA)
-        
+        if counter == 0:
+            print("Best count: {}".format(len(best)))
+               
         # Build a hull around all items in the best match
         list_of_pts = [] 
         for ctr_info in best:
             list_of_pts += [pt[0] for pt in ctr_info[0]]
         ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
-        finalContour = cv2.convexHull(ctr)
-        cv2.drawContours(image, [finalContour], -1, colors['yellow'], 1)
+        hull = cv2.convexHull(ctr)
+        cv2.drawContours(image, [hull], -1, colors['yellow'], 1)
+        
+        xavg = int(sum(map(operator.itemgetter(2), best)) / len(best))
+        ytop = min(map(operator.itemgetter(3), best))
+        cv2.circle(image, (xavg, ytop), 3, colors['green'], -1)
+        
+        finalContour = hull
+        finalContour = np.array([[xavg,ytop]]).reshape((-1,1,2)).astype(np.int32)
     else:
         cv2.putText(image, 'No Target!', (0, 230), cv2.FONT_HERSHEY_SIMPLEX, .5, colors['red'], 1, cv2.LINE_AA)
 
