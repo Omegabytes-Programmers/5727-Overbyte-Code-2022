@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 import sys
 
 # vvv CUT HERE FOR LIMELIGHT vvv ###
@@ -12,13 +11,17 @@ import operator
 interactive = 0
 tick_count = 0
 counter = 0
-hsv_min = (69, 107, 15)
-hsv_max = (91, 255, 255)
-area_max_pct = 0.1000
-area_min_pct = 0.0015
-aspect_min = 1
-aspect_max = 7
-min_fill_pct = 20
+#hsv_min = (55, 120, 105) #ncgui-0
+#hsv_max = (92, 215, 255) #ncgui-0
+#hsv_min = (69, 107, 15) #llp tuning
+#hsv_max = (99, 255, 255) #llp tuning
+hsv_min = (55, 107, 15)
+hsv_max = (99, 215, 255)
+area_max_pct = 0.1000 # 0.05
+area_min_pct = 0.0015 # 0.005
+aspect_min = 1 # 0.17
+aspect_max = 7 # 3.05
+min_fill_pct = 20 # 10
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
@@ -48,8 +51,9 @@ def runPipeline(image, llrobot):
     # Filter image by color
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     img_threshold = cv2.inRange(img_hsv, hsv_min, hsv_max)
-    if False and interactive:
-        cv2.imshow("threshold", img_threshold)
+    if interactive:
+        thresh_big = cv2.resize(img_threshold, None, fx = 2, fy = 2)
+        #cv2.imshow("threshold", thresh_big)
     
     # Dilate and erode to smooth out image
     kernel = np.ones((morph_kernel_size, morph_kernel_size), np.uint8)
@@ -149,32 +153,36 @@ def runPipeline(image, llrobot):
                     break
                 if ydiff > ydiff_max:
                     continue
-                left = other
-                break
-            
-            # Found a target to the left 
-            if left is not None:
+                left = other # TODO REmove
+                            
+                # Found a target to the left 
                 if counter == 0:
-                    print("Found left")
+                    print("Found left @ {}, {}".format(left[2], left[3]))
                 
                 # Record best match it nothing found yet
                 if best is None:
                     if counter == 0:
                         print("New best")
                     best = [left, cnt_info]
+                    break
                 
                 # Add to the best match if this is a continuation
                 elif best[-1][2] == left[2] and best[-1][3] == left[3]:
                     if counter == 0:
                         print("Added to best")
                     best.append(cnt_info)
+                    break
                 
                 # Consider if this can replace the best match (should be rare)
                 elif len(best) <= 2 and cy < best[-1][3]:
                     if counter == 0:
                         print("Replaced best")
                     best = [left, cnt_info]
-                
+                    break
+                    
+                elif counter == 0:
+                    print("Not using")
+            
             # Add counter to list of those processed and on the left
             left_sorted.append(cnt_info)    
 
@@ -192,7 +200,8 @@ def runPipeline(image, llrobot):
         
         xavg = int(sum(map(operator.itemgetter(2), best)) / len(best))
         ytop = min(map(operator.itemgetter(3), best))
-        cv2.circle(image, (xavg, ytop), 3, colors['green'], -1)
+        if interactive:
+            cv2.circle(image, (xavg, ytop), 3, colors['green'], -1)
         
         finalContour = hull
         finalContour = np.array([[xavg,ytop]]).reshape((-1,1,2)).astype(np.int32)
