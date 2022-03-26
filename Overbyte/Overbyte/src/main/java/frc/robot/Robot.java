@@ -6,7 +6,6 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 //import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,16 +68,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    CANCoder fle = new CANCoder(Constants.flePort);
-    CANCoder fre = new CANCoder(Constants.frePort);
-    CANCoder rre = new CANCoder(Constants.rrePort);
-    CANCoder rle = new CANCoder(Constants.rlePort);
+
 
     if (Constants.driveController.getAButtonReleased()){
-      System.out.println("FL: " + fle.getAbsolutePosition());
-      System.out.println("FR: " + fre.getAbsolutePosition());
-      System.out.println("RR: " + rre.getAbsolutePosition());
-      System.out.println("RL: " + rle.getAbsolutePosition());
+      //CANCoder fle = new CANCoder(Constants.flePort);
+      //CANCoder fre = new CANCoder(Constants.frePort);
+      //CANCoder rre = new CANCoder(Constants.rrePort);
+      //CANCoder rle = new CANCoder(Constants.rlePort);
+
+      //System.out.println("FL: " + fle.getAbsolutePosition());
+      //System.out.println("FR: " + fre.getAbsolutePosition());
+      //System.out.println("RR: " + rre.getAbsolutePosition());
+      //System.out.println("RL: " + rle.getAbsolutePosition());
 
     }
   }
@@ -87,6 +88,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_robotContainer.getDriveTrain().resetPose();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -24,7 +24,7 @@ public class VisionShooterConversion {
         boolean setHoodUp = getHood(index);
 
         if (index == -1){
-            System.out.println("Robot cannot shoot from this position");
+            //System.out.println("Robot cannot shoot from this position");
             topMotor = 0.0;
             bottomMotor = 0.0;
             setHoodUp = isHoodUp;
@@ -40,7 +40,7 @@ public class VisionShooterConversion {
         boolean setHoodUp = getHood(index);
 
         if (index == -1){
-            System.out.println("Robot cannot shoot from this position");
+            //System.out.println("Robot cannot shoot from this position");
             topMotor = 0.0;
             bottomMotor = 0.0;
             setHoodUp = isHoodUp;
@@ -113,13 +113,13 @@ public class VisionShooterConversion {
 
         if (distance != 0.0){
             if (isHoodUp){
-                if (distance < shooterTable[hoodChangePosition].getDistance()){
+                if (distance < shooterTable[hoodChangePosition + 1].getDistance()){
                     hoodUp = false;
                 }else{
                     hoodUp = true;
                 }
             }else{
-                if (distance > shooterTable[hoodChangePosition - 1].getDistance()){
+                if (distance > shooterTable[hoodChangePosition].getDistance()){
                     hoodUp = true;
                 }else{
                     hoodUp = false;
@@ -142,7 +142,7 @@ public class VisionShooterConversion {
                 }
             }
         }
-        System.out.println(index);
+        //System.out.println(index);
         return index;
     }
 
@@ -161,7 +161,7 @@ public class VisionShooterConversion {
             }
         }
 
-        System.out.println(distance);
+        //System.out.println(distance);
         return distance;
     }
 }

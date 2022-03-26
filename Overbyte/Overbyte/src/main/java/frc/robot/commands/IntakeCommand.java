@@ -41,13 +41,13 @@ public class IntakeCommand extends CommandBase {
     if (!RobotState.isTest() && Constants.driveController.getRawButton(Constants.intakeButton)){
       intake.runIntake();
       if (!(storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))){
-        System.out.println("Intaking");
+        //System.out.println("Intaking");
         if (!intake.isExtended()){
           intake.extend();
           
         }
       }else{
-        System.out.println("Not intaking");
+        //System.out.println("Not intaking");
         if (intake.isExtended()){
           intake.retract();
         }

@@ -69,7 +69,7 @@ public class StorageSubsystem extends SubsystemBase {
   }
 
   public void wheelFeed(){
-    setWheelSpeed(-0.75);
+    setWheelSpeed(-0.7);
   }
 
   public void wheelntake(){
@@ -106,7 +106,7 @@ public class StorageSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //System.out.println("Top: " + (getTopProxSensor() ? "Has " : "No ") + "Ball");
-    //System.out.println("Bottom: " + (getBottomProxSensor() ? "Has " : "No ") + "Ball");
+    ////System.out.println("Top: " + (getTopProxSensor() ? "Has " : "No ") + "Ball");
+    ////System.out.println("Bottom: " + (getBottomProxSensor() ? "Has " : "No ") + "Ball");
   }
 }

@@ -17,6 +17,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private DoubleSolenoid shooterSolenoids;
   private TalonFX topShooterMotor;
   private TalonFX bottomShooterMotor;
+  
+  //private double topValue;
+  //private double bottomValue;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem(DoubleSolenoid shooterSolenoids) {
@@ -33,12 +36,18 @@ public class ShooterSubsystem extends SubsystemBase {
       topShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getTopMotorSpeed());
       bottomShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getBottomMotorSpeed());
       
+
+
+
       // For testing purposes.
-      //topShooterMotor.set(TalonFXControlMode.PercentOutput, 1 - ((1 + Constants.topController.getRawAxis(3)) / 2));
-      //bottomShooterMotor.set(TalonFXControlMode.PercentOutput, -(1 - ((1 + Constants.bottomController.getRawAxis(3)) / 2)));
+
+
+
+      //topShooterMotor.set(TalonFXControlMode.PercentOutput, topValue);
+      //bottomShooterMotor.set(TalonFXControlMode.PercentOutput, bottomValue);
       
 
-      shooterSolenoids.set(shooterConfig.isHoodUp() ? Value.kForward : Value.kReverse);
+      shooterSolenoids.set(shooterConfig.isHoodUp() ? Value.kForward : Value.kReverse); //
     }else{
       topShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0);
       bottomShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0);
@@ -58,6 +67,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    //topValue = 1 - ((1 + Constants.topController.getRawAxis(3)) / 2);
+    //bottomValue = -(1 - ((1 + Constants.bottomController.getRawAxis(3)) / 2));
+  
+    //SmartDashboard.putNumber("Top Shooter", topValue);
+    //SmartDashboard.putNumber("Bottom Shooter", bottomValue);
   }
 }

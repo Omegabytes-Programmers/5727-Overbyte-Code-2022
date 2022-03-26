@@ -79,6 +79,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //System.out.println("Intake: " + (getProxSensor() ? "Has " : "No ") + "Ball");
+    ////System.out.println("Intake: " + (getProxSensor() ? "Has " : "No ") + "Ball");
   }
 }
