@@ -22,7 +22,7 @@ min_fill_pct = 20
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
-xdiff_max = 3
+xdiff_max = 2.5
 ydiff_max = 3.5
 
 colors = {
@@ -48,14 +48,15 @@ def runPipeline(image, llrobot):
     # Filter image by color
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     img_threshold = cv2.inRange(img_hsv, hsv_min, hsv_max)
-    if interactive:
+    if False and interactive:
         cv2.imshow("threshold", img_threshold)
     
     # Dilate and erode to smooth out image
     kernel = np.ones((morph_kernel_size, morph_kernel_size), np.uint8)
     img_morph = cv2.morphologyEx(img_threshold, morph_op, kernel)
     if interactive:
-        cv2.imshow("morph", img_morph)
+        morph_big = cv2.resize(img_morph, None, fx = 2, fy = 2)
+        cv2.imshow("morph", morph_big)
    
     # Find contours (groups of pixels)
     contours, _ = cv2.findContours(img_morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -68,7 +69,7 @@ def runPipeline(image, llrobot):
         good_contours = []
         for cnt in contours:
             M = cv2.moments(cnt)
-            area =  M['m00']
+            area = M['m00']
             if area == 0:
                 continue
             cx = int(M['m10']/M['m00'])
@@ -76,7 +77,7 @@ def runPipeline(image, llrobot):
             
             # Ensure that the contour is within the size bounds
             area_pct = 100.0 * area / img_area
-            if (area_pct > area_max_pct or area_pct < area_min_pct):
+            if (not area_min_pct < area_pct < area_max_pct):
                 if counter == 0:
                     print("Rejected contour with {:4f} percent area".format(area_pct))
                 if area_pct > 0:
@@ -104,7 +105,7 @@ def runPipeline(image, llrobot):
             aspect = w / h
             if interactive:
                 print("Aspect ratio: {:4f}".format(aspect))
-            if aspect < aspect_min or aspect > aspect_max:
+            if not aspect_min < aspect < aspect_max:
                 if counter == 0:
                     print("Rejecting based on aspect ratio: {:4f}".format(aspect))
                 cv2.drawContours(image, [box], 0, colors['cyan'], 1)
@@ -119,7 +120,7 @@ def runPipeline(image, llrobot):
             if counter == 0:
                 print("Filled {:2f}".format(filled_pct))
             if filled_pct < min_fill_pct:
-                cv2.drawContours(image, [box], 0, colors['cyan'], 1)
+                cv2.drawContours(image, [box], 0, colors['gray'], 1)
                 continue
 
             good_contours.append([cnt, box, cx, cy, w, h])
@@ -135,15 +136,16 @@ def runPipeline(image, llrobot):
             if counter == 0:
                 print("Good: {} x {} @ {}, {}".format(w, h, cx, cy))
             left = None
-            # Look at all other contours (room for optimization!)
+            # Look at all other contours
             for other in reversed(left_sorted):
                 xdiff = (cx - other[2]) / w
+                xdiff2 = (cx - other[2]) / other[4]
                 ydiff = abs(cy - other[3]) / h
                 if counter == 0:
-                    print("DIFF = {:2.2f}, {:2.2f}".format(xdiff, ydiff))
-                if xdiff < xdiff_min:
+                    print("DIFF = {:2.2f} / {:2.2f}, {:2.2f}".format(xdiff, xdiff2, ydiff))
+                if xdiff < xdiff_min and xdiff2 < xdiff_min:
                     continue
-                if xdiff > xdiff_max:
+                if xdiff > xdiff_max and xdiff2 > xdiff_max:
                     break
                 if ydiff > ydiff_max:
                     continue
@@ -210,10 +212,16 @@ def runPipeline(image, llrobot):
 # MAIN
 if __name__=="__main__":
     interactive = 1
-    img = cv2.imread(sys.argv[1])
-    img = cv2.rotate(img, cv2.ROTATE_180)
-    (primary, img_out, llp) = runPipeline(img, [])
-    resized = cv2.resize(img_out, None, fx = 2, fy = 2)
-    cv2.imshow('Output', resized)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    first = True
+    for fn in sys.argv:
+        if first:
+            first = False
+            continue
+        img = cv2.imread(fn)
+        img = cv2.rotate(img, cv2.ROTATE_180)
+        print("=== Running pipeline on {}".format(fn))
+        (primary, img_out, llp) = runPipeline(img, [])
+        resized = cv2.resize(img_out, None, fx = 2, fy = 2)
+        cv2.imshow(fn, resized)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
