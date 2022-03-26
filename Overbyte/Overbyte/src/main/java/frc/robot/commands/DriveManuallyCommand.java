@@ -4,6 +4,7 @@
 // conection terminated
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -13,7 +14,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class DriveManuallyCommand extends CommandBase {
-  private final DriveSubsystem drivetrain;
+  private final DriveSubsystem drive;
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
   private final Timer locateTimer;
@@ -21,11 +22,11 @@ public class DriveManuallyCommand extends CommandBase {
   private double translationYPercent;
   private double rotationPercent;
 
-  public DriveManuallyCommand(DriveSubsystem drivetrain, IntakeSubsystem intake, VisionSubsystem vision){
-      this.drivetrain = drivetrain;
+  public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision){
+      this.drive = drive;
       this.intake = intake;
       this.vision = vision;
-      addRequirements(drivetrain);
+      addRequirements(drive);
 
       locateTimer = new Timer();
       locateTimer.start();
@@ -68,21 +69,32 @@ public class DriveManuallyCommand extends CommandBase {
             }
         }
 
+        if (Math.abs(translationXPercent) < Constants.deadzone){
+            translationXPercent = 0.0;
+        }
+        
+        if (Math.abs(translationYPercent) < Constants.deadzone){
+            translationYPercent = 0.0;
+        }
+        
+        if (Math.abs(rotationPercent) < Constants.deadzone){
+            rotationPercent = 0.0;
+        }
          
-        drivetrain.drive(
+        drive.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                translationXPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-                translationYPercent * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-                rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-                drivetrain.getRotation()
-            ), Constants.driveController.getRawButton(Constants.robotOrientButton)
+                translationXPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0), 
+                translationYPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
+                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
+                (drive.isRobotOriented() ? Rotation2d.fromDegrees(0.0) : drive.getGyroscopeRotation())
+            )
         );
     }
 
     @Override
     public void end(boolean interrupted) {
-        // Stop the drivetrain
-        drivetrain.drive(new ChassisSpeeds(0.0, 0.0, 0.0), false);
+        // Stop the drive
+        drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
 }
 

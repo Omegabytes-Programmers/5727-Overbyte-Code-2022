@@ -12,15 +12,17 @@ import frc.robot.subsystems.StorageSubsystem;
 public class IntakeAutonomouslyCommand extends CommandBase {
   private IntakeSubsystem intake;
   private StorageSubsystem storage;
+  private boolean stopAtOne;
   private Timer timeoutTimer;
   private Double timeoutThreshold;
   
   /** Creates a new IntakeAutonomouslyCommand. */
-  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, double time) {
+  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double time) {
     this.intake = intake;
     this.storage = storage;
-
+    this.stopAtOne = stopAtOne;
     this.timeoutThreshold = time;
+
     timeoutTimer = new Timer();
   
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,7 +42,7 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   public void execute() {
     
     intake.runIntake();
-    if (!(storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+    if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
       if (!intake.isExtended()){
         intake.extend();
         
@@ -82,7 +84,7 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   @Override
   public boolean isFinished(){
 
-    if((storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+    if(((storage.getTopProxSensor() || stopAtOne)&& (storage.getBottomProxSensor() || intake.getProxSensor()))){
       timeoutThreshold = -0.1;
     }
 

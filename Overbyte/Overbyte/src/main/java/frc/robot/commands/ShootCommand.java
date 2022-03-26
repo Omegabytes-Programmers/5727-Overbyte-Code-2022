@@ -73,9 +73,6 @@ public class ShootCommand extends CommandBase {
         hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
       }
 
-      //System.out.println("Has Target: " + (hasTarget ? "True" : "False"));
-
-
 
       if (hasTarget){
         pneumatics.stop();
@@ -91,10 +88,10 @@ public class ShootCommand extends CommandBase {
 
         intake.runIntake();
 
-        if (shootTimer.get() >= 0.75){
+        if (shootTimer.get() >= 0.25){
           storage.wheelFeed();
           
-          if (storageTimer.get() > 0.2){
+          if (storageTimer.get() > 0.1){
             storage.beltFeed();
           }else{
             storage.beltReverse();

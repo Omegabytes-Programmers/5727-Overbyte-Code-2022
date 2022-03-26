@@ -51,11 +51,11 @@ public class AimToShootCommand extends CommandBase {
 
     drive.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-                0 * DriveSubsystem.MAX_VELOCITY_METERS_PER_SECOND, 
-                rotationPercent * DriveSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+                0 * Constants.maxVelocity, 
+                0 * Constants.maxVelocity, 
+                rotationPercent * Constants.maxAngularVelocity, 
                 drive.getRotation()
-            ), Constants.driveController.getRawButton(Constants.robotOrientButton)
+            )
         );
   }
 

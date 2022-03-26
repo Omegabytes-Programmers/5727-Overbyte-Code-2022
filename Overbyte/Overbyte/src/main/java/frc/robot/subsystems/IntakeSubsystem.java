@@ -46,6 +46,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intaking = true;
   }
 
+  public void reverseIntake(){
+    setIntakeSpeed(1.0);
+  }
+
   public void stopIntake(){
     setIntakeSpeed(0.0);
     intaking = false;

@@ -14,26 +14,32 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class Auto2BallRight extends SequentialCommandGroup {
-  public Auto2BallRight(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
+public class Auto45Ball extends SequentialCommandGroup {
+  public Auto45Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
+      new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
       new ParallelCommandGroup(
         new DriveAutonomouslyCommand(
           driveSubsystem,
-          Constants.autoPoseBall2Right,
-          2.0
+          Constants.autoPoseBall45,
+          7
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
           false,
-          1.5
+          4.0
         )
       ),
       new DriveAutonomouslyCommand(
         driveSubsystem,
-        Constants.autoPoseShootRight,
-        2.0
+        Constants.autoPoseShoot2,
+        3.0
+      ),
+      new AimToShootCommand(
+        driveSubsystem, 
+        visionSubsystem, 
+        0.75
       ),
       new ShootAutonomouslyCommand(
         visionSubsystem,
@@ -45,4 +51,3 @@ public class Auto2BallRight extends SequentialCommandGroup {
     );
   }
 }
-

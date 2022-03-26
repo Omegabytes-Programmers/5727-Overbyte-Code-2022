@@ -4,13 +4,9 @@
 
 package frc.robot.commands.Auto;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.commands.*;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
@@ -21,31 +17,24 @@ import frc.robot.subsystems.VisionSubsystem;
 public class Auto2Ball extends SequentialCommandGroup {
   public Auto2Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
-      new InstantCommand(()->driveSubsystem.zeroGyroscope(0)),
-      new PrintCommand("DEBUG: Ready"),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall2
-      ),
-      new PrintCommand("DEBUG: In autoPoseBall2"),
-      new WaitCommand(1.25),
       new ParallelCommandGroup(
-        new AutoCommand(
+        new DriveAutonomouslyCommand(
           driveSubsystem,
-          0.5
+          Constants.autoPoseBall2,
+          2.0
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
+          false,
           1.5
         )
       ),
       new AimToShootCommand(
-        driveSubsystem,
-        visionSubsystem,
-        1.0
+        driveSubsystem, 
+        visionSubsystem, 
+        0.75
       ),
-      new PrintCommand("DEBUG: Moved to shoot"),
       new ShootAutonomouslyCommand(
         visionSubsystem,
         pneumaticsSubsystem,

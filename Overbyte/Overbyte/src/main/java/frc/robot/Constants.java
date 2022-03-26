@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,8 +37,8 @@ public final class Constants {
 
     public static int intakeMotorPort = 8;
     
-    public static int storageBeltMotorPort = 14; // Talon.
     public static int storageWheelMotorPort = 9;
+    public static int storageBeltMotorPort = 14; // Talon.
 
     public static int topShooterMotorPort = 10;
     public static int bottomShooterMotorPort = 11;
@@ -49,62 +51,60 @@ public final class Constants {
     public static int rrePort = 2;
     public static int rlePort = 3;
 
-    public static double fleo = Math.toRadians(-42.5390625);   // 177.539
-    public static double freo = Math.toRadians(-38.232421875);  // 178.770
+    public static double fleo = Math.toRadians(-42.5390625);
+    public static double freo = Math.toRadians(-38.232421875);
     public static double rreo = Math.toRadians(-251.71875);
-    public static double rleo = Math.toRadians(-197.666015625); // 181.230
+    public static double rleo = Math.toRadians(-197.666015625);
 
-    
     public static int talonCount = 14;
-
-    public static double wheelBase = 14.0;
-
 
     public static XboxController driveController = new XboxController(0);
     public static XboxController manipController = new XboxController(1);
-    public static XboxController topController = new XboxController(3);
-    public static XboxController bottomController = new XboxController(4);
-    public static XboxController resetController = new XboxController(5);
-    //public static XboxController autoController = new XboxController(2); //If we run out of buttons we can use another arcade cabnet controller
+    public static XboxController autoController = new XboxController(2);
+   
+    //public static XboxController topController = new XboxController(3);
+    //public static XboxController bottomController = new XboxController(4);
+   
 
+    // Driver controller buttons/axis
     public static int translateYAxis = 0;
     public static int translateXAxis = 1;
-    public static int rotationAxis = 4;
-    public static int halfSpeedButton = 1;
-    public static int lockWheelButton = 2;
-    public static int robotOrientButton = 3;
-    public static int intakeButton = 6;
-    public static int readyToShootButton = 5;
-    
-
-    public static int overwriteShootCloseButton = 5;
-    public static int overwriteShootFarButton = 6;
-    public static int resetGyroButton = 1;
-    public static int expelBallButton = 3;
     public static int extendLiftAxis = 2;
     public static int retractLiftAxis = 3;
+    public static int rotationAxis = 4;
+    public static int halfSpeedButton = 1;
+    public static int robotOrientedButton = 2;
+    public static int readyToShootButton = 5;
+    public static int intakeButton = 6;
+
+    // Manipulator controll buttons
+    public static int resetGyroButton = 1;
+    public static int expelBallButton = 3;
+    public static int overwriteShootCloseButton = 5;
+    public static int overwriteShootFarButton = 6;
+    
+
 
     public static int resetLeftButton = 3;
     public static int resetRightButton = 2;
     
-    public static int ball1Toggle = 6; // If we run out of buttons 1
-    public static int ball2Toggle = 7; // If we run out of buttons 2
-    public static int ball3Toggle = 8; // If we run out of buttons 3
-    public static int ball4Toggle = 9; // If we run out of buttons 4
-    public static int ball5Toggle = 10; // If we run out of buttons 5
+    public static int ball1Toggle = 1;
+    public static int ball2Toggle = 2;
+    public static int ball3Toggle = 3;
+    public static int ball4Toggle = 4;
+    public static int ball5Toggle = 5;
 
     public static int intakeExtendPort = 13;
     public static int intakeRetractPort = 15;
     public static int shooterExtendPort = 0;
     public static int shooterRetractPort = 1;
-    public static int motorCoolerPort = 4;
 
     public static int storageTopProxSensorPort = 0;
     public static int storageBottomProxSensorPort = 1;
     public static int intakeLeftProxSensorPort = 2;
     public static int intakeRightProxSensorPort = 3;
 
-    public static double deadzone = 0.05;
+    public static double deadzone = 0.1;
 
     public static VisionConfiguration[] visionTable = {
         new VisionConfiguration(39.6, 6.0),
@@ -146,14 +146,34 @@ public final class Constants {
 
 
     public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
+    
 
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
 
-    public static Pose2d autoPoseBall2 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(90));
-    public static Pose2d autoPoseBall2Left = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-7));
-    public static Pose2d autoPoseBall2Right = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(5));
-    public static Pose2d autoPoseBall3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-22.5));
-    public static Pose2d autoPoseShoot3 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(27));
-    public static Pose2d autoPoseBall4 = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(10));
+    public static Pose2d autoPoseBall2Left = new Pose2d(1.906, 0.507, Rotation2d.fromDegrees(-16));
+    public static Pose2d autoPoseBall2Right = new Pose2d(2.099, 0.386, Rotation2d.fromDegrees(11));
+    
+    public static Pose2d autoPoseShootLeft = new Pose2d(1.906, 0.507, Rotation2d.fromDegrees(-33));
+    public static Pose2d autoPoseShootRight = new Pose2d(2.099, 0.386, Rotation2d.fromDegrees(38));
+
+    public static Pose2d autoPoseBall2 = new Pose2d(0.686, 2.25, Rotation2d.fromDegrees(90));
+    public static Pose2d autoPoseBall3 = new Pose2d(4.25, 0.55, Rotation2d.fromDegrees(-39.5));
+    public static Pose2d autoPoseBall45 = new Pose2d(10.55, 0.7, Rotation2d.fromDegrees(45));
+    
+    public static Pose2d autoPoseShoot1 = new Pose2d(0.686, 1.41, Rotation2d.fromDegrees(70.7));
+    public static Pose2d autoPoseShoot2 = new Pose2d(5.5, -0.577, Rotation2d.fromDegrees(20.1));
+
+    public static double translationFeedForward = 0.1;
+    public static double rotationFeedForward = 0.1;
+
+    public static double maxVoltage = 12.0; //For "home" testing change this value to the range of 4.0 to 8.0.
+    public static double wheelBase = .572;
+
+    public static double maxVelocity = (6380.0 / 60.0 * 
+        SdsModuleConfigurations.MK4_L2.getDriveReduction() * 
+        SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI);
+    
+    public static double maxAngularVelocity = maxVelocity /
+        Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
 }
