@@ -239,8 +239,8 @@ def runPipeline(image, llrobot):
         if interactive:
             cv2.circle(image, (xavg, ytop), 3, colors['green'], -1)
         
-        finalContour = hull
-        finalContour = np.array([[xavg,ytop]]).reshape((-1,1,2)).astype(np.int32)
+        #finalContour = hull
+        finalContour = np.array([[xavg+1,ytop+1],[xavg+1,ytop-1],[xavg-1,ytop-1],[xavg,ytop+1]]).reshape((-1,1,2)).astype(np.int32)
     else:
         cv2.putText(image, 'No Target!', (0, 230), cv2.FONT_HERSHEY_SIMPLEX, .5, colors['red'], 1, cv2.LINE_AA)
 
