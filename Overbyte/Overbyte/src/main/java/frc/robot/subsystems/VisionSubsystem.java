@@ -17,6 +17,7 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry ta;
   NetworkTableEntry stream;
   NetworkTableEntry snapshot;
+  NetworkTableEntry pipeline;
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -26,9 +27,12 @@ public class VisionSubsystem extends SubsystemBase {
     ta = table.getEntry("ta");
     stream = table.getEntry("stream");
     snapshot = table.getEntry("snapshot");
+    pipeline = table.getEntry("pipeline");
 
     stream.setNumber(0);
     snapshot.setNumber(0);
+    pipeline.setNumber(8);
+
   }
  
   public double getAngle(){

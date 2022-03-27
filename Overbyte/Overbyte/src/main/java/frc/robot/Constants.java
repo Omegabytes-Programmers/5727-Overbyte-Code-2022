@@ -107,39 +107,32 @@ public final class Constants {
     public static double deadzone = 0.1;
 
     public static VisionConfiguration[] visionTable = {
-        new VisionConfiguration(31.8, 5.0),
-        new VisionConfiguration(24.05, 6.0),
-        new VisionConfiguration(20.5, 7.0),
-        new VisionConfiguration(15.51, 8.0),
-        new VisionConfiguration(11.83, 9.0),
-        new VisionConfiguration(8.21, 10.0),
-        new VisionConfiguration(4.97, 11.0),
-        new VisionConfiguration(2.56, 12.0),
-        new VisionConfiguration(0.21, 13.0),
-        new VisionConfiguration(-1.59, 14.0),
-        new VisionConfiguration(-4.00, 15.0),
-        new VisionConfiguration(-5.84, 16.0),
-        new VisionConfiguration(-7.12, 17.0),
-        new VisionConfiguration(-8.57, 18.0),
-        new VisionConfiguration(9.89, 19.0),
-        new VisionConfiguration(-11.18, 20.0),
-        new VisionConfiguration(-12.20, 21.0),
-        new VisionConfiguration(-13.16, 22.0),
-        new VisionConfiguration(-13.71, 23.0),
-        new VisionConfiguration(-13.9, 23.8),
+        new VisionConfiguration(39.6, 6.0),
+        new VisionConfiguration(33.41, 7.0),
+        new VisionConfiguration(27.76, 8.0),
+        new VisionConfiguration(23.91, 9.0),
+        new VisionConfiguration(20.10, 10.0),
+        new VisionConfiguration(17.04, 11.0),
+        new VisionConfiguration(14.24, 12.0),
+        new VisionConfiguration(11.26, 13.0),
+        new VisionConfiguration(9.54, 14.0),
+        new VisionConfiguration(7.27, 15.0),
+        new VisionConfiguration(5.38, 16.0),
+        new VisionConfiguration(4.54, 17.0),
+        new VisionConfiguration(2.08, 18.0),
+        new VisionConfiguration(1.07, 19.0),
+        new VisionConfiguration(0.0, 20.0)
     };
  
     public static ShooterConfiguration[] shootingTable = {
-        new ShooterConfiguration(5.0, 0.5, -1.0, false),
-        new ShooterConfiguration(6.0, 0.55, -1.0, false),
-        new ShooterConfiguration(7.0, 0.6, -1.0, false),
-        new ShooterConfiguration(8.0, 0.65, -0.95, false),
-        new ShooterConfiguration(9.0, 0.7, -0.9, false),
-        new ShooterConfiguration(10.0, 0.8, -0.85, false),
-        new ShooterConfiguration(11.0, 0.83, -0.83, false),
-        new ShooterConfiguration(9.0, 0.63, -0.63, true),
-        new ShooterConfiguration(10.0, 0.65, -0.65, true),
-        new ShooterConfiguration(11.0, 0.67, -0.67, true),
+        new ShooterConfiguration(6.0, 1.0, -0.22, false),
+        new ShooterConfiguration(7.0, 1.0, -0.27, false),
+        new ShooterConfiguration(8.0, 1.0, -0.37, false),
+        new ShooterConfiguration(9.0, 1.0, -0.53, false),
+        new ShooterConfiguration(10.0, 1.0, -0.60, false),
+        new ShooterConfiguration(9.0, 0.65, -0.65, true),
+        new ShooterConfiguration(10.0, 0.67, -0.67, true),
+        new ShooterConfiguration(11.0, 0.68, -0.68, true),
         new ShooterConfiguration(12.0, 0.70, -0.70, true),
         new ShooterConfiguration(13.0, 0.72, -0.72, true),
         new ShooterConfiguration(14.0, 0.74, -0.74, true),
@@ -148,15 +141,11 @@ public final class Constants {
         new ShooterConfiguration(17.0, 0.78, -0.78, true),
         new ShooterConfiguration(18.0, 0.80, -0.80, true),
         new ShooterConfiguration(19.0, 0.81, -0.81, true),
-        new ShooterConfiguration(20.0, 0.81, -0.82, true),
-        new ShooterConfiguration(21.0, 0.81, -0.83, true),
-        new ShooterConfiguration(22.0, 0.82, -0.83, true),
-        new ShooterConfiguration(23.0, 0.83, -0.84, true),
-        new ShooterConfiguration(23.8, 0.87, -0.87, true)
+        new ShooterConfiguration(20.0, 0.83, -0.83, true)
     };
 
 
-    public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 6);
+    public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
 
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
