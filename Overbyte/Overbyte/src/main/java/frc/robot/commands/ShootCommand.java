@@ -25,6 +25,7 @@ public class ShootCommand extends CommandBase {
   private Timer storageTimer;
   private Timer timeoutTimer;
   private Double timeoutThreshold;
+  private boolean linedUp;
 
   /** Creates a new ShootCommand. */
   public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, double distance){
@@ -39,6 +40,7 @@ public class ShootCommand extends CommandBase {
     storageTimer = new Timer();
     timeoutTimer = new Timer();
     timeoutThreshold = 1.0;
+    linedUp = false;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vision);
@@ -59,6 +61,7 @@ public class ShootCommand extends CommandBase {
     timeoutTimer.start();
 
     timeoutThreshold = 1.0;
+    linedUp = false;
 
     vision.takeSnapshot();
   }
@@ -68,51 +71,67 @@ public class ShootCommand extends CommandBase {
   public void execute() {
 
     if (!RobotState.isTest()){
-      
-      boolean hasTarget;
-      if (distance == 0.0){
-        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
-      }else{
-        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
-      }
+      double x = vision.getPosition();
 
-
-      if (hasTarget){
-        pneumatics.stop();
-
-        if (storage.getTopProxSensor()){
-          storageTimer.reset();
-          timeoutTimer.reset();
-        }else{
-          if (storage.getBottomProxSensor() || intake.getProxSensor()){
-            timeoutTimer.reset();
-          }
-        }
-
-        intake.runIntake();
-
-        if (shootTimer.get() >= 0.25){
-          storage.wheelFeed();
-          
-          if (storageTimer.get() > 0.1){
-            storage.beltFeed();
-          }else{
-            storage.beltReverse();
-          }
-        }else{
-          storage.wheelStop();
-          storage.beltStop();
-        }
-
-
-      }else{
+      if (Math.abs(x) >= 3.0 && !linedUp){
         shootTimer.reset();
         storageTimer.reset();
+        timeoutTimer.reset();
 
         shooter.stop();
         storage.stop();
         intake.stop();
         pneumatics.start();
+        
+      }else{
+
+        linedUp = true;
+        
+        boolean hasTarget;
+        if (distance == 0.0){
+          hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+        }else{
+          hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
+        }
+
+
+        if (hasTarget){
+          pneumatics.stop();
+
+          if (storage.getTopProxSensor()){
+            storageTimer.reset();
+            timeoutTimer.reset();
+          }else{
+            if (storage.getBottomProxSensor() || intake.getProxSensor()){
+              timeoutTimer.reset();
+            }
+          }
+
+          intake.runIntake();
+
+          if (shootTimer.get() >= 0.25){
+            storage.wheelFeed();
+            
+            if (storageTimer.get() > 0.1){
+              storage.beltFeed();
+            }else{
+              storage.beltReverse();
+            }
+          }else{
+            storage.wheelStop();
+            storage.beltStop();
+          }
+
+
+        }else{
+          shootTimer.reset();
+          storageTimer.reset();
+
+          shooter.stop();
+          storage.stop();
+          intake.stop();
+          pneumatics.start();
+        }
       }
     }
   }
