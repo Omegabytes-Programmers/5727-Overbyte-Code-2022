@@ -146,7 +146,7 @@ public final class Constants {
 
     public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
     
-    public static int visionPersistTicks = 100000;
+    public static int visionPersistTicks = 100;
 
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
@@ -159,7 +159,7 @@ public final class Constants {
 
     public static Pose2d autoPoseBall2 = new Pose2d(0.686, 2.25, Rotation2d.fromDegrees(90));
     public static Pose2d autoPoseBall3 = new Pose2d(4.25, 0.55, Rotation2d.fromDegrees(-39.5));
-    public static Pose2d autoPoseBall45 = new Pose2d(10.0, 0.9, Rotation2d.fromDegrees(45));
+    public static Pose2d autoPoseBall45 = new Pose2d(9.0, 0.9, Rotation2d.fromDegrees(45));
     
     public static Pose2d autoPoseShoot1 = new Pose2d(0.686, 1.41, Rotation2d.fromDegrees(70.7));
     public static Pose2d autoPoseShoot2 = new Pose2d(5.5, -0.577, Rotation2d.fromDegrees(20.1));
