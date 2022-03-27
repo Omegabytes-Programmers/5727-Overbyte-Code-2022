@@ -21,18 +21,23 @@ public class Auto2BallLeft extends SequentialCommandGroup {
         new DriveAutonomouslyCommand(
           driveSubsystem,
           Constants.autoPoseBall2Left,
-          2.0
+          4.0
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
           false,
-          4.0
+          5.0
         )
       ),
       new DriveAutonomouslyCommand(
         driveSubsystem,
         Constants.autoPoseShootLeft,
+        4.0
+      ),
+      new AimToShootCommand(
+        driveSubsystem,
+        visionSubsystem,
         2.0
       ),
       new ShootAutonomouslyCommand(

@@ -76,7 +76,9 @@ public class ShootCommand extends CommandBase {
       if (Math.abs(x) >= 3.0 && !linedUp){
         shootTimer.reset();
         storageTimer.reset();
-        timeoutTimer.reset();
+        if(Constants.driveController.getRawButton(Constants.readyToShootButton)){
+          timeoutTimer.reset();
+        }
 
         shooter.stop();
         storage.stop();
