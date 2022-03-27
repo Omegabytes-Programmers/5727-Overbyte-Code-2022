@@ -62,7 +62,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
   @Override
   public void execute() {
     if (!RobotState.isTest()){
-      boolean hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+      boolean hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), true));
 
       if (hasTarget){
         pneumatics.stop();

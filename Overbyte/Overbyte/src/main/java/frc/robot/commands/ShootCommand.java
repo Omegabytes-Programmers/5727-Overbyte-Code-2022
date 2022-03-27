@@ -59,11 +59,14 @@ public class ShootCommand extends CommandBase {
     timeoutTimer.start();
 
     timeoutThreshold = 1.0;
+
+    vision.takeSnapshot();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     if (!RobotState.isTest()){
       
       boolean hasTarget;
@@ -123,6 +126,8 @@ public class ShootCommand extends CommandBase {
       intake.stop();
       pneumatics.start();
     }
+
+    vision.resetSnapshot();
   }
 
   // Returns true when the command should end.

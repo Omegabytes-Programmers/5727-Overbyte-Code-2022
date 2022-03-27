@@ -56,7 +56,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public DriveSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-    ShuffleboardTab poseTab = Shuffleboard.getTab("Pose");
 
     flm = Mk4SwerveModuleHelper.createFalcon500(
             tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -122,6 +121,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Pose2d getPose(){
     return robotPose;
+  }
+
+  public void resetPose(){
+    robotPose = new Pose2d(0.0, 0.0, robotPose.getRotation());
   }
 
   public Rotation2d getGyroscopeRotation() {

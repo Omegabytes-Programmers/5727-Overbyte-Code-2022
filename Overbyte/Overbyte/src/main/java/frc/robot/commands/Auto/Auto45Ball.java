@@ -31,10 +31,18 @@ public class Auto45Ball extends SequentialCommandGroup {
           4.0
         )
       ),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseShoot2,
-        3.0
+      new ParallelCommandGroup(
+        new DriveAutonomouslyCommand(
+          driveSubsystem,
+          Constants.autoPoseShoot2,
+          4.0
+        ),
+        new IntakeAutonomouslyCommand(
+          intakeSubsystem,
+          storageSubsystem,
+          false,
+          1.0
+        )
       ),
       new AimToShootCommand(
         driveSubsystem, 

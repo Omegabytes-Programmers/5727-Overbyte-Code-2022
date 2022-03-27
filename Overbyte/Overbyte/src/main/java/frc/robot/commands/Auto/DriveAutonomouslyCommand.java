@@ -76,8 +76,8 @@ public class DriveAutonomouslyCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //System.out.println(targetX);
-    //System.out.println(targetY);
+    ////System.out.println(targetX);
+    ////System.out.println(targetY);
 
     currentPose = drive.getPose();
 
@@ -94,16 +94,16 @@ public class DriveAutonomouslyCommand extends CommandBase {
     translationYPercent = (Math.signum(translationYError) * Constants.translationFeedForward) + translationYController.calculate(currentY);
     rotationPercent = (Math.signum(rotationError) * Constants.rotationFeedForward) + rotationController.calculate(currentRotation);
 
-    System.out.println(translationXPercent);
-    System.out.println(translationYPercent);
-    System.out.println(rotationPercent);
+    //System.out.println(translationXPercent);
+    //System.out.println(translationYPercent);
+    //System.out.println(rotationPercent);
 
     /*double rotationPercentMin = 0.10;           // With the feedforward value this may not be needed
     if (Math.abs(rotationPercent) < rotationPercentMin) {
       rotationPercent = rotationPercentMin * Math.signum(rotationPercent);
     }*/
 
-    System.out.println("Angle Error: " + Math.abs(currentRotation - targetRotation) + "; Rotation percent = " + rotationPercent);
+    //System.out.println("Angle Error: " + Math.abs(currentRotation - targetRotation) + "; Rotation percent = " + rotationPercent);
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -121,7 +121,7 @@ public class DriveAutonomouslyCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drive.drive(new ChassisSpeeds(0, 0, 0));
-    System.out.println("Reached end of auto drive");
+    //System.out.println("Reached end of auto drive");
   }
 
   // Returns true when the command should end.

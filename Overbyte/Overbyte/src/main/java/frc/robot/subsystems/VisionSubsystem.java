@@ -21,6 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry ta;
   NetworkTableEntry stream;
   NetworkTableEntry snapshot;
+  NetworkTableEntry pipeline;
 
   double lastGoodAngle = -1;
   int lastAngleAge = 0;
@@ -37,9 +38,12 @@ public class VisionSubsystem extends SubsystemBase {
     ta = table.getEntry("ta");
     stream = table.getEntry("stream");
     snapshot = table.getEntry("snapshot");
+    pipeline = table.getEntry("pipeline");
 
-    stream.setNumber(2);
-    snapshot.setNumber(1);
+    stream.setNumber(0);
+    snapshot.setNumber(0);
+    pipeline.setNumber(8);
+
   }
  
   public double getAngle() {
@@ -78,18 +82,12 @@ public class VisionSubsystem extends SubsystemBase {
     return currentVal;
   }
 
-  public void takeSnapshots(){
-    /*if (table.getEntry("snapshot").getNumber(0).intValue() != 1) {
-      System.out.println("Enabled Snapshoting");
-      table.getEntry("snapshot").setNumber(1);
-    }*/
+  public void takeSnapshot(){
+    table.getEntry("snapshot").setNumber(1);
   }
 
-  public void stopSnapshots(){
-    /*if (table.getEntry("snapshot").getNumber(1).intValue() != 0){
-      System.out.println("Disabled Snapshoting");
-      table.getEntry("snapshot").setNumber(0);
-    }*/
+  public void resetSnapshot(){
+    table.getEntry("snapshot").setNumber(0);
   }
 
   @Override
@@ -101,9 +99,9 @@ public class VisionSubsystem extends SubsystemBase {
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
 
-    //System.out.println(x);
-    //System.out.println(y);
-    //System.out.println(area);
+    ////System.out.println(x);
+    ////System.out.println(y);
+    ////System.out.println(area);
 
     //post to smart dashboard periodically
     SmartDashboard.putNumber("LimelightX", x);
