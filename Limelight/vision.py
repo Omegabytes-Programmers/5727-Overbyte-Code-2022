@@ -13,11 +13,11 @@ tick_count = 0
 counter = 0
 #hsv_min = (55, 120, 105) #ncgui-0
 #hsv_max = (92, 215, 255) #ncgui-0
-#hsv_min = (69, 107, 15) #llp tuning
-#hsv_max = (99, 255, 255) #llp tuning
-hsv_min = (55, 107, 15)
-hsv_max = (99, 215, 255)
-area_max_pct = 0.1000 # 0.05
+hsv_min = (69, 107, 15) #llp tuning
+hsv_max = (99, 255, 255) #llp tuning
+#hsv_min = (55, 107, 15)
+#hsv_max = (99, 215, 255)
+area_max_pct = 0.1100 # 0.05
 area_min_pct = 0.0015 # 0.005
 aspect_min = 1 # 0.17
 aspect_max = 7 # 3.05
@@ -26,7 +26,8 @@ morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
 xdiff_max = 2.5
-ydiff_max = 3.5
+#ydiff_max = 3.5
+ydiff_max = 1.5 # Based on a multiple of the *width*
 
 colors = {
     'red': (0, 0, 255),
@@ -109,7 +110,7 @@ def runPipeline(image, llrobot):
             aspect = w / h
             if interactive:
                 print("Aspect ratio: {:4f}".format(aspect))
-            if not aspect_min < aspect < aspect_max:
+            if not aspect_min <= aspect <= aspect_max:
                 if counter == 0:
                     print("Rejecting based on aspect ratio: {:4f}".format(aspect))
                 cv2.drawContours(image, [box], 0, colors['cyan'], 1)
@@ -120,71 +121,104 @@ def runPipeline(image, llrobot):
             cv2.drawContours(box_mask, [box], -1, 255, cv2.FILLED)
             masked_box = img_threshold & box_mask
             filled = np.count_nonzero(masked_box)
-            filled_pct = 100.0 * filled / boxArea
+            totalArea = np.count_nonzero(box_mask)
+            filled_pct = 100.0 * filled / totalArea
+            
             if counter == 0:
                 print("Filled {:2f}".format(filled_pct))
+
+            #cv2.imshow("box mask", box_mask)
+            #cv2.imshow("masked_box", masked_box)
+            #cv2.imshow("threshold", img_threshold)
+            #sys.stdout.flush()
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
+            
             if filled_pct < min_fill_pct:
                 cv2.drawContours(image, [box], 0, colors['gray'], 1)
                 continue
 
+            # Save for later processing
             good_contours.append([cnt, box, cx, cy, w, h])
             
         if counter == 0:
             print("Good contours: {}".format(len(good_contours)))
             
+        # Search left to right to find pairs (or more)
         good_sorted = sorted(good_contours, key=operator.itemgetter(2))
         left_sorted = []
+        saved = None
         for cnt_info in good_sorted:
             (cnt, box, cx, cy, w, h) = cnt_info
             cv2.drawContours(image, [box], 0, colors['blue'], 1)
             if counter == 0:
                 print("Good: {} x {} @ {}, {}".format(w, h, cx, cy))
-            left = None
+
             # Look at all other contours
+            left = None
             for other in reversed(left_sorted):
                 xdiff = (cx - other[2]) / w
                 xdiff2 = (cx - other[2]) / other[4]
-                ydiff = abs(cy - other[3]) / h
+                ydiff = abs(cy - other[3]) / max(w, other[4])
                 if counter == 0:
                     print("DIFF = {:2.2f} / {:2.2f}, {:2.2f}".format(xdiff, xdiff2, ydiff))
+                    
+                # Rule out based on improper spacing
                 if xdiff < xdiff_min and xdiff2 < xdiff_min:
                     continue
                 if xdiff > xdiff_max and xdiff2 > xdiff_max:
                     break
                 if ydiff > ydiff_max:
                     continue
-                left = other # TODO REmove
                             
                 # Found a target to the left 
                 if counter == 0:
-                    print("Found left @ {}, {}".format(left[2], left[3]))
+                    print("Found left @ {}, {}".format(other[2], other[3]))
                 
                 # Record best match it nothing found yet
                 if best is None:
                     if counter == 0:
                         print("New best")
-                    best = [left, cnt_info]
+                    best = [other, cnt_info]
                     break
                 
                 # Add to the best match if this is a continuation
-                elif best[-1][2] == left[2] and best[-1][3] == left[3]:
+                elif best[-1][2] == other[2] and best[-1][3] == other[3]:
                     if counter == 0:
                         print("Added to best")
                     best.append(cnt_info)
                     break
                 
+                # Add to what's saved if applicable
+                elif saved is not None:
+                    print("Last saved: {}, {} vs left {}, {}".format(saved[-1][2], saved[-1][3], other[2], other[3]))
+                    if saved[-1][2] == other[2] and saved[-1][3] == other[3]:
+                        if counter == 0:
+                            print("Added to saved")
+                        saved.append(cnt_info)
+                        
+                        # Take saved if it's better than the best
+                        if len(saved) > len(best):
+                            if counter == 0:
+                                print("======================== Replacing best with saved ===========================")
+                            best = saved
+                            saved = None
+                        break
+                                
                 # Consider if this can replace the best match (should be rare)
-                elif len(best) <= 2 and cy < best[-1][3]:
+                elif len(best) <= 2 and cy < best[-1][3]: # TODO Better tie-breaker algorithm?
                     if counter == 0:
                         print("Replaced best")
-                    best = [left, cnt_info]
+                    best = [other, cnt_info]
                     break
                     
+                # Not better, but save is, because maybe it will be
                 elif counter == 0:
-                    print("Not using")
+                    print("Saved for later consideration")
+                    saved = [other, cnt_info]
             
             # Add counter to list of those processed and on the left
-            left_sorted.append(cnt_info)    
+            left_sorted.append(cnt_info)
 
     if best is not None:
         if counter == 0:
@@ -228,8 +262,9 @@ if __name__=="__main__":
             continue
         img = cv2.imread(fn)
         img = cv2.rotate(img, cv2.ROTATE_180)
-        print("=== Running pipeline on {}".format(fn))
+        print("\n=== Running pipeline on {}".format(fn))
         (primary, img_out, llp) = runPipeline(img, [])
+        sys.stdout.flush()
         resized = cv2.resize(img_out, None, fx = 2, fy = 2)
         cv2.imshow(fn, resized)
         cv2.waitKey(0)
