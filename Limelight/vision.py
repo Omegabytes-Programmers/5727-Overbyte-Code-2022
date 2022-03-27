@@ -13,10 +13,12 @@ tick_count = 0
 counter = 0
 #hsv_min = (55, 120, 105) #ncgui-0
 #hsv_max = (92, 215, 255) #ncgui-0
-hsv_min = (69, 107, 15) #llp tuning
-hsv_max = (99, 255, 255) #llp tuning
+#hsv_min = (69, 107, 15) #llp tuning
+#hsv_max = (99, 255, 255) #llp tuning
 #hsv_min = (55, 107, 15)
 #hsv_max = (99, 215, 255)
+hsv_min = (60, 107, 15)
+hsv_max = (99, 255, 255)
 area_max_pct = 0.1100 # 0.05
 area_min_pct = 0.0015 # 0.005
 aspect_min = 1 # 0.17
@@ -108,7 +110,7 @@ def runPipeline(image, llrobot):
 
             # Filter by the aspect ratio
             aspect = w / h
-            if interactive:
+            if counter == 0:
                 print("Aspect ratio: {:4f}".format(aspect))
             if not aspect_min <= aspect <= aspect_max:
                 if counter == 0:
@@ -147,12 +149,12 @@ def runPipeline(image, llrobot):
         # Search left to right to find pairs (or more)
         good_sorted = sorted(good_contours, key=operator.itemgetter(2))
         left_sorted = []
-        saved = None
+        saved_list = []
         for cnt_info in good_sorted:
             (cnt, box, cx, cy, w, h) = cnt_info
             cv2.drawContours(image, [box], 0, colors['blue'], 1)
             if counter == 0:
-                print("Good: {} x {} @ {}, {}".format(w, h, cx, cy))
+                print("Good: {:.2f} x {:.2f} @ {}, {}".format(w, h, cx, cy))
 
             # Look at all other contours
             left = None
@@ -160,8 +162,8 @@ def runPipeline(image, llrobot):
                 xdiff = (cx - other[2]) / w
                 xdiff2 = (cx - other[2]) / other[4]
                 ydiff = abs(cy - other[3]) / max(w, other[4])
-                if counter == 0:
-                    print("DIFF = {:2.2f} / {:2.2f}, {:2.2f}".format(xdiff, xdiff2, ydiff))
+                #if counter == 0:
+                #    print("DIFF = {:2.2f} / {:2.2f}, {:2.2f}".format(xdiff, xdiff2, ydiff))
                     
                 # Rule out based on improper spacing
                 if xdiff < xdiff_min and xdiff2 < xdiff_min:
@@ -189,34 +191,35 @@ def runPipeline(image, llrobot):
                     best.append(cnt_info)
                     break
                 
-                # Add to what's saved if applicable
-                elif saved is not None:
-                    print("Last saved: {}, {} vs left {}, {}".format(saved[-1][2], saved[-1][3], other[2], other[3]))
-                    if saved[-1][2] == other[2] and saved[-1][3] == other[3]:
-                        if counter == 0:
-                            print("Added to saved")
-                        saved.append(cnt_info)
-                        
-                        # Take saved if it's better than the best
-                        if len(saved) > len(best):
+                else:
+                    # Add to what's saved if applicable
+                    for saved in saved_list:
+                        print("Last saved: {}, {} vs left {}, {}".format(saved[-1][2], saved[-1][3], other[2], other[3]))
+                        if saved[-1][2] == other[2] and saved[-1][3] == other[3]:
                             if counter == 0:
-                                print("======================== Replacing best with saved ===========================")
-                            best = saved
-                            saved = None
+                                print("Adding to saved")
+                            saved_new = saved + [cnt_info]
+                            saved_list.append(saved_new)
+                            
+                            # Take saved if it's better than the best
+                            if len(saved_new) > len(best):
+                                if counter == 0:
+                                    print("Replacing best with saved (len {})".format(len(saved_new)))
+                                best = saved_new
+                            break
+                                    
+                    # Consider if this can replace the best match (should be rare)
+                    if len(best) <= 2 and cy < best[-1][3]: # TODO Better tie-breaker algorithm than just highest?
+                        if counter == 0:
+                            print("Replaced best")
+                        best = [other, cnt_info]
                         break
-                                
-                # Consider if this can replace the best match (should be rare)
-                elif len(best) <= 2 and cy < best[-1][3]: # TODO Better tie-breaker algorithm?
+                        
+                    # Not better, but save it, because maybe it will be
                     if counter == 0:
-                        print("Replaced best")
-                    best = [other, cnt_info]
-                    break
-                    
-                # Not better, but save is, because maybe it will be
-                elif counter == 0:
-                    print("Saved for later consideration")
-                    saved = [other, cnt_info]
-            
+                        saved_list.append([other, cnt_info])
+                        print("Saved for later consideration (total {})".format(len(saved_list)))
+                
             # Add counter to list of those processed and on the left
             left_sorted.append(cnt_info)
 
