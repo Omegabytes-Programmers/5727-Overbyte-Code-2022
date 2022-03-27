@@ -28,7 +28,6 @@ morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
 xdiff_max = 2.5
-#ydiff_max = 3.5
 ydiff_max = 1.5 # Based on a multiple of the *width*
 
 colors = {
