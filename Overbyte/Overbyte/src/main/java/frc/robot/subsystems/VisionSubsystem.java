@@ -19,6 +19,7 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry tx;
   NetworkTableEntry ty;
   NetworkTableEntry ta;
+  NetworkTableEntry tv;
   NetworkTableEntry stream;
   NetworkTableEntry snapshot;
   NetworkTableEntry pipeline;
@@ -36,6 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
     tx = table.getEntry("tx");
     ty = table.getEntry("ty");
     ta = table.getEntry("ta");
+    tv = table.getEntry("tv");
     stream = table.getEntry("stream");
     snapshot = table.getEntry("snapshot");
     pipeline = table.getEntry("pipeline");
@@ -47,37 +49,37 @@ public class VisionSubsystem extends SubsystemBase {
   }
  
   public double getAngle() {
+    int valid = tv.getNumber(0).intValue();
     double currentVal = ty.getDouble(-1);
 
-    if (currentVal < 0) {
+    if (valid == 0) {
       if (lastAngleAge < Constants.visionPersistTicks) {
         currentVal = lastGoodAngle;
         lastAngleAge++;
+      } else {
+        currentVal = 0;
       }
     } else {
       lastGoodAngle = currentVal;
       lastAngleAge = 0;
     }
-    if (currentVal < 0) {
-      currentVal = 0;
-    }
     return currentVal;
   }
 
   public double getPosition() {
+    int valid = tv.getNumber(0).intValue();
     double currentVal = tx.getDouble(-1);
 
-    if (currentVal < 0) {
+    if (valid == 0) {
       if (lastPosAge < Constants.visionPersistTicks) {
         currentVal = lastGoodPos;
         lastPosAge++;
+      } else {
+        currentVal = 0;
       }
     } else {
       lastGoodPos = currentVal;
       lastPosAge = 0;
-    }
-    if (currentVal < 0) {
-      currentVal = 0;
     }
     return currentVal;
   }
