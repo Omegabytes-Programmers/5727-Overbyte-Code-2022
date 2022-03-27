@@ -54,12 +54,18 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (valid == 0) {
       if (lastAngleAge < Constants.visionPersistTicks) {
+        //System.out.println("Not valid angle -- using old value: " + lastGoodAngle);
+
         currentVal = lastGoodAngle;
         lastAngleAge++;
       } else {
+        //System.out.println("Not valid ang;e -- using 0");
+
         currentVal = 0;
       }
     } else {
+      //System.out.println("Valid angle: " + currentVal);
+
       lastGoodAngle = currentVal;
       lastAngleAge = 0;
     }
@@ -72,12 +78,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (valid == 0) {
       if (lastPosAge < Constants.visionPersistTicks) {
+        //System.out.println("Not valid position -- using old value: " + lastGoodPos);
         currentVal = lastGoodPos;
         lastPosAge++;
       } else {
+        //System.out.println("Not valid position -- using 0");
         currentVal = 0;
       }
     } else {
+      //System.out.println("Valid position: " + currentVal);
       lastGoodPos = currentVal;
       lastPosAge = 0;
     }
@@ -100,6 +109,7 @@ public class VisionSubsystem extends SubsystemBase {
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
+    int valid = tv.getNumber(-1).intValue();
 
     ////System.out.println(x);
     ////System.out.println(y);
@@ -109,5 +119,6 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
+    SmartDashboard.putNumber("LimelightTarget", valid);
   }
 }
