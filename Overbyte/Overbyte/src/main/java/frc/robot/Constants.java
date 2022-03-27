@@ -144,9 +144,9 @@ public final class Constants {
         new ShooterConfiguration(20.0, 0.83, -0.83, true)
     };
 
-
     public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
     
+    public static int visionPersistTicks = 100000;
 
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;

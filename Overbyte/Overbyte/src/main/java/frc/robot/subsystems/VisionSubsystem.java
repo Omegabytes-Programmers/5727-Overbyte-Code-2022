@@ -5,7 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.lang.invoke.ConstantCallSite;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,6 +21,13 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry ta;
   NetworkTableEntry stream;
   NetworkTableEntry snapshot;
+
+  double lastGoodAngle = -1;
+  int lastAngleAge = 0;
+
+  double lastGoodPos = -1;
+  int lastPosAge = 0;
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -31,14 +42,41 @@ public class VisionSubsystem extends SubsystemBase {
     snapshot.setNumber(1);
   }
  
-  public double getAngle(){
-    return ty.getDouble(0.0);
+  public double getAngle() {
+    double currentVal = ty.getDouble(-1);
+
+    if (currentVal < 0) {
+      if (lastAngleAge < Constants.visionPersistTicks) {
+        currentVal = lastGoodAngle;
+        lastAngleAge++;
+      }
+    } else {
+      lastGoodAngle = currentVal;
+      lastAngleAge = 0;
+    }
+    if (currentVal < 0) {
+      currentVal = 0;
+    }
+    return currentVal;
   }
 
-  public double getPosition(){
-    return tx.getDouble(0.0);
-  }
+  public double getPosition() {
+    double currentVal = tx.getDouble(-1);
 
+    if (currentVal < 0) {
+      if (lastPosAge < Constants.visionPersistTicks) {
+        currentVal = lastGoodPos;
+        lastPosAge++;
+      }
+    } else {
+      lastGoodPos = currentVal;
+      lastPosAge = 0;
+    }
+    if (currentVal < 0) {
+      currentVal = 0;
+    }
+    return currentVal;
+  }
 
   public void takeSnapshots(){
     /*if (table.getEntry("snapshot").getNumber(0).intValue() != 1) {
