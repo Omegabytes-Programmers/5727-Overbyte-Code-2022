@@ -4,6 +4,7 @@
 // conection terminated
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,20 +19,31 @@ public class DriveManuallyCommand extends CommandBase {
   private final IntakeSubsystem intake;
   private final VisionSubsystem vision;
   private final Timer locateTimer;
+
+  private SlewRateLimiter translationXLimiter;
+  private SlewRateLimiter translationYLimiter;
+  private SlewRateLimiter rotationLimiter;
+
   private double translationXPercent;
   private double translationYPercent;
   private double rotationPercent;
 
-  public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision){
-      this.drive = drive;
-      this.intake = intake;
-      this.vision = vision;
-      addRequirements(drive);
+  
 
-      locateTimer = new Timer();
-      locateTimer.start();
-      
-  }
+    public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision){
+        this.drive = drive;
+        this.intake = intake;
+        this.vision = vision;
+        addRequirements(drive);
+
+        locateTimer = new Timer();
+        locateTimer.start();
+
+        translationXLimiter = new SlewRateLimiter(Constants.translationRateLimit);
+        translationYLimiter = new SlewRateLimiter(Constants.translationRateLimit);
+        rotationLimiter = new SlewRateLimiter(Constants.rotationRateLimit);
+        
+    }
 
     @Override
     public void execute() {
@@ -68,6 +80,10 @@ public class DriveManuallyCommand extends CommandBase {
                 rotationPercent = .1 * -Math.signum(x);
             }
         }
+
+        translationXPercent = translationXLimiter.calculate(translationXPercent);
+        translationYPercent = translationYLimiter.calculate(translationYPercent);
+        rotationPercent = rotationLimiter.calculate(rotationPercent);
 
         if (Math.abs(translationXPercent) < Constants.deadzone){
             translationXPercent = 0.0;

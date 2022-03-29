@@ -5,6 +5,7 @@
 package frc.robot.commands.Auto;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,12 +15,22 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveAutonomouslyCommand extends CommandBase {
   private DriveSubsystem drive;
-
   
-  
-  private PIDController translationXController = new PIDController(0.9, 0, 0); //10
-  private PIDController translationYController = new PIDController(0.9, 0, 0);
+  private PIDController translationXController = new PIDController(0.6, 0, 0); //10
+  private PIDController translationYController = new PIDController(0.6, 0, 0);
   private PIDController rotationController = new PIDController(0.5, 0, 0); // 1.2
+
+  private SlewRateLimiter translationXLimiter = new SlewRateLimiter(Constants.translationRateLimit);
+  private SlewRateLimiter translationYLimiter = new SlewRateLimiter(Constants.translationRateLimit);
+  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(Constants.rotationRateLimit);
+
+  private double translationXPercent;
+  private double translationYPercent;
+  private double rotationPercent;
+
+  private double translationXError = 1000;
+  private double translationYError = 1000;
+  private double rotationError = 1000;
 
   private double targetX;
   private double targetY;
@@ -30,14 +41,6 @@ public class DriveAutonomouslyCommand extends CommandBase {
   private double currentRotation;
 
   private Pose2d currentPose;
-
-  private double translationXPercent;
-  private double translationYPercent;
-  private double rotationPercent;
-
-  private double translationXError = 1000;
-  private double translationYError = 1000;
-  private double rotationError = 1000;
 
   private Timer timeoutTimer = new Timer();
   private double expectedTime = 0.0;
@@ -94,16 +97,52 @@ public class DriveAutonomouslyCommand extends CommandBase {
     translationYPercent = (Math.signum(translationYError) * Constants.translationFeedForward) + translationYController.calculate(currentY);
     rotationPercent = (Math.signum(rotationError) * Constants.rotationFeedForward) + rotationController.calculate(currentRotation);
 
-    //System.out.println(translationXPercent);
-    //System.out.println(translationYPercent);
-    //System.out.println(rotationPercent);
+    System.out.println(translationXPercent);
+    System.out.println(translationYPercent);
+    System.out.println(rotationPercent);
+    
+    if (Math.abs(translationXPercent) > 1.0){
+      translationXPercent = Math.signum(translationXPercent) * 1.0;
+    }
+    
+    if (Math.abs(translationYPercent) > 1.0){
+        translationYPercent = Math.signum(translationYPercent) * 1.0;
+    }
+    
+    if (Math.abs(rotationPercent) > 1.0){
+        rotationPercent = Math.signum(rotationPercent) * 1.0;
+    }
 
-    /*double rotationPercentMin = 0.10;           // With the feedforward value this may not be needed
-    if (Math.abs(rotationPercent) < rotationPercentMin) {
-      rotationPercent = rotationPercentMin * Math.signum(rotationPercent);
-    }*/
+    System.out.println(translationXPercent);
+    System.out.println(translationYPercent);
+    System.out.println(rotationPercent);
 
     //System.out.println("Angle Error: " + Math.abs(currentRotation - targetRotation) + "; Rotation percent = " + rotationPercent);
+
+    translationXPercent = translationXLimiter.calculate(translationXPercent);
+    translationYPercent = translationYLimiter.calculate(translationYPercent);
+    rotationPercent = rotationLimiter.calculate(rotationPercent);
+
+    System.out.println(translationXPercent);
+    System.out.println(translationYPercent);
+    System.out.println(rotationPercent);
+
+    
+    if (Math.abs(translationXPercent) < Constants.deadzone){
+      translationXPercent = 0.0;
+    }
+    
+    if (Math.abs(translationYPercent) < Constants.deadzone){
+        translationYPercent = 0.0;
+    }
+    
+    if (Math.abs(rotationPercent) < Constants.deadzone){
+        rotationPercent = 0.0;
+    }
+
+    System.out.println(translationXPercent);
+    System.out.println(translationYPercent);
+    System.out.println(rotationPercent);
 
     drive.drive(
       ChassisSpeeds.fromFieldRelativeSpeeds(

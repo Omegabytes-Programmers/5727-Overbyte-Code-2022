@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.omegabytes.ShooterConfiguration;
 import frc.omegabytes.VisionConfiguration;
 import frc.omegabytes.VisionShooterConversion;
+import frc.omegabytes.VisionWeightedAverage;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -148,6 +149,8 @@ public final class Constants {
     
     public static int visionPersistTicks = 100;
 
+    public static VisionWeightedAverage visionTarget = new VisionWeightedAverage();
+
     public static double closeShootDistance = 7.06;
     public static double farShootDistance = 10.59;
 
@@ -157,12 +160,15 @@ public final class Constants {
     public static Pose2d autoPoseShootLeft = new Pose2d(3.5, 1.5, Rotation2d.fromDegrees(-33));
     public static Pose2d autoPoseShootRight = new Pose2d(2.099, 0.386, Rotation2d.fromDegrees(38));
 
-    public static Pose2d autoPoseBall2 = new Pose2d(0.686, 2.25, Rotation2d.fromDegrees(90));
-    public static Pose2d autoPoseBall3 = new Pose2d(4.25, 0.55, Rotation2d.fromDegrees(-39.5));
+    public static Pose2d autoPoseBall2 = new Pose2d(0.69, 2.25, Rotation2d.fromDegrees(90));
+    public static Pose2d autoPoseBall3 = new Pose2d(3.5, 0.0, Rotation2d.fromDegrees(20));
     public static Pose2d autoPoseBall45 = new Pose2d(9.0, 0.9, Rotation2d.fromDegrees(45));
     
-    public static Pose2d autoPoseShoot1 = new Pose2d(0.686, 1.41, Rotation2d.fromDegrees(70.7));
+    public static Pose2d autoPoseShoot1 = new Pose2d(3.6, 0.1, Rotation2d.fromDegrees(70.7));
     public static Pose2d autoPoseShoot2 = new Pose2d(5.5, -0.577, Rotation2d.fromDegrees(20.1));
+    
+    public static double translationRateLimit = 2.5;
+    public static double rotationRateLimit = 2.5;
 
     public static double translationFeedForward = 0.1;
     public static double rotationFeedForward = 0.1;

@@ -17,9 +17,9 @@ import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ReverseIntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.Auto.Auto2Ball;
 import frc.robot.commands.Auto.Auto2BallLeft;
 import frc.robot.commands.Auto.Auto2BallRight;
+import frc.robot.commands.Auto.Auto2BallShoot;
 import frc.robot.commands.Auto.Auto3Ball;
 import frc.robot.commands.Auto.Auto45Ball;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -52,7 +52,7 @@ public class RobotContainer {
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
   private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
-  private final Auto2Ball auto2BallCommand = new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto2BallShoot auto2BallCommand = new Auto2BallShoot(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto2BallLeft auto2BallLeft = new Auto2BallLeft(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto2BallRight auto2BallRight = new Auto2BallRight(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
@@ -102,7 +102,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return auto2BallRight;
     return chooser.getSelected();
   }
 

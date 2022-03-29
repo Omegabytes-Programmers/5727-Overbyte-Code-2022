@@ -5,30 +5,30 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.omegabytes.VisionWeightedAverage;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.lang.invoke.ConstantCallSite;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class VisionSubsystem extends SubsystemBase {
-  NetworkTable table;
-  NetworkTableEntry tx;
-  NetworkTableEntry ty;
-  NetworkTableEntry ta;
-  NetworkTableEntry tv;
-  NetworkTableEntry stream;
-  NetworkTableEntry snapshot;
-  NetworkTableEntry pipeline;
+  private NetworkTable table;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  private NetworkTableEntry tv;
+  private NetworkTableEntry stream;
+  private NetworkTableEntry snapshot;
 
-  double lastGoodAngle = -1;
-  int lastAngleAge = 0;
+  private double lastGoodAngle = -1;
+  private int lastAngleAge = 0;
 
-  double lastGoodPos = -1;
-  int lastPosAge = 0;
+  private double lastGoodPos = -1;
+  private int lastPosAge = 0;
+
+  private VisionWeightedAverage visionTarget;
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
@@ -40,15 +40,15 @@ public class VisionSubsystem extends SubsystemBase {
     tv = table.getEntry("tv");
     stream = table.getEntry("stream");
     snapshot = table.getEntry("snapshot");
-    pipeline = table.getEntry("pipeline");
 
     stream.setNumber(0);
     snapshot.setNumber(0);
-    pipeline.setNumber(8);
+
+    visionTarget = Constants.visionTarget;
 
   }
- 
-  public double getAngle() {
+
+  public void updateTarget(){
     int valid = tv.getNumber(0).intValue();
     double currentVal = ty.getDouble(-1);
 
@@ -59,7 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
         currentVal = lastGoodAngle;
         lastAngleAge++;
       } else {
-        //System.out.println("Not valid ang;e -- using 0");
+        //System.out.println("Not valid angle -- using 0");
 
         currentVal = 0;
       }
@@ -69,12 +69,8 @@ public class VisionSubsystem extends SubsystemBase {
       lastGoodAngle = currentVal;
       lastAngleAge = 0;
     }
-    return currentVal;
-  }
 
-  public double getPosition() {
-    int valid = tv.getNumber(0).intValue();
-    double currentVal = tx.getDouble(-1);
+    currentVal = tx.getDouble(-1);
 
     if (valid == 0) {
       if (lastPosAge < Constants.visionPersistTicks) {
@@ -90,7 +86,20 @@ public class VisionSubsystem extends SubsystemBase {
       lastGoodPos = currentVal;
       lastPosAge = 0;
     }
-    return currentVal;
+
+    visionTarget.update(lastGoodPos, lastGoodAngle);
+  }
+ 
+  public double getAngle() {
+    return visionTarget.getY();
+  }
+
+  public double getPosition() {
+    return visionTarget.getX();
+  }
+
+  public void resetTarget(){
+    visionTarget.clearValues();
   }
 
   public void takeSnapshot(){
@@ -103,6 +112,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    updateTarget();
     // This method will be called once per scheduler run
     //read values periodically
 

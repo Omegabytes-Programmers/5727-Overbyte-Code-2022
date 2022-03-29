@@ -13,17 +13,27 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   private IntakeSubsystem intake;
   private StorageSubsystem storage;
   private boolean stopAtOne;
+  private double timeoutThreshold;
+  private double delay;
   private Timer timeoutTimer;
-  private Double timeoutThreshold;
+  private Timer delayTimer;
+
   
   /** Creates a new IntakeAutonomouslyCommand. */
-  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double time) {
+  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double timeout) {
+    this(intake, storage, stopAtOne, timeout, -1.0);
+  }
+
+  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double timeout, double delay) {
     this.intake = intake;
     this.storage = storage;
     this.stopAtOne = stopAtOne;
-    this.timeoutThreshold = time;
+    this.timeoutThreshold = timeout;
+    this.delay = delay;
 
     timeoutTimer = new Timer();
+    delayTimer = new Timer();
+
   
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -34,39 +44,45 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   @Override
   public void initialize() {
     timeoutTimer.reset();
+    delayTimer.reset();
+
     timeoutTimer.start();
+    delayTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    intake.runIntake();
-    if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
-      if (!intake.isExtended()){
-        intake.extend();
-        
-      }
-    }else{
-      if (intake.isExtended()){
-        intake.retract();
-      }
-    }
-    
-    if (!storage.getTopProxSensor()){
-      storage.wheelntake();
-    }else{
-      storage.wheelStop();
-    }
-
-    if (!storage.getBottomProxSensor()){
-      storage.beltIntake();
-    }else{
-      if (storage.getTopProxSensor()){
-        storage.beltStop();
+    if (delayTimer.get() > delay){
+      intake.runIntake();
+      if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+        if (!intake.isExtended()){
+          intake.extend();
+          
+        }
       }else{
-        storage.beltIntake();
+        if (intake.isExtended()){
+          intake.retract();
+        }
       }
+      
+      if (!storage.getTopProxSensor()){
+        storage.wheelntake();
+      }else{
+        storage.wheelStop();
+      }
+
+      if (!storage.getBottomProxSensor()){
+        storage.beltIntake();
+      }else{
+        if (storage.getTopProxSensor()){
+          storage.beltStop();
+        }else{
+          storage.beltIntake();
+        }
+      }
+    }else{
+      timeoutTimer.reset();
     }
   }
 
@@ -84,7 +100,7 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   @Override
   public boolean isFinished(){
 
-    if(((storage.getTopProxSensor() || stopAtOne)&& (storage.getBottomProxSensor() || intake.getProxSensor()))){
+    if(((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
       timeoutThreshold = -0.1;
     }
 

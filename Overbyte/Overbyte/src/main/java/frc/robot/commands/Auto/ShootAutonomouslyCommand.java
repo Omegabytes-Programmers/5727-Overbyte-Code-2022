@@ -20,30 +20,46 @@ public class ShootAutonomouslyCommand extends CommandBase {
   private ShooterSubsystem shooter;
   private StorageSubsystem storage;
   private IntakeSubsystem intake;
+  private double distance;
+  private boolean extendIntake;
   private Timer shootTimer;
   private Timer storageTimer;
   private Timer timeoutTimer;
-  private Double timeoutThreshold;
+  private double timeoutThreshold;
   /** Creates a new ShootAutonomouslyCommand. */
   public ShootAutonomouslyCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake){
+    this(vision, pneumatics, shooter, storage, intake, -1.0);
+  }
+
+  public ShootAutonomouslyCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, double distance){
+    this(vision, pneumatics, shooter, storage, intake, distance, false);
+  }
+
+  public ShootAutonomouslyCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, boolean extendIntake){
+    this(vision, pneumatics, shooter, storage, intake, -1.0, extendIntake);
+  }
+
+  public ShootAutonomouslyCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, double distance, boolean extendIntake){
     this.vision = vision;
     this.pneumatics = pneumatics;
     this.shooter = shooter;
     this.storage = storage;
     this.intake = intake;
+    this.distance = distance;
+    this.extendIntake = extendIntake;
 
     shootTimer = new Timer();
     storageTimer = new Timer();
     timeoutTimer = new Timer();
-    timeoutThreshold = 0.25;
+    timeoutThreshold = 0.5;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(vision);
+    addRequirements(pneumatics);
     addRequirements(shooter);
     addRequirements(storage);
     addRequirements(intake);
   }
-   
+
   // Called when the command is initially scheduled.
   @Override 
   public void initialize() {
@@ -55,14 +71,19 @@ public class ShootAutonomouslyCommand extends CommandBase {
     storageTimer.start();
     timeoutTimer.start();
 
-    timeoutThreshold = .25;
+    timeoutThreshold = .5;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (!RobotState.isTest()){
-      boolean hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), true));
+      boolean hasTarget;
+      if (distance <= 0.0){
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), true));
+      }else{
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, true));
+      }
 
       if (hasTarget){
         pneumatics.stop();
@@ -76,10 +97,16 @@ public class ShootAutonomouslyCommand extends CommandBase {
           }
         }
 
-        intake.runIntake();
+
+
 
         if (shootTimer.get() >= 0.25){
           storage.wheelFeed();
+          intake.runIntake();
+
+          if (extendIntake){
+            intake.extend();
+          }
           
           if (storageTimer.get() > 0.1){
             storage.beltFeed();
@@ -89,6 +116,9 @@ public class ShootAutonomouslyCommand extends CommandBase {
         }else{
           storage.wheelStop();
           storage.beltStop();
+          
+          intake.retract();
+
         }
 
 
@@ -99,6 +129,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
         shooter.stop();
         storage.stop();
         intake.stop();
+        intake.retract();
         pneumatics.start();
       }
     }
@@ -111,6 +142,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
       shooter.stop();
       storage.stop();
       intake.stop();
+      intake.retract();
       pneumatics.start();
     }
   }

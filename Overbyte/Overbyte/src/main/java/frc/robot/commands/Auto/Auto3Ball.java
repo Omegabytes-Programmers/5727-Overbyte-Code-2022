@@ -18,35 +18,25 @@ public class Auto3Ball extends SequentialCommandGroup {
   public Auto3Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
       new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
-      new ParallelCommandGroup(
-        new DriveAutonomouslyCommand(
-          driveSubsystem,
-          Constants.autoPoseBall3,
-          2.5
-        ),
-        new IntakeAutonomouslyCommand(
-          intakeSubsystem,
-          storageSubsystem,
-          true,
-          3.0
-        )
-      ),
       new DriveAutonomouslyCommand(
         driveSubsystem,
-        Constants.autoPoseShoot2,
-        0.5
+        Constants.autoPoseBall3,
+        5.0
       ),
-      new AimToShootCommand(
-        driveSubsystem, 
-        visionSubsystem, 
-        0.75
-      ),
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem,
-        intakeSubsystem
+      new ParallelCommandGroup(
+        new ShootAutonomouslyCommand(
+          visionSubsystem,
+          pneumaticsSubsystem,
+          shooterSubsystem,
+          storageSubsystem, 
+          intakeSubsystem,
+          true
+        ),
+        new DriveAutonomouslyCommand(
+          driveSubsystem,
+          Constants.autoPoseShoot1,
+          2.0
+        )
       )
     );
   }

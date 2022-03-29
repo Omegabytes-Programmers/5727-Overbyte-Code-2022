@@ -21,7 +21,7 @@ public class Auto2Ball extends SequentialCommandGroup {
         new DriveAutonomouslyCommand(
           driveSubsystem,
           Constants.autoPoseBall2,
-          2.0
+          5.0
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
@@ -29,18 +29,6 @@ public class Auto2Ball extends SequentialCommandGroup {
           false,
           1.5
         )
-      ),
-      new AimToShootCommand(
-        driveSubsystem, 
-        visionSubsystem, 
-        0.75
-      ),
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem,
-        intakeSubsystem
       )
     );
   }
