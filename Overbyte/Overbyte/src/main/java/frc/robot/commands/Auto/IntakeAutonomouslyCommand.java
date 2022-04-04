@@ -14,25 +14,14 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   private StorageSubsystem storage;
   private boolean stopAtOne;
   private double timeoutThreshold;
-  private double delay;
   private Timer timeoutTimer;
-  private Timer delayTimer;
-
-  
-  /** Creates a new IntakeAutonomouslyCommand. */
   public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double timeout) {
-    this(intake, storage, stopAtOne, timeout, -1.0);
-  }
-
-  public IntakeAutonomouslyCommand(IntakeSubsystem intake, StorageSubsystem storage, boolean stopAtOne, double timeout, double delay) {
     this.intake = intake;
     this.storage = storage;
     this.stopAtOne = stopAtOne;
     this.timeoutThreshold = timeout;
-    this.delay = delay;
 
     timeoutTimer = new Timer();
-    delayTimer = new Timer();
 
   
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,45 +33,39 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   @Override
   public void initialize() {
     timeoutTimer.reset();
-    delayTimer.reset();
-
     timeoutTimer.start();
-    delayTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (delayTimer.get() > delay){
-      intake.runIntake();
-      if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
-        if (!intake.isExtended()){
-          intake.extend();
-          
-        }
-      }else{
-        if (intake.isExtended()){
-          intake.retract();
-        }
-      }
-      
-      if (!storage.getTopProxSensor()){
-        storage.wheelntake();
-      }else{
-        storage.wheelStop();
-      }
-
-      if (!storage.getBottomProxSensor()){
-        storage.beltIntake();
-      }else{
-        if (storage.getTopProxSensor()){
-          storage.beltStop();
-        }else{
-          storage.beltIntake();
-        }
+    if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+      if (!intake.isExtended()){
+        intake.extend();
+        
       }
     }else{
-      timeoutTimer.reset();
+      if (intake.isExtended()){
+        intake.retract();
+      }
+    }
+    
+    intake.runIntake();
+
+    if (!storage.getTopProxSensor()){
+      storage.wheelntake();
+    }else{
+      storage.wheelStop();
+    }
+
+    if (!storage.getBottomProxSensor()){
+      storage.beltIntake();
+    }else{
+      if (storage.getTopProxSensor()){
+        storage.beltStop();
+      }else{
+        storage.beltIntake();
+      }
     }
   }
 

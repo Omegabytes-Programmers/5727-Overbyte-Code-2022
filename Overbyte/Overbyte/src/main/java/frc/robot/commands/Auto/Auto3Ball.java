@@ -4,7 +4,11 @@
 
 package frc.robot.commands.Auto;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -15,28 +19,36 @@ import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class Auto3Ball extends SequentialCommandGroup {
+  
+  PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall3", 8.0, 5.0);
+
   public Auto3Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
       new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
-      new DriveAutonomouslyCommand(
-        driveSubsystem,
-        Constants.autoPoseBall3,
-        5.0
+      new InstantCommand(() -> Constants.translationXController.reset()),
+      new InstantCommand(() -> Constants.translationYController.reset()),
+      new InstantCommand(() -> Constants.rotationController.reset(0.0)),
+
+      new PPSwerveControllerCommand(
+        movementPath,
+        driveSubsystem::getPose,
+        driveSubsystem.getKinematics(),
+        Constants.translationYController,
+        Constants.translationXController,
+        Constants.rotationController,
+        driveSubsystem::setModuleStates,
+        driveSubsystem
       ),
-      new ParallelCommandGroup(
-        new ShootAutonomouslyCommand(
-          visionSubsystem,
-          pneumaticsSubsystem,
-          shooterSubsystem,
-          storageSubsystem, 
-          intakeSubsystem,
-          true
-        ),
-        new DriveAutonomouslyCommand(
-          driveSubsystem,
-          Constants.autoPoseShoot1,
-          2.0
-        )
+      new InstantCommand(() -> driveSubsystem.stop()),
+
+      new ShootAutonomouslyCommand(
+        visionSubsystem,
+        pneumaticsSubsystem,
+        shooterSubsystem,
+        storageSubsystem, 
+        intakeSubsystem,
+        8.5,
+        true
       )
     );
   }

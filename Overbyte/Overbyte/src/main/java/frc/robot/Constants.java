@@ -6,8 +6,11 @@ package frc.robot;
 
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.omegabytes.ShooterConfiguration;
 import frc.omegabytes.VisionConfiguration;
@@ -182,4 +185,12 @@ public final class Constants {
     
     public static double maxAngularVelocity = maxVelocity /
         Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
+
+
+    public static final TrapezoidProfile.Constraints rotationConstraints = new TrapezoidProfile.Constraints(maxAngularVelocity, maxAngularVelocity);
+
+    public static PIDController translationXController = new PIDController(0.1, 0, 0); //10
+    public static PIDController translationYController = new PIDController(0.1, 0, 0);
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(5.0, 0, 0, Constants.rotationConstraints); // 1.2
+    
 }

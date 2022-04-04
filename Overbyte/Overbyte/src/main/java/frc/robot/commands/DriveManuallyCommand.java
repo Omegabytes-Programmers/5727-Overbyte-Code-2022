@@ -47,8 +47,8 @@ public class DriveManuallyCommand extends CommandBase {
 
     @Override
     public void execute() {
-        translationXPercent = Constants.driveController.getRawAxis(1);
-        translationYPercent = Constants.driveController.getRawAxis(0);
+        translationXPercent = -Constants.driveController.getRawAxis(1);
+        translationYPercent = -Constants.driveController.getRawAxis(0);
         rotationPercent = -Constants.driveController.getRawAxis(4);
 
 

@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    Constants.rotationController.enableContinuousInput(-Math.PI, Math.PI);
     for (int i = 0; i < Constants.talonCount; i++){
       TalonFX motor = new TalonFX(i);
       motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255);
@@ -82,6 +83,7 @@ public class Robot extends TimedRobot {
       //System.out.println("RL: " + rle.getAbsolutePosition());
 
     }
+
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.CalibrationTime;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -36,6 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(0.0)); 
   private Pose2d robotPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+  private Translation2d offsetPose = new Translation2d(0.0, 0.0);
   
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
@@ -120,11 +122,19 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose(){
-    return robotPose;
+    return new Pose2d(robotPose.getTranslation().minus(offsetPose), robotPose.getRotation());
+  }
+
+  public SwerveDriveKinematics getKinematics(){
+    return kinematics;
+  }
+
+  public void resetPose(double xValue, double yValue){
+    offsetPose = new Translation2d(xValue, yValue);
   }
 
   public void resetPose(){
-    robotPose = new Pose2d(0.0, 0.0, robotPose.getRotation());
+    resetPose(robotPose.getTranslation().getX(), robotPose.getTranslation().getY());
   }
 
   public Rotation2d getGyroscopeRotation() {
@@ -151,10 +161,27 @@ public class DriveSubsystem extends SubsystemBase {
     this.chassisSpeeds = chassisSpeeds;
   }
 
-  @Override
-  public void periodic() {
+  public void stop(){
+    this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
+
+    odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
+    robotPose = odometry.getPoseMeters();
+
+    flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
+    frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
+    rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
+    rrm.set(-states[3].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[3].angle.getRadians());
+  }
+
+  public void setModuleStates(SwerveModuleState[] states) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
+
+    flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
+    frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
+    rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
+    rrm.set(-states[3].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[3].angle.getRadians());
 
     odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
     robotPose = odometry.getPoseMeters();
@@ -163,10 +190,28 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pose Y", robotPose.getTranslation().getY());
     SmartDashboard.putNumber("Pose Rotation", robotPose.getRotation().getDegrees());
 
-    flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
-    frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
-    rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
-    rrm.set(-states[3].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[3].angle.getRadians());
-    
+}
+
+  @Override
+  public void periodic() {
+    if (!RobotState.isAutonomous()){
+      SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
+
+      odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
+      
+      robotPose = odometry.getPoseMeters();
+
+      flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
+      frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
+      rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
+      rrm.set(-states[3].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[3].angle.getRadians());
+    }
+      
+    Pose2d poseData = getPose();
+
+    SmartDashboard.putNumber("Pose X", poseData.getTranslation().getX());
+    SmartDashboard.putNumber("Pose Y", poseData.getTranslation().getY());
+    SmartDashboard.putNumber("Pose Rotation", poseData.getRotation().getDegrees());
   }
 }

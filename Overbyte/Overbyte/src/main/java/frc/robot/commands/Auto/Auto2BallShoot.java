@@ -15,18 +15,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class Auto2BallShoot extends SequentialCommandGroup {
   public Auto2BallShoot(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
-      new AimToShootCommand(
-        driveSubsystem, 
-        visionSubsystem, 
-        0.75
-      ),
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem,
-        intakeSubsystem
-      )
+      new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem)
     );
   }
 }
