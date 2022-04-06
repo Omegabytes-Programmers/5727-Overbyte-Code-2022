@@ -155,13 +155,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // /* Uncomment when calibrating shooter;
-    if (Constants.calibrateController.getRawButton(Constants.runShooterButton)){
-      getShooterValuesFromSticks();
-    }
-    
-    // */ 
-    
-    
+    if (Constants.useCalibrateController) {
+      if (Constants.calibrateController.getRawButton(Constants.runShooterButton)){
+        getShooterValuesFromSticks();
+      }
+    }   
   }
 }
