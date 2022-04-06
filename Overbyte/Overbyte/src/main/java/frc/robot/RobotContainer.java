@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CalibrateShootCommand;
 import frc.robot.commands.ClimberMoveCommand;
 import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ReverseIntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.Auto.Auto2BallLeft;
-import frc.robot.commands.Auto.Auto2BallRight;
+import frc.robot.commands.Auto.Auto2BallAlt;
 import frc.robot.commands.Auto.Auto2BallShoot;
 import frc.robot.commands.Auto.Auto3Ball;
 import frc.robot.commands.Auto.Auto45Ball;
@@ -53,8 +53,7 @@ public class RobotContainer {
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
   private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
   private final Auto2BallShoot auto2BallCommand = new Auto2BallShoot(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
-  private final Auto2BallLeft auto2BallLeft = new Auto2BallLeft(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
-  private final Auto2BallRight auto2BallRight = new Auto2BallRight(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final Auto2BallAlt auto2BallAlt = new Auto2BallAlt(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto45Ball auto45BallCommand = new Auto45Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
 
@@ -69,11 +68,11 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Send auto commands to SmartDashboard
-    chooser.setDefaultOption("45 Ball Auto", auto45BallCommand);
+    chooser.setDefaultOption("4 or 5 Ball Auto", auto45BallCommand);
     chooser.addOption("3 Ball Auto", auto3BallCommand);
-    chooser.addOption("2 Ball Left", auto2BallLeft);
-    chooser.addOption("2 Ball Center", auto2BallRight);
-    chooser.addOption("2 Ball Right", auto2BallCommand);
+    chooser.addOption("2 Ball", auto2BallCommand);
+
+    chooser.addOption("2 Ball Alt", auto2BallAlt);
 
     SmartDashboard.putData(chooser);
   }
@@ -85,7 +84,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(Constants.driveController, Constants.readyToShootButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0));
+    new JoystickButton(Constants.driveController, Constants.readyToShootButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem));
     new JoystickButton(Constants.driveController, Constants.intakeButton).whenPressed(new IntakeCommand(intakeSubsystem, storageSubsystem));
     new JoystickButton(Constants.driveController, Constants.halfSpeedButton).whenReleased(()->driveSubsystem.toggleHalfSpeed());
     new JoystickButton(Constants.driveController, Constants.robotOrientedButton).whenReleased(()->driveSubsystem.toggleRobotOriented());
@@ -94,6 +93,20 @@ public class RobotContainer {
     new JoystickButton(Constants.manipController, Constants.overwriteShootFarButton).whenPressed(new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, Constants.farShootDistance));
     new JoystickButton(Constants.manipController, Constants.expelBallButton).whenPressed(new ReverseIntakeCommand(intakeSubsystem));
     new JoystickButton(Constants.manipController, Constants.resetGyroButton).whenReleased(()->driveSubsystem.zeroGyroscope());
+
+    new JoystickButton(Constants.calibrateController, Constants.runShooterButton).whenPressed(new CalibrateShootCommand(pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem));
+
+    new JoystickButton(Constants.calibrateController, Constants.topTuneSet).whenReleased(()->shooterSubsystem.setTopTunerValue());
+    new JoystickButton(Constants.calibrateController, Constants.topTuneReset).whenReleased(()->shooterSubsystem.resetTopTunerValue());
+    new JoystickButton(Constants.calibrateController, Constants.topTuneRange1).whenReleased(()->shooterSubsystem.setTopTunerRange(1000));
+    new JoystickButton(Constants.calibrateController, Constants.topTuneRange2).whenReleased(()->shooterSubsystem.setTopTunerRange(100));
+    new JoystickButton(Constants.calibrateController, Constants.topTuneRange3).whenReleased(()->shooterSubsystem.setTopTunerRange(10));
+    
+    new JoystickButton(Constants.calibrateController, Constants.bottomTuneSet).whenReleased(()->shooterSubsystem.setBottomTunerValue());
+    new JoystickButton(Constants.calibrateController, Constants.bottomTuneReset).whenReleased(()->shooterSubsystem.resetBottomTunerValue());
+    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange1).whenReleased(()->shooterSubsystem.setBottomTunerRange(1000));
+    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange2).whenReleased(()->shooterSubsystem.setBottomTunerRange(100));
+    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange3).whenReleased(()->shooterSubsystem.setBottomTunerRange(10));
   }
 
   /**

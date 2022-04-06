@@ -88,6 +88,8 @@ public class IntakeCommand extends CommandBase {
       intake.retract();
     }
 
+    intake.stop();
+
   }
 
   // Returns true when the command should end.

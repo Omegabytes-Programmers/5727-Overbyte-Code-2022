@@ -28,7 +28,7 @@ public class Auto2Ball extends SequentialCommandGroup {
     Constants.translationYController.reset();
     Constants.rotationController.reset(0.0);
 
-    PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall2Right", 8.0, 3.0);
+    PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall2", 8.0, 3.0);
 
     addCommands(
       new InstantCommand(() -> driveSubsystem.resetPose(-7.65, -1.88)),

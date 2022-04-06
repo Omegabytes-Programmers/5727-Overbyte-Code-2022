@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -38,6 +39,9 @@ public class ReverseIntakeCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !Constants.manipController.getRawButton(Constants.expelBallButton);
+    boolean inAuto = RobotState.isAutonomous() && !intake.getProxSensor();
+    boolean inTele = RobotState.isTeleop() && !Constants.manipController.getRawButton(Constants.expelBallButton);
+
+    return inAuto || inTele;
   }
 }

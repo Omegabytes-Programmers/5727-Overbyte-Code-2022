@@ -7,10 +7,10 @@ package frc.omegabytes;
 /** Add your docs here. */
 public class ShooterConfiguration {
 
-    double distance;
-    double topMotorSpeed;
-    double bottomMotorSpeed;
-    boolean hoodUp;
+    private double distance;
+    private double topMotorSpeed;
+    private double bottomMotorSpeed;
+    private boolean hoodUp;
 
     public ShooterConfiguration(double distance, double topMotorSpeed, double bottomMotorSpeed, boolean hoodUp) {
         this.distance = distance;

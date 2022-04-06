@@ -13,7 +13,7 @@ public class VisionShooterConversion {
     public VisionShooterConversion(VisionConfiguration[] visionTable, ShooterConfiguration[] shooterTable, int hoodChangePosition) {
         this.visionTable = visionTable;
         this.shooterTable = shooterTable;
-        this.hoodChangePosition = hoodChangePosition;
+        this.hoodChangePosition = hoodChangePosition - 1;
     }
     
     public ShooterConfiguration getValuesFromAngle(double angle, boolean isHoodUp){

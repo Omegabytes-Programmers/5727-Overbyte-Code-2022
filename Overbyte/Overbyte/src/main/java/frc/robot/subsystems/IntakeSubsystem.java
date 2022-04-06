@@ -22,6 +22,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput rightProxSensor;
   private DigitalInput leftProxSensor;
 
+  // These values are to counter the intake sensors picking each other up
+  
+
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem(DoubleSolenoid intakeSolenoids) {
     intakeMotor = new TalonFX(Constants.intakeMotorPort);
@@ -34,7 +37,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean getProxSensor(){
-    return !rightProxSensor.get() || !leftProxSensor.get(); // Inverting the value as the sensor returns true when no ball is in the way 
+
+    return !leftProxSensor.get() || !rightProxSensor.get(); // Inverting the value as the sensor returns true when no ball is in the way 
   }
 
   public boolean isExtended(){

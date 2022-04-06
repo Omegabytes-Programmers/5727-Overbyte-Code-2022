@@ -28,6 +28,11 @@ public class ShootCommand extends CommandBase {
   private boolean linedUp;
 
   /** Creates a new ShootCommand. */
+  public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake){
+    this(vision, pneumatics, shooter, storage, intake, 0.0);
+  }
+
+
   public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake, double distance){
     this.vision = vision;
     this.pneumatics = pneumatics;
