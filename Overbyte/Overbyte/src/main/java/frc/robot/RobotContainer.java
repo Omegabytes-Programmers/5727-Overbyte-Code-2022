@@ -94,19 +94,21 @@ public class RobotContainer {
     new JoystickButton(Constants.manipController, Constants.expelBallButton).whenPressed(new ReverseIntakeCommand(intakeSubsystem));
     new JoystickButton(Constants.manipController, Constants.resetGyroButton).whenReleased(()->driveSubsystem.zeroGyroscope());
 
-    new JoystickButton(Constants.calibrateController, Constants.runShooterButton).whenPressed(new CalibrateShootCommand(pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem));
+    if (Constants.useCalibrateController) {
+      new JoystickButton(Constants.calibrateController, Constants.runShooterButton).whenPressed(new CalibrateShootCommand(pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem));
 
-    new JoystickButton(Constants.calibrateController, Constants.topTuneSet).whenReleased(()->shooterSubsystem.setTopTunerValue());
-    new JoystickButton(Constants.calibrateController, Constants.topTuneReset).whenReleased(()->shooterSubsystem.resetTopTunerValue());
-    new JoystickButton(Constants.calibrateController, Constants.topTuneRange1).whenReleased(()->shooterSubsystem.setTopTunerRange(1000));
-    new JoystickButton(Constants.calibrateController, Constants.topTuneRange2).whenReleased(()->shooterSubsystem.setTopTunerRange(100));
-    new JoystickButton(Constants.calibrateController, Constants.topTuneRange3).whenReleased(()->shooterSubsystem.setTopTunerRange(10));
-    
-    new JoystickButton(Constants.calibrateController, Constants.bottomTuneSet).whenReleased(()->shooterSubsystem.setBottomTunerValue());
-    new JoystickButton(Constants.calibrateController, Constants.bottomTuneReset).whenReleased(()->shooterSubsystem.resetBottomTunerValue());
-    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange1).whenReleased(()->shooterSubsystem.setBottomTunerRange(1000));
-    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange2).whenReleased(()->shooterSubsystem.setBottomTunerRange(100));
-    new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange3).whenReleased(()->shooterSubsystem.setBottomTunerRange(10));
+      new JoystickButton(Constants.calibrateController, Constants.topTuneSet).whenReleased(()->shooterSubsystem.setTopTunerValue());
+      new JoystickButton(Constants.calibrateController, Constants.topTuneReset).whenReleased(()->shooterSubsystem.resetTopTunerValue());
+      new JoystickButton(Constants.calibrateController, Constants.topTuneRange1).whenReleased(()->shooterSubsystem.setTopTunerRange(1000));
+      new JoystickButton(Constants.calibrateController, Constants.topTuneRange2).whenReleased(()->shooterSubsystem.setTopTunerRange(100));
+      new JoystickButton(Constants.calibrateController, Constants.topTuneRange3).whenReleased(()->shooterSubsystem.setTopTunerRange(10));
+      
+      new JoystickButton(Constants.calibrateController, Constants.bottomTuneSet).whenReleased(()->shooterSubsystem.setBottomTunerValue());
+      new JoystickButton(Constants.calibrateController, Constants.bottomTuneReset).whenReleased(()->shooterSubsystem.resetBottomTunerValue());
+      new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange1).whenReleased(()->shooterSubsystem.setBottomTunerRange(1000));
+      new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange2).whenReleased(()->shooterSubsystem.setBottomTunerRange(100));
+      new JoystickButton(Constants.calibrateController, Constants.bottomTuneRange3).whenReleased(()->shooterSubsystem.setBottomTunerRange(10));
+    }
   }
 
   /**

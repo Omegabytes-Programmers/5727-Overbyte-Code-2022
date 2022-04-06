@@ -63,7 +63,8 @@ public final class Constants {
     public static XboxController driveController = new XboxController(0);
     public static XboxController manipController = new XboxController(1);
    
-    public static XboxController calibrateController = new XboxController(5);
+    public static boolean useCalibrateController = false;
+    public static XboxController calibrateController = useCalibrateController ? new XboxController(5) : null;
    
 
     // Driver controller buttons/axis
