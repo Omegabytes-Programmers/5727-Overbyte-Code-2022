@@ -52,7 +52,8 @@ public class VisionWeightedAverage {
     }
 
     public double getX(){
-        return xOut;
+        //return xOut;
+        return xValues[0];
     }
 
     public double getY(){
