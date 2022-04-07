@@ -17,13 +17,14 @@ counter = 0
 #hsv_max = (99, 255, 255) #llp tuning
 #hsv_min = (55, 107, 15)
 #hsv_max = (99, 215, 255)
-hsv_min = (60, 107, 15)
+hsv_min = (60, 107, 30)
 hsv_max = (99, 255, 255)
-area_max_pct = 0.1100 # 0.05
+area_max_pct = 0.1400 # 0.05
 area_min_pct = 0.0015 # 0.005
+angle_max = 65
 aspect_min = 1 # 0.17
 aspect_max = 7 # 3.05
-min_fill_pct = 20 # 10
+min_fill_pct = 13 # 10
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
@@ -85,7 +86,7 @@ def runPipeline(image, llrobot):
             area_pct = 100.0 * area / img_area
             if (not area_min_pct < area_pct < area_max_pct):
                 if counter == 0:
-                    print("Rejected contour with {:4f} percent area".format(area_pct))
+                    print("Rejected contour at ({}, {}) with {:4f} percent area".format(cx, cy, area_pct))
                 if area_pct > 0:
                     cv2.drawContours(image, [cnt], 0, colors['red'], 1)
                 continue
@@ -95,22 +96,31 @@ def runPipeline(image, llrobot):
             (x, y), (w, h), angle = rect
             box = np.intp(cv2.boxPoints(rect))
             boxArea = cv2.contourArea(box)
+            if counter == 0:
+                print("Box at ({}, {}) at angle {:.1f} with size {} x {}: {}".format(int(x+.5), int(y+.5), angle, int(w+.5), int(h+.5), box))
             
             # Reject anything without area
             if boxArea == 0:
                 continue
-            
+
             # Adjust rectangle to standard configuration
-            # TODO Revisit -- snap 43
             if h > w:
                 angle = angle + 90
                 w, h = h, w
+                print("Rotating from angle {:.1f} and {} x {}".format(angle, w, h))
                 box = np.array([box[1], box[2], box[3], box[0]])
+
+            # Filter by angle
+            if angle_max < angle < (180 - angle_max):
+                if counter == 0:
+                    print("Rejecting based on angle: {:1f}".format(angle))
+                cv2.drawContours(image, [box], 0, colors['white'], 1)
+                continue
 
             # Filter by the aspect ratio
             aspect = w / h
             if counter == 0:
-                print("Aspect ratio: {:4f}".format(aspect))
+                print("Aspect ratio at ({}, {}): {:4f}".format(cx, cy, aspect))
             if not aspect_min <= aspect <= aspect_max:
                 if counter == 0:
                     print("Rejecting based on aspect ratio: {:4f}".format(aspect))
@@ -126,7 +136,7 @@ def runPipeline(image, llrobot):
             filled_pct = 100.0 * filled / totalArea
             
             if counter == 0:
-                print("Filled {:2f}".format(filled_pct))
+                print("Filled at ({}, {}): {:2f}".format(cx, cy, filled_pct))
 
             #cv2.imshow("box mask", box_mask)
             #cv2.imshow("masked_box", masked_box)
