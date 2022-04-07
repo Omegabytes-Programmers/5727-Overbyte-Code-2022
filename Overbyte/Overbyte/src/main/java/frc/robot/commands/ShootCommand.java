@@ -78,14 +78,19 @@ public class ShootCommand extends CommandBase {
     if (!RobotState.isTest()){
       double x = vision.getPosition();
 
+      boolean hasTarget;
+      if (distance == 0.0){
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+      }else{
+        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
+      }
+
       if (Math.abs(x) >= 3.0 && !linedUp){
-        shootTimer.reset();
         storageTimer.reset();
         if(Constants.driveController.getRawButton(Constants.readyToShootButton)){
           timeoutTimer.reset();
         }
 
-        shooter.stop();
         storage.stop();
         intake.stop();
         pneumatics.start();
@@ -94,14 +99,6 @@ public class ShootCommand extends CommandBase {
 
         linedUp = true;
         
-        boolean hasTarget;
-        if (distance == 0.0){
-          hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
-        }else{
-          hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
-        }
-
-
         if (hasTarget){
           pneumatics.stop();
 
