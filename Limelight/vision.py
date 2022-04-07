@@ -24,7 +24,7 @@ area_min_pct = 0.0015
 angle_max = 60
 aspect_min = 1
 aspect_max = 7
-min_fill_pct = 13
+min_fill_pct = 15
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
@@ -198,7 +198,8 @@ def runPipeline(image, llrobot):
                 else:
                     # Add to what's saved if applicable
                     for saved in saved_list:
-                        print("Last saved: {}, {} vs left {}, {}".format(saved[-1][2], saved[-1][3], other[2], other[3]))
+                        if counter == 0:
+                            print("Last saved: {}, {} vs left {}, {}".format(saved[-1][2], saved[-1][3], other[2], other[3]))
                         if saved[-1][2] == other[2] and saved[-1][3] == other[3]:
                             if counter == 0:
                                 print("Adding to saved")
