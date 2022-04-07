@@ -116,7 +116,7 @@ public class ShootCommand extends CommandBase {
 
           intake.runIntake();
 
-          if (shootTimer.get() >= 0.25){
+          if (shootTimer.get() >= 0.5){ // TODO Tune -- was 0.25 -- or wait for velocity?
             storage.wheelFeed();
             
             if (storageTimer.get() > 0.1){
