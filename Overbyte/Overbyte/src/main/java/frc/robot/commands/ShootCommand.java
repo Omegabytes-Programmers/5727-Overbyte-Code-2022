@@ -113,7 +113,7 @@ public class ShootCommand extends CommandBase {
 
           intake.runIntake();
 
-          if (shootTimer.get() >= 0.5){ // TODO Tune -- was 0.25 -- or wait for velocity?
+          if (shootTimer.get() >= 0.5){ // TODO Tune -- was 0.25 -- or specifically wait for velocity to be in range, perhaps using getSelectedSensorVelocity?
             storage.wheelFeed();
             
             if (storageTimer.get() > 0.1){
