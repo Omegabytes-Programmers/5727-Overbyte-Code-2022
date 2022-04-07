@@ -140,6 +140,7 @@ public final class Constants {
         new VisionConfiguration(0.09, 24.0)
     };
  
+    // TODO Consider the value of two tables
     public static ShooterConfiguration[] shootingTable = {
         new ShooterConfiguration(5.0, 2731.74, -3715.11, false),
         new ShooterConfiguration(6.0, 2951.96, -3851.38, false),
@@ -163,7 +164,7 @@ public final class Constants {
     };
     //#endregion
 
-    public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
+    public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 6);
     
     public static int visionPersistTicks = 100;
 
