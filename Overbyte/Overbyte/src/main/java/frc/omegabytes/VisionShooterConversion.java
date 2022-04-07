@@ -18,6 +18,7 @@ public class VisionShooterConversion {
     
     public ShooterConfiguration getValuesFromAngle(double angle, boolean isHoodUp){
         double distance = getDistanceFromAngle(angle);
+        //System.out.println("DEBUG: Angle " + String.format("%.2f", angle) + " ==> distance " + String.format("%.2f", distance));
         int index = getDistanceIndex(distance, isHoodUp);
         double topMotor = getTopMotor(index, distance);
         double bottomMotor = getBottomMotor(index, distance);
@@ -91,11 +92,10 @@ public class VisionShooterConversion {
             index = 1;
         }
 
-        if (index > shooterTable.length){
+        if (index > shooterTable.length) {
             index = shooterTable.length - 1;
         }
         
-
         double speedDifference = shooterTable[index].getTopMotorSpeed() - shooterTable[index - 1].getTopMotorSpeed();
 
         double distancePosition = distance - shooterTable[index - 1].getDistance();
@@ -107,11 +107,13 @@ public class VisionShooterConversion {
         return topMotor;
     }
  
+    // TODO Why not just return configuration directly?
     private int getDistanceIndex(double distance, boolean isHoodUp){
         int index = -1;
         boolean hoodUp;
 
         if (distance != 0.0){
+            // Determine if the hood position will need to change, but prefer that it does not
             if (isHoodUp){
                 if (distance < shooterTable[hoodChangePosition + 1].getDistance()){
                     hoodUp = false;
@@ -126,6 +128,7 @@ public class VisionShooterConversion {
                 }
             }
 
+            // Search through the appropriate configs (hood up or down) for the first entry that is beyond our shooting point
             if (hoodUp){
                 for (int i = hoodChangePosition + 1; i < shooterTable.length; i++){
                     if (distance < shooterTable[i].getDistance()){
@@ -134,7 +137,7 @@ public class VisionShooterConversion {
                     }
                 }
             }else{
-                for (int i = 1; i < hoodChangePosition; i++){
+                for (int i = 1; i <= hoodChangePosition; i++){
                     if (distance < shooterTable[i].getDistance()){
                         index = i;
                         break;
@@ -142,7 +145,8 @@ public class VisionShooterConversion {
                 }
             }
         }
-        //System.out.println(index);
+
+        //System.out.println("Shooting table index = " + index);
         return index;
     }
 
