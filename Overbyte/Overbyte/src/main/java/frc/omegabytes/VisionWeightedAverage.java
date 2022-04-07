@@ -57,7 +57,9 @@ public class VisionWeightedAverage {
     }
 
     public double getY(){
-        return yOut;
+        // TODO Temporarily disabled for testing
+        //return yOut;
+        return yValues[0];
     }
 
     private double calculateX(){
