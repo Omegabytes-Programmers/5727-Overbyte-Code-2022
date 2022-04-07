@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import argparse
+import pathlib
 import sys
 
 # vvv CUT HERE FOR LIMELIGHT vvv ###
@@ -8,28 +10,27 @@ import cv2
 import numpy as np
 import operator
 
-interactive = 0
+interactive = False
 tick_count = 0
 counter = 0
 #hsv_min = (55, 120, 105) #ncgui-0
 #hsv_max = (92, 215, 255) #ncgui-0
 #hsv_min = (69, 107, 15) #llp tuning
 #hsv_max = (99, 255, 255) #llp tuning
-#hsv_min = (55, 107, 15)
-#hsv_max = (99, 215, 255)
 hsv_min = (60, 107, 30)
 hsv_max = (99, 255, 255)
-area_max_pct = 0.1400 # 0.05
-area_min_pct = 0.0015 # 0.005
-angle_max = 65
-aspect_min = 1 # 0.17
-aspect_max = 7 # 3.05
-min_fill_pct = 13 # 10
+area_max_pct = 0.1400
+area_min_pct = 0.0015
+angle_max = 60
+aspect_min = 1
+aspect_max = 7
+min_fill_pct = 13
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
 xdiff_min = 1.3
 xdiff_max = 2.5
 ydiff_max = 1.5 # Based on a multiple of the *width*
+debug_images = {}
 
 colors = {
     'red': (0, 0, 255),
@@ -45,7 +46,9 @@ colors = {
 # runPipeline() is called every frame by Limelight's backend
 def runPipeline(image, llrobot):
     global counter
-    
+    global debug_images
+    debug_images = {}
+
     # Get image size
     img_height = image.shape[0]
     img_width = image.shape[1]
@@ -55,21 +58,19 @@ def runPipeline(image, llrobot):
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     img_threshold = cv2.inRange(img_hsv, hsv_min, hsv_max)
     if interactive:
-        thresh_big = cv2.resize(img_threshold, None, fx = 2, fy = 2)
-        #cv2.imshow("threshold", thresh_big)
+        debug_images['threshold'] = img_threshold
     
     # Dilate and erode to smooth out image
     kernel = np.ones((morph_kernel_size, morph_kernel_size), np.uint8)
     img_morph = cv2.morphologyEx(img_threshold, morph_op, kernel)
     if interactive:
-        morph_big = cv2.resize(img_morph, None, fx = 2, fy = 2)
-        cv2.imshow("morph", morph_big)
-   
+        debug_images['morph'] = img_morph
+
     # Find contours (groups of pixels)
     contours, _ = cv2.findContours(img_morph, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
   
     finalContour = np.array([[]])
-    llpython = [0,0,0,0,0,0,0,0]
+    llpython = [0,0,0,0,0,0,0,0,0]
     best = None
     if len(contours) > 0:
         cv2.drawContours(image, contours, -1, colors['magenta'], 1)
@@ -107,7 +108,8 @@ def runPipeline(image, llrobot):
             if h > w:
                 angle = angle + 90
                 w, h = h, w
-                print("Rotating from angle {:.1f} and {} x {}".format(angle, w, h))
+                if counter == 0:
+                    print("Rotating from angle {:.1f} and {} x {}".format(angle, w, h))
                 box = np.array([box[1], box[2], box[3], box[0]])
 
             # Filter by angle
@@ -137,13 +139,6 @@ def runPipeline(image, llrobot):
             
             if counter == 0:
                 print("Filled at ({}, {}): {:2f}".format(cx, cy, filled_pct))
-
-            #cv2.imshow("box mask", box_mask)
-            #cv2.imshow("masked_box", masked_box)
-            #cv2.imshow("threshold", img_threshold)
-            #sys.stdout.flush()
-            #cv2.waitKey(0)
-            #cv2.destroyAllWindows()
             
             if filled_pct < min_fill_pct:
                 cv2.drawContours(image, [box], 0, colors['gray'], 1)
@@ -225,8 +220,8 @@ def runPipeline(image, llrobot):
                         break
                         
                     # Not better, but save it, because maybe it will be
+                    saved_list.append([other, cnt_info])
                     if counter == 0:
-                        saved_list.append([other, cnt_info])
                         print("Saved for later consideration (total {})".format(len(saved_list)))
                 
             # Add counter to list of those processed and on the left
@@ -243,14 +238,18 @@ def runPipeline(image, llrobot):
         ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
         hull = cv2.convexHull(ctr)
         cv2.drawContours(image, [hull], -1, colors['yellow'], 1)
-        
+
+        # Set the target to be in the middle, at the highest point of all targets
         xavg = int(sum(map(operator.itemgetter(2), best)) / len(best))
         ytop = min(map(operator.itemgetter(3), best))
-        if interactive:
-            cv2.circle(image, (xavg, ytop), 3, colors['green'], -1)
-        
-        #finalContour = hull
+
+        # Return a contour surrounding the target point
         finalContour = np.array([[xavg+1,ytop+1],[xavg+1,ytop-1],[xavg-1,ytop-1],[xavg,ytop+1]]).reshape((-1,1,2)).astype(np.int32)
+
+        # Return target information via network tables (but also useful locally)
+        llpython[0] = 1
+        llpython[1] = xavg
+        llpython[2] = ytop
     else:
         cv2.putText(image, 'No Target!', (0, 230), cv2.FONT_HERSHEY_SIMPLEX, .5, colors['red'], 1, cv2.LINE_AA)
 
@@ -264,20 +263,101 @@ def runPipeline(image, llrobot):
 
 # ^^^ CUT HERE FOR LIMELIGHT ^^^ ###
 
+def draw_crosshair(img, x, y, color):
+    size = 3
+    thickness = 2
+    cv2.line(img, (x+thickness, y), (x+thickness+size, y), color, thickness)
+    cv2.line(img, (x-thickness, y), (x-thickness-size, y), color, thickness)
+    cv2.line(img, (x, y+thickness), (x, y+thickness+size), color, thickness)
+    cv2.line(img, (x, y-thickness), (x, y-thickness-size), color, thickness)
+
 # MAIN
 if __name__=="__main__":
-    interactive = 1
-    first = True
-    for fn in sys.argv:
-        if first:
-            first = False
-            continue
+    # Process arguments
+    parser = argparse.ArgumentParser(description='Perform vision analysis on supplied input')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--update', action="store_true", help="update the saved values")
+    group.add_argument('--diff', action="store_true", help="only highlight the changes compared to saved values")
+    parser.add_argument('--batch', action="store_true", help="disable interactive processing")
+    parser.add_argument('file', nargs="+")
+    args = parser.parse_args()
+
+    # Batch option disables interaction with the results
+    interactive = not args.batch
+
+    # Initialize counters
+    totalDiff = 0
+    totalSame = 0
+
+    # Process all images sequentially
+    for fn in args.file:
+        # Read in the image
         img = cv2.imread(fn)
+        showImage = interactive
+        llvfn = fn + ".llv"
+
+        # The Limelight is inverted, so rotate the image
         img = cv2.rotate(img, cv2.ROTATE_180)
+
+        # Execute the pipeline on the image
         print("\n=== Running pipeline on {}".format(fn))
         (primary, img_out, llp) = runPipeline(img, [])
+        if llp[0] > 0:
+            print("Target @ {}".format(llp[1:3]))
+        else:
+            print("No target!")
+
+        # In diff mode, compare target information to that previously recorded
+        if args.diff:
+            same = False
+
+            # Read in previous target information
+            llvp = pathlib.Path(llvfn)
+            if llvp.is_file():
+                with open(llvfn) as llvf:
+                    known = [int(x) for x in next(llvf).split()]
+
+                # Compare target information
+                print("Known target info: {}".format(known))
+                if set(known) == set(llp[:3]):
+                    same = True
+
+            if same:
+                totalSame = totalSame + 1
+                print("No change to target information")
+                showImage = False
+            else:
+                totalDiff = totalDiff + 1
+                if (llp[0] == 0) != (known[0] == 0):
+                    if llp[0] == 0:
+                        print("Lost target!")
+                    else:
+                        print("Found target!")
+                else:
+                    print("Target location change from {} to {}".format(known[1:3], llp[1:3]))
+
+                if known[0]:
+                    draw_crosshair(img_out, known[1], known[2], colors['red'])
+
+        # If updating, save this target information as the new baseline
+        if args.update:
+            with open(llvfn, 'w') as llvf:
+                llvf.write("{} {} {}".format(llp[0], llp[1], llp[2]))
+
+        # Ensure debugging output is flushed to the console
         sys.stdout.flush()
-        resized = cv2.resize(img_out, None, fx = 2, fy = 2)
-        cv2.imshow(fn, resized)
-        cv2.waitKey(0)
+
+        # Display final image and any debug aids
+        if showImage:
+            if llp[0]:
+                draw_crosshair(img_out, llp[1], llp[2], colors['green'])
+            debug_images[fn] = img_out
+            for name in debug_images.keys():
+                resized = cv2.resize(debug_images[name], None, fx = 2, fy = 2)
+                cv2.imshow(name, resized)
+            cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+    # In diff mode, summarize results
+    if args.diff:
+        print("\nSUMMARY: {} identical targets, {} changed targets".format(totalSame, totalDiff))
