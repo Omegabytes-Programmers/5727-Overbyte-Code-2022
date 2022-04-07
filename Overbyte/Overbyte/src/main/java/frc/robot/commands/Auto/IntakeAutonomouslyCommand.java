@@ -39,7 +39,7 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+    if (!((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getBeamBreakSensor()))){
       if (!intake.isExtended()){
         intake.extend();
         
@@ -83,7 +83,7 @@ public class IntakeAutonomouslyCommand extends CommandBase {
   @Override
   public boolean isFinished(){
 
-    if(((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+    if(((storage.getTopProxSensor() || stopAtOne) && (storage.getBottomProxSensor() || intake.getBeamBreakSensor()))){
       timeoutThreshold = -0.1;
     }
 

@@ -19,8 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private boolean intaking = false;
   private TalonFX intakeMotor;
   private DoubleSolenoid intakeSolenoids;
-  private DigitalInput rightProxSensor;
-  private DigitalInput leftProxSensor;
+  private DigitalInput beamBreakSensor;
 
   // These values are to counter the intake sensors picking each other up
   
@@ -29,16 +28,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem(DoubleSolenoid intakeSolenoids) {
     intakeMotor = new TalonFX(Constants.intakeMotorPort);
     this.intakeSolenoids = intakeSolenoids;
-    rightProxSensor = new DigitalInput(Constants.intakeRightProxSensorPort);
-    leftProxSensor = new DigitalInput(Constants.intakeLeftProxSensorPort);
+    
+    beamBreakSensor = new DigitalInput(Constants.intakeBeamBreakSensorPort);
 
     retract();
     stopIntake();
   }
 
-  public boolean getProxSensor(){
+  public boolean getBeamBreakSensor(){
 
-    return !leftProxSensor.get() || !rightProxSensor.get(); // Inverting the value as the sensor returns true when no ball is in the way 
+    return !beamBreakSensor.get();// Inverting the value as the sensor returns true when no ball is in the way 
   }
 
   public boolean isExtended(){
@@ -83,6 +82,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    ////System.out.println("Intake: " + (getProxSensor() ? "Has " : "No ") + "Ball");
+    ////System.out.println("Intake: " + (getbeamBreakSensor() ? "Has " : "No ") + "Ball");
   }
 }

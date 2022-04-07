@@ -39,7 +39,7 @@ public class ReverseIntakeCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean inAuto = RobotState.isAutonomous() && !intake.getProxSensor();
+    boolean inAuto = RobotState.isAutonomous() && !intake.getBeamBreakSensor();
     boolean inTele = RobotState.isTeleop() && !Constants.manipController.getRawButton(Constants.expelBallButton);
 
     return inAuto || inTele;

@@ -101,7 +101,7 @@ public class DriveManuallyCommand extends CommandBase {
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 translationXPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0), 
                 translationYPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
-                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
+                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? Constants.driveController.getRawButton(Constants.readyToShootButton) ? 1.0 : 0.5 : 1.0),
                 (drive.isRobotOriented() ? Rotation2d.fromDegrees(0.0) : drive.getGyroscopeRotation())
             )
         );
