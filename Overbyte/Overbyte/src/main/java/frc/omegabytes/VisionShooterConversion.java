@@ -8,12 +8,21 @@ package frc.omegabytes;
 public class VisionShooterConversion {
     private VisionConfiguration[] visionTable;
     private ShooterConfiguration[] shooterTable;
-    private int hoodChangePosition;
+    private int hoodChangePosition = -1;
 
     public VisionShooterConversion(VisionConfiguration[] visionTable, ShooterConfiguration[] shooterTable, int hoodChangePosition) {
         this.visionTable = visionTable;
         this.shooterTable = shooterTable;
+
+        // TODO Test this code to automatically determine the value of hoodChangePosition
+//        for (int i = 1; i < shooterTable.length; i++) {
+//            if (shooterTable[i].isHoodUp() != shooterTable[0].isHoodUp()) {
+//                this.hoodChangePosition = i - 1;
+//            }
+//        }
         this.hoodChangePosition = hoodChangePosition - 1;
+//        System.out.println("Hood change position is " + this.hoodChangePosition);
+        assert(this.hoodChangePosition >= 0);
     }
     
     public ShooterConfiguration getValuesFromAngle(double angle, boolean isHoodUp){
