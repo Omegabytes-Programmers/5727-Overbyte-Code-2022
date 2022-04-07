@@ -81,15 +81,22 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean shoot(ShooterConfiguration shooterConfig){
 
     if (shooterConfig.getDistance() != 0.0){
-      topShooterMotor.set(TalonFXControlMode.Velocity, topValue * 2048.0 / 600.0);
-      bottomShooterMotor.set(TalonFXControlMode.Velocity, bottomValue * 2048.0 / 600.0);  
-      
-      
-      //topShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getTopMotorSpeed());
-      //bottomShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getBottomMotorSpeed());
+      if (!Constants.useCalibrateController) {
+        topValue =  shooterConfig.getTopMotorSpeed();
+        bottomValue = shooterConfig.getBottomMotorSpeed();
+      }
+
+      double topMotorSpeed = topValue * 2048.0 / 600.0;
+      double bottomMotorSpeed = bottomValue * 2048.0 / 600.0;
+
+      topShooterMotor.set(TalonFXControlMode.Velocity, topMotorSpeed);
+      bottomShooterMotor.set(TalonFXControlMode.Velocity, bottomMotorSpeed);
 
       shooterSolenoids.set(shooterConfig.isHoodUp() ? Value.kForward : Value.kReverse); //
+      //System.out.printf("DEBUG: Shooter spinning at %.1f and %.1f (%s)%n", topMotorSpeed, bottomMotorSpeed, (shooterConfig.isHoodUp() ? "up" : "down"));
     }else{
+      //System.out.println("DEBUG: Nothing to shoot at!");
+      // TODO Should we really stop, or run the motors at some idle speed, so that they will be ready more quickly when a target is found?
       stop();
     }
 
@@ -99,6 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   public void stop(){
+    //System.out.println("DEBUG: Stopping shooting");
     topShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     bottomShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0); 
   }
