@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.omegabytes.ShooterConfiguration;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PneumaticsSubsystem;
@@ -77,13 +78,16 @@ public class ShootCommand extends CommandBase {
 
     if (!RobotState.isTest()){
       double x = vision.getPosition();
+      ShooterConfiguration config;
 
       boolean hasTarget;
       if (distance == 0.0){
-        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp()));
+        config = Constants.vsConversion.getValuesFromAngle(vision.getAngle(), shooter.isHoodUp());
       }else{
-        hasTarget = shooter.shoot(Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp()));
+        config = Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp());
       }
+
+      hasTarget = shooter.shoot(config);
 
       if (Math.abs(x) >= 3.0 && !linedUp){
         storageTimer.reset();
@@ -106,7 +110,7 @@ public class ShootCommand extends CommandBase {
             storageTimer.reset();
             timeoutTimer.reset();
           }else{
-            if (storage.getBottomProxSensor() || intake.getProxSensor()){
+            if (storage.getBottomProxSensor() || intake.getBeamBreakSensor()){
               timeoutTimer.reset();
             }
           }
@@ -123,7 +127,6 @@ public class ShootCommand extends CommandBase {
             }
           }else{
             storage.wheelStop();
-            storage.beltStop();
           }
 
 

@@ -11,7 +11,7 @@ public class VisionWeightedAverage {
     private double[] yValues;
     private double[] weights;
 
-
+    
     private double xOut;
     private double yOut;
     

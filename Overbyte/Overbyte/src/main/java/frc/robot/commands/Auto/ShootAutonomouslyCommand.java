@@ -92,7 +92,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
           storageTimer.reset();
           timeoutTimer.reset();
         }else{
-          if (storage.getBottomProxSensor() || intake.getProxSensor()){
+          if (storage.getBottomProxSensor() || intake.getBeamBreakSensor()){
             timeoutTimer.reset();
           }
         }

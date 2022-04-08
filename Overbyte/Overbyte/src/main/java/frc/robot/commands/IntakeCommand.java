@@ -40,7 +40,7 @@ public class IntakeCommand extends CommandBase {
   public void execute() {
     if (!RobotState.isTest() && Constants.driveController.getRawButton(Constants.intakeButton)){
       intake.runIntake();
-      if (!(storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))){
+      if (!(storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getBeamBreakSensor()))){
         //System.out.println("Intaking");
         if (!intake.isExtended()){
           intake.extend();
@@ -105,7 +105,7 @@ public class IntakeCommand extends CommandBase {
       timeoutTimer.reset();
     }
 
-    if(((storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getProxSensor()))) || RobotState.isTest()){
+    if(((storage.getTopProxSensor() && (storage.getBottomProxSensor() || intake.getBeamBreakSensor()))) || RobotState.isTest()){
       timeoutThreshold = -0.1;
     }
 

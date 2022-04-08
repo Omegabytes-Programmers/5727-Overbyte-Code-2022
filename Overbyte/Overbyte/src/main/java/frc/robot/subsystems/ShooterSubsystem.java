@@ -81,16 +81,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean shoot(ShooterConfiguration shooterConfig){
 
     if (shooterConfig.getDistance() != 0.0){
-      if (!Constants.useCalibrateController) {
-        topValue =  shooterConfig.getTopMotorSpeed();
+      /*if (!Constants.useCalibrateController) {
+        topValue = shooterConfig.getTopMotorSpeed();
         bottomValue = shooterConfig.getBottomMotorSpeed();
       }
 
-      double topMotorSpeed = topValue * 2048.0 / 600.0;
-      double bottomMotorSpeed = bottomValue * 2048.0 / 600.0;
+      double topMotorSpeed = topValue;// * Constants.falconRPMToUPS;
+      double bottomMotorSpeed = bottomValue;// * Constants.falconRPMToUPS;*/
 
-      topShooterMotor.set(TalonFXControlMode.Velocity, topMotorSpeed);
-      bottomShooterMotor.set(TalonFXControlMode.Velocity, bottomMotorSpeed);
+      topShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getTopMotorSpeed());
+      bottomShooterMotor.set(TalonFXControlMode.PercentOutput, shooterConfig.getBottomMotorSpeed());
 
       shooterSolenoids.set(shooterConfig.isHoodUp() ? Value.kForward : Value.kReverse); //
       //System.out.printf("DEBUG: Shooter spinning at %.1f and %.1f (%s)%n", topMotorSpeed, bottomMotorSpeed, (shooterConfig.isHoodUp() ? "up" : "down"));
@@ -103,6 +103,20 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterConfig.getDistance() != 0.0;
   }
 
+  public void idle(){
+    double topMotorSpeed = 2731.74 * Constants.falconRPMToUPS;
+    double bottomMotorSpeed = -3715.11 * Constants.falconRPMToUPS;
+
+    topShooterMotor.set(TalonFXControlMode.Velocity, topMotorSpeed);
+    bottomShooterMotor.set(TalonFXControlMode.Velocity, bottomMotorSpeed);
+  }
+
+  public boolean upToSpeed(ShooterConfiguration shooterConfig){
+    double topError = shooterConfig.getTopMotorSpeed() - (topShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS));
+    double bottomError = shooterConfig.getBottomMotorSpeed() - (bottomShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS));
+  
+    return Math.abs(topError) <= Constants.shooterErrorMax && Math.abs(bottomError) <= Constants.shooterErrorMax;
+  }
 
 
   public void stop(){
@@ -123,8 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
     topValue += topTunerValue + (Constants.calibrateController.getRawAxis(Constants.topFineAxis) * topTunerRange);
     bottomValue += bottomTunerValue + (Constants.calibrateController.getRawAxis(Constants.bottomFineAxis) * bottomTunerRange);
 
-    SmartDashboard.putNumber("Top Shooter", topValue);
-    SmartDashboard.putNumber("Bottom Shooter", bottomValue);
+
   }
 
   public void setTopTunerRange(double value){
@@ -167,6 +180,9 @@ public class ShooterSubsystem extends SubsystemBase {
       if (Constants.calibrateController.getRawButton(Constants.runShooterButton)){
         getShooterValuesFromSticks();
       }
-    }   
+    }  
+    
+    SmartDashboard.putNumber("Top Shooter", (topShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS)));
+    SmartDashboard.putNumber("Bottom Shooter", (bottomShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS)));
   }
 }
