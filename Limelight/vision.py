@@ -17,8 +17,10 @@ counter = 0
 #hsv_max = (92, 215, 255) #ncgui-0
 #hsv_min = (69, 107, 15) #llp tuning
 #hsv_max = (99, 255, 255) #llp tuning
-hsv_min = (60, 107, 30)
-hsv_max = (99, 255, 255)
+#hsv_min = (60, 107, 30)  # pre-cmp
+#hsv_max = (99, 255, 255) # pre-cmp
+hsv_min = (60, 107, 50)
+hsv_max = (95, 255, 255)
 area_max_pct = 0.1400
 area_min_pct = 0.0015
 angle_max = 60
@@ -59,6 +61,10 @@ def runPipeline(image, llrobot):
     img_threshold = cv2.inRange(img_hsv, hsv_min, hsv_max)
     if interactive:
         debug_images['threshold'] = img_threshold
+    
+    # For debug, show masked colors
+    if interactive:
+        debug_images['masked'] = cv2.bitwise_and(image, image, mask = img_threshold)
     
     # Dilate and erode to smooth out image
     kernel = np.ones((morph_kernel_size, morph_kernel_size), np.uint8)
