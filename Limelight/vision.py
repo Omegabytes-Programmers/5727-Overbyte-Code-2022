@@ -27,9 +27,9 @@ aspect_max = 7
 min_fill_pct = 15
 morph_op = cv2.MORPH_CLOSE
 morph_kernel_size = 4
-xdiff_min = 1.3
-xdiff_max = 2.5
-ydiff_max = 1.5 # Based on a multiple of the *width*
+xdiff_min = 1.5
+xdiff_max = 3.0
+ydiff_max = 1.6 # Based on a multiple of the *width*
 debug_images = {}
 
 colors = {
