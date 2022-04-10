@@ -5,11 +5,7 @@
 package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-//import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +25,7 @@ public class Robot extends TimedRobot {
   private CANCoder fre = new CANCoder(Constants.frePort);
   private CANCoder rre = new CANCoder(Constants.rrePort);
   private CANCoder rle = new CANCoder(Constants.rlePort);
-  private int motorNumber = 0;
+  private int motorNumber = 8;
 
   private RobotContainer m_robotContainer;
 
@@ -134,8 +130,6 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-
-
 
   }
 
