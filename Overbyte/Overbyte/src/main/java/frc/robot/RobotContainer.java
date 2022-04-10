@@ -127,4 +127,8 @@ public class RobotContainer {
   public DriveSubsystem getDriveTrain(){
     return driveSubsystem;
   }
+
+  public void updateAngle() {
+    driveSubsystem.updateAngle();
+  }
 }

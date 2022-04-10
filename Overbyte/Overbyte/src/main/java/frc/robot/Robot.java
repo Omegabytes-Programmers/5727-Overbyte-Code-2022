@@ -33,6 +33,15 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private int tick = 0;
+  private int tickMax = 50 / 2;
+  private void checkSwerveMotors() {
+    if (tick == 0) {
+      m_robotContainer.updateAngle();
+    }
+    tick = (tick + 1) % tickMax;
+  }
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -84,18 +93,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-
-
     if (Constants.driveController.getAButton()){
-
-
-
       SmartDashboard.putNumber("Front Left Encoder", fle.getAbsolutePosition());
       SmartDashboard.putNumber("Front Right Encoder", fre.getAbsolutePosition());
       SmartDashboard.putNumber("Rear Right Encoder", rre.getAbsolutePosition());
       SmartDashboard.putNumber("Rear Left Encoder", rle.getAbsolutePosition());
     }
-
+    checkSwerveMotors();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
