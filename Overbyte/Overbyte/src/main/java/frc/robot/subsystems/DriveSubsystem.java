@@ -86,6 +86,15 @@ public class DriveSubsystem extends SubsystemBase {
             Constants.rrePort,
             Constants.rreo
     );
+
+    updateAngle();
+  }
+
+  public void updateAngle() {
+    SmartDashboard.putBoolean("FLM Angle OK", flm.checkAngle());
+    SmartDashboard.putBoolean("FRM Angle OK", frm.checkAngle());
+    SmartDashboard.putBoolean("RLM Angle OK", rlm.checkAngle());
+    SmartDashboard.putBoolean("RRM Angle OK", rrm.checkAngle());
   }
 
   /**
