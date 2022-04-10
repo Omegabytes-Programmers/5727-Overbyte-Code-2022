@@ -53,10 +53,10 @@ public final class Constants {
     public static int rrePort = 2;
     public static int rlePort = 3;
 
-    public static double fleo = Math.toRadians(-42.5390625);
-    public static double freo = Math.toRadians(-38.232421875);
-    public static double rreo = Math.toRadians(-251.71875);
-    public static double rleo = Math.toRadians(-197.666015625);
+    public static double fleo = Math.toRadians(-39.814453);
+    public static double freo = Math.toRadians(-249.697266);
+    public static double rreo = Math.toRadians(-154.072266);
+    public static double rleo = Math.toRadians(-198.457031);
 
     public static int talonCount = 14;
 

@@ -19,9 +19,6 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU.CalibrationTime;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -38,6 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(0.0)); 
   private Pose2d robotPose = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
   private Translation2d offsetPose = new Translation2d(0.0, 0.0);
+
   
   // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
   // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
@@ -57,12 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
   private boolean robotOriented = false;
 
   public DriveSubsystem() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
     flm = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-              .withSize(2, 4)
-              .withPosition(0, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Constants.fldmPort,
             Constants.flsmPort,
@@ -71,9 +64,6 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     frm = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-              .withSize(2, 4)
-              .withPosition(2, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Constants.frdmPort,
             Constants.frsmPort,
@@ -82,9 +72,6 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     rlm = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-              .withSize(2, 4)
-              .withPosition(4, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Constants.rldmPort,
             Constants.rlsmPort,
@@ -93,9 +80,6 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     rrm = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-              .withSize(2, 4)
-              .withPosition(6, 0),
             Mk4SwerveModuleHelper.GearRatio.L2,
             Constants.rrdmPort,
             Constants.rrsmPort,
@@ -169,10 +153,10 @@ public class DriveSubsystem extends SubsystemBase {
     odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
     robotPose = odometry.getPoseMeters();
 
-    flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
-    frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
-    rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
-    rrm.set(-states[3].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[3].angle.getRadians());
+    flm.set(0.0, Math.toRadians(0.0));
+    frm.set(0.0, Math.toRadians(0.0));
+    rlm.set(0.0, Math.toRadians(0.0));
+    rrm.set(0.0, Math.toRadians(0.0));
   }
 
   public void setModuleStates(SwerveModuleState[] states) {
@@ -194,11 +178,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     if (!RobotState.isAutonomous()){
       SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
 
       odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
+
       
       robotPose = odometry.getPoseMeters();
 

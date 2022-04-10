@@ -27,6 +27,7 @@ public class ShootCommand extends CommandBase {
   private Timer timeoutTimer;
   private Double timeoutThreshold;
   private boolean linedUp;
+  private boolean takeSnapshot;
 
   /** Creates a new ShootCommand. */
   public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake){
@@ -47,6 +48,7 @@ public class ShootCommand extends CommandBase {
     timeoutTimer = new Timer();
     timeoutThreshold = 1.0;
     linedUp = false;
+    takeSnapshot = false;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vision);
@@ -68,6 +70,7 @@ public class ShootCommand extends CommandBase {
 
     timeoutThreshold = 1.0;
     linedUp = false;
+    takeSnapshot = false;
 
     vision.takeSnapshot();
   }
@@ -101,7 +104,11 @@ public class ShootCommand extends CommandBase {
         
       }else{
 
+        if (!linedUp){
+          vision.resetSnapshot();
+        }
         linedUp = true;
+
         
         if (hasTarget){
           pneumatics.stop();
@@ -110,6 +117,10 @@ public class ShootCommand extends CommandBase {
             storageTimer.reset();
             timeoutTimer.reset();
           }else{
+            if (!takeSnapshot){
+              vision.resetSnapshot();
+              takeSnapshot = !takeSnapshot;
+            }
             if (storage.getBottomProxSensor() || intake.getBeamBreakSensor()){
               timeoutTimer.reset();
             }
@@ -117,7 +128,7 @@ public class ShootCommand extends CommandBase {
 
           intake.runIntake();
 
-          if (shootTimer.get() >= 0.5){ // TODO Tune -- was 0.25 -- or specifically wait for velocity to be in range, perhaps using getSelectedSensorVelocity?
+          if (shootTimer.get() >= 0.75){ // TODO Tune -- was 0.25 -- or specifically wait for velocity to be in range, perhaps using getSelectedSensorVelocity?
             storage.wheelFeed();
             
             if (storageTimer.get() > 0.1){

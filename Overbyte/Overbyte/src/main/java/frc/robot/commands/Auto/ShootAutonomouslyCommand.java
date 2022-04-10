@@ -100,7 +100,7 @@ public class ShootAutonomouslyCommand extends CommandBase {
 
 
 
-        if (shootTimer.get() >= 0.25){
+        if (shootTimer.get() >= 0.75){
           storage.wheelFeed();
           intake.runIntake();
 

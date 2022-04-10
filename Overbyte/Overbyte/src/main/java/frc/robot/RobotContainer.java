@@ -18,6 +18,7 @@ import frc.robot.commands.DriveManuallyCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ReverseIntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.Auto.Auto1BallAlt;
 import frc.robot.commands.Auto.Auto2BallAlt;
 import frc.robot.commands.Auto.Auto2BallShoot;
 import frc.robot.commands.Auto.Auto3Ball;
@@ -52,6 +53,8 @@ public class RobotContainer {
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final DriveManuallyCommand driveManuallyCommand = new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem);
   private final ClimberMoveCommand climberMoveCommand = new ClimberMoveCommand(climberSubsystem);
+  
+  private final Auto1BallAlt auto1BallCommand = new Auto1BallAlt(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto2BallShoot auto2BallCommand = new Auto2BallShoot(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto2BallAlt auto2BallAlt = new Auto2BallAlt(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
@@ -73,6 +76,7 @@ public class RobotContainer {
     chooser.addOption("2 Ball", auto2BallCommand);
 
     chooser.addOption("2 Ball Alt", auto2BallAlt);
+    chooser.addOption("1 Ball Alt", auto1BallCommand);
 
     SmartDashboard.putData(chooser);
   }

@@ -5,9 +5,14 @@
 package frc.robot;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 //import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -19,6 +24,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+
+  private CANCoder fle = new CANCoder(Constants.flePort);
+  private CANCoder fre = new CANCoder(Constants.frePort);
+  private CANCoder rre = new CANCoder(Constants.rrePort);
+  private CANCoder rle = new CANCoder(Constants.rlePort);
+  private int motorNumber = 0;
 
   private RobotContainer m_robotContainer;
 
@@ -32,16 +43,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     Constants.rotationController.enableContinuousInput(-Math.PI, Math.PI);
-    for (int i = 0; i < Constants.talonCount; i++){
-      TalonFX motor = new TalonFX(i);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255);
-    }
+
   }
 
   /**
@@ -58,6 +60,19 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    if (motorNumber < Constants.talonCount){
+      TalonFX motor = new TalonFX(motorNumber);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 100, 10);
+      motorNumber++;
+    }
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -71,17 +86,14 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
 
 
-    if (Constants.driveController.getAButtonReleased()){
-      //CANCoder fle = new CANCoder(Constants.flePort);
-      //CANCoder fre = new CANCoder(Constants.frePort);
-      //CANCoder rre = new CANCoder(Constants.rrePort);
-      //CANCoder rle = new CANCoder(Constants.rlePort);
+    if (Constants.driveController.getAButton()){
 
-      //System.out.println("FL: " + fle.getAbsolutePosition());
-      //System.out.println("FR: " + fre.getAbsolutePosition());
-      //System.out.println("RR: " + rre.getAbsolutePosition());
-      //System.out.println("RL: " + rle.getAbsolutePosition());
 
+
+      SmartDashboard.putNumber("Front Left Encoder", fle.getAbsolutePosition());
+      SmartDashboard.putNumber("Front Right Encoder", fre.getAbsolutePosition());
+      SmartDashboard.putNumber("Rear Right Encoder", rre.getAbsolutePosition());
+      SmartDashboard.putNumber("Rear Left Encoder", rle.getAbsolutePosition());
     }
 
   }
