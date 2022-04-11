@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -31,7 +32,8 @@ public class Auto2Ball extends SequentialCommandGroup {
     PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall2", 8.0, 3.0);
 
     addCommands(
-      new InstantCommand(() -> driveSubsystem.stop()),
+      new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
+      new WaitCommand(1.0),
       new InstantCommand(() -> driveSubsystem.resetPose(-7.65, -1.88)),
       new ParallelCommandGroup(
         new SequentialCommandGroup(

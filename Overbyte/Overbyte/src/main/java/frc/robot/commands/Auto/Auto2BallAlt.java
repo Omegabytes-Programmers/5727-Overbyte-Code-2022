@@ -36,6 +36,8 @@ public class Auto2BallAlt extends SequentialCommandGroup {
     PathPlannerTrajectory movementPathExpell = PathPlanner.loadPath("moveToExpellPoint", 8.0, 5.0);
 
     addCommands(
+      new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
+      new WaitCommand(1.0),
       new InstantCommand(() -> driveSubsystem.resetPose(-6.74, -5.53)),
       new PPSwerveControllerCommand(
         movementPathBall2,
