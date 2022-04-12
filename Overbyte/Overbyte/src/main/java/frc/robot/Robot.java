@@ -59,13 +59,13 @@ public class Robot extends TimedRobot {
 
     if (motorNumber < Constants.talonCount){
       TalonFX motor = new TalonFX(motorNumber);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 100, 10);
-      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 100, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255, 10);
+      motor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255, 10);
       motorNumber++;
     }
     

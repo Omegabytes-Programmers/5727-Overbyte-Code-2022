@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SwerveModule;
+import frc.omegabytes.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
+
+  private int moduleErrorFix = 0;
 
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
           new Translation2d(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0),
@@ -55,37 +57,10 @@ public class DriveSubsystem extends SubsystemBase {
   private boolean robotOriented = false;
 
   public DriveSubsystem() {
-    flm = Mk4SwerveModuleHelper.createFalcon500(
-            Mk4SwerveModuleHelper.GearRatio.L2,
-            Constants.fldmPort,
-            Constants.flsmPort,
-            Constants.flePort,
-            Constants.fleo
-    );
-
-    frm = Mk4SwerveModuleHelper.createFalcon500(
-            Mk4SwerveModuleHelper.GearRatio.L2,
-            Constants.frdmPort,
-            Constants.frsmPort,
-            Constants.frePort,
-            Constants.freo
-    );
-
-    rlm = Mk4SwerveModuleHelper.createFalcon500(
-            Mk4SwerveModuleHelper.GearRatio.L2,
-            Constants.rldmPort,
-            Constants.rlsmPort,
-            Constants.rlePort,
-            Constants.rleo
-    );
-
-    rrm = Mk4SwerveModuleHelper.createFalcon500(
-            Mk4SwerveModuleHelper.GearRatio.L2,
-            Constants.rrdmPort,
-            Constants.rrsmPort,
-            Constants.rrePort,
-            Constants.rreo
-    );
+    flm = new SwerveModule(Constants.fldmPort, Constants.flsmPort, Constants.flePort, Constants.fleo);
+    frm = new SwerveModule(Constants.frdmPort, Constants.frsmPort, Constants.frePort, Constants.freo);
+    rlm = new SwerveModule(Constants.rldmPort, Constants.rlsmPort, Constants.rlePort, Constants.rleo);
+    rrm = new SwerveModule(Constants.rrdmPort, Constants.rrsmPort, Constants.rrePort, Constants.rreo);
   }
 
   /**
@@ -199,5 +174,27 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pose X", poseData.getTranslation().getX());
     SmartDashboard.putNumber("Pose Y", poseData.getTranslation().getY());
     SmartDashboard.putNumber("Pose Rotation", poseData.getRotation().getDegrees());
+
+    moduleErrorFix++;
+
+    switch (moduleErrorFix){
+      case 0:
+        flm.periodic();
+        break;
+
+      case 1:
+        flm.periodic();
+        break;
+
+      case 2:
+        flm.periodic();
+        break;
+
+      case 3:
+        flm.periodic();
+        moduleErrorFix = 0;
+        break;
+    }
+
   }
 }
