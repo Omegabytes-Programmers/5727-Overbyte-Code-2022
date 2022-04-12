@@ -54,7 +54,7 @@ public final class Constants {
     public static int rlePort = 3;
 
     public static double fleo = Math.toRadians(-39.814453);
-    public static double freo = Math.toRadians(-154.072266);
+    public static double freo = Math.toRadians(-239.589844);
     public static double rreo = Math.toRadians(-249.697266);
     public static double rleo = Math.toRadians(-198.457031);
 
