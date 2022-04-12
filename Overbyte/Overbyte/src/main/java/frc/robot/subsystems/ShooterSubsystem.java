@@ -184,5 +184,7 @@ public class ShooterSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("Top Shooter", (topShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS)));
     SmartDashboard.putNumber("Bottom Shooter", (bottomShooterMotor.getSelectedSensorVelocity() / (Constants.falconRPMToUPS)));
+
   }
+  
 }

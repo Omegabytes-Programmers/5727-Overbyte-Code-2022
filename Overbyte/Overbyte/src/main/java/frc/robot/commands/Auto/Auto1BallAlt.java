@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -32,7 +33,9 @@ public class Auto1BallAlt extends SequentialCommandGroup {
     PathPlannerTrajectory movementPathMove = PathPlanner.loadPath("moveToPointAlt", 8.0, 5.0);
 
     addCommands(
-      new InstantCommand(() -> driveSubsystem.resetPose(-6.74, -5.53)),
+      new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
+      new WaitCommand(1.0),
+      new InstantCommand(() -> driveSubsystem.resetPose(-6.05, -4.02)),
       new PPSwerveControllerCommand(
         movementPathShoot,
         driveSubsystem::getPose,

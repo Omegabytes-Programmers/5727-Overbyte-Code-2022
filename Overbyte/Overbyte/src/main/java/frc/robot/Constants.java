@@ -54,8 +54,8 @@ public final class Constants {
     public static int rlePort = 3;
 
     public static double fleo = Math.toRadians(-39.814453);
-    public static double freo = Math.toRadians(-249.697266);
-    public static double rreo = Math.toRadians(-154.072266);
+    public static double freo = Math.toRadians(-239.589844);
+    public static double rreo = Math.toRadians(-249.697266);
     public static double rleo = Math.toRadians(-198.457031);
 
     public static int talonCount = 14;
@@ -140,8 +140,8 @@ public final class Constants {
         new ShooterConfiguration(6.0, 1.0, -0.22, false),
         new ShooterConfiguration(7.0, 1.0, -0.27, false),
         new ShooterConfiguration(8.0, 1.0, -0.37, false),
-        new ShooterConfiguration(9.0, 1.0, -0.53, false),
-        new ShooterConfiguration(10.0, 1.0, -0.60, false),
+        new ShooterConfiguration(9.0, 1.0, -0.58, false),
+        new ShooterConfiguration(10.0, 1.0, -0.69, false),
         new ShooterConfiguration(8.0, 0.65, -0.65, true),
         new ShooterConfiguration(9.0, 0.65, -0.65, true),
         new ShooterConfiguration(10.0, 0.67, -0.67, true),

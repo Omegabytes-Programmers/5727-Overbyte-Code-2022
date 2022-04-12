@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.omegabytes.ShooterConfiguration;
 import frc.robot.Constants;
@@ -90,6 +91,7 @@ public class ShootCommand extends CommandBase {
         config = Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp());
       }
 
+      SmartDashboard.putNumber("Distannce", config.getDistance());
       hasTarget = shooter.shoot(config);
 
       if (Math.abs(x) >= 3.0 && !linedUp){
@@ -118,7 +120,7 @@ public class ShootCommand extends CommandBase {
             timeoutTimer.reset();
           }else{
             if (!takeSnapshot){
-              vision.resetSnapshot();
+              vision.takeSnapshot();
               takeSnapshot = !takeSnapshot;
             }
             if (storage.getBottomProxSensor() || intake.getBeamBreakSensor()){
