@@ -76,7 +76,7 @@ public class DriveManuallyCommand extends CommandBase {
         if ((Constants.driveController.getRawButton(Constants.readyToShootButton))) { // || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
             double x = vision.getPosition();
 
-            if (Math.abs(x) >= 3.0){
+            if (Math.abs(x) >= Constants.visionAnglePrecision) {
                 rotationPercent = .1 * -Math.signum(x);
             }
         }

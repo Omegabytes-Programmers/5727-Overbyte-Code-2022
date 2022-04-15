@@ -28,6 +28,9 @@ public class VisionSubsystem extends SubsystemBase {
   private double lastGoodPos = -1;
   private int lastPosAge = 0;
 
+  private int printTick = 0;
+  private int printTickMax = 0;
+
   private VisionWeightedAverage visionTarget;
 
   /** Creates a new VisionSubsystem. */
@@ -131,6 +134,16 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
     SmartDashboard.putNumber("LimelightTarget", valid);
+
+    if (printTickMax > 0) {
+      printTick = (printTick + 1) % printTickMax;
+      if (printTick == 0) {
+        if (valid != 0) {
+          System.out.println("Target at (" + x + ", " + y + ")");
+        } else {
+          System.out.println("No target");
+        }
+      }
+    }
   }
 }
-

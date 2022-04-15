@@ -116,8 +116,7 @@ public final class Constants {
 
     public static double deadzone = 0.1;
 
-    //#region UNCA configuration
-    public static VisionConfiguration[] visionTable = {
+    public static VisionConfiguration[] visionTable_NCCMP = {
         new VisionConfiguration(39.6, 6.0),
         new VisionConfiguration(33.41, 7.0),
         new VisionConfiguration(27.76, 8.0),
@@ -134,32 +133,50 @@ public final class Constants {
         new VisionConfiguration(1.07, 19.0),
         new VisionConfiguration(0.0, 20.0)
     };
+
+    // Measured with crosshair at -0.90
+    public static VisionConfiguration[] visionTable = {
+        new VisionConfiguration(40.09, 6.0),
+        new VisionConfiguration(33.66, 7.0),
+        new VisionConfiguration(29.34, 8.0),
+        new VisionConfiguration(25.83, 9.0),
+        new VisionConfiguration(22.30, 10.0),
+        new VisionConfiguration(19.20, 11.0),
+        new VisionConfiguration(16.45, 12.0),
+        new VisionConfiguration(14.18, 13.0),
+        new VisionConfiguration(12.24, 14.0),
+        new VisionConfiguration(10.11, 15.0),
+        new VisionConfiguration(8.44, 16.0),
+        new VisionConfiguration(7.20, 17.0),
+        new VisionConfiguration(5.57, 18.0),
+        new VisionConfiguration(4.17, 19.0),
+        new VisionConfiguration(0.0, 20.0) // No target
+    };
  
     // TODO Consider the value of two tables
     public static ShooterConfiguration[] shootingTable = {
         new ShooterConfiguration(6.0, 1.0, -0.22, false),
-        new ShooterConfiguration(7.0, 1.0, -0.27, false),
+        new ShooterConfiguration(7.0, 1.0, -0.25, false),
         new ShooterConfiguration(8.0, 1.0, -0.37, false),
-        new ShooterConfiguration(9.0, 1.0, -0.58, false),
-        new ShooterConfiguration(10.0, 1.0, -0.69, false),
-        new ShooterConfiguration(8.0, 0.65, -0.65, true),
-        new ShooterConfiguration(9.0, 0.65, -0.65, true),
-        new ShooterConfiguration(10.0, 0.67, -0.67, true),
-        new ShooterConfiguration(11.0, 0.68, -0.68, true),
+        new ShooterConfiguration(9.0, 1.0, -0.55, false),
+        new ShooterConfiguration(10.0, 1.0, -0.65, false),
+        new ShooterConfiguration(9.5, 0.63, -0.63, true),
+        new ShooterConfiguration(10.0, 0.65, -0.65, true),
+        new ShooterConfiguration(11.0, 0.67, -0.67, true),
         new ShooterConfiguration(12.0, 0.70, -0.70, true),
-        new ShooterConfiguration(13.0, 0.72, -0.72, true),
-        new ShooterConfiguration(14.0, 0.74, -0.74, true),
-        new ShooterConfiguration(15.0, 0.76, -0.76, true),
-        new ShooterConfiguration(16.0, 0.77, -0.77, true),
-        new ShooterConfiguration(17.0, 0.78, -0.78, true),
-        new ShooterConfiguration(18.0, 0.80, -0.80, true),
-        new ShooterConfiguration(19.0, 0.81, -0.81, true),
-        new ShooterConfiguration(20.0, 0.83, -0.83, true)
+        new ShooterConfiguration(13.0, 0.73, -0.73, true),
+        new ShooterConfiguration(14.0, 0.75, -0.75, true),
+        new ShooterConfiguration(15.0, 0.77, -0.77, true),
+        new ShooterConfiguration(16.0, 0.79, -0.79, true),
+        new ShooterConfiguration(17.0, 0.80 , -0.80, true),
+        new ShooterConfiguration(18.0, 0.82, -0.82, true),
+        new ShooterConfiguration(19.0, 0.84, -0.84, true),
+        new ShooterConfiguration(20.0, 0.87, -0.87, true)
     };
-    //#endregion
 
     public static VisionShooterConversion vsConversion = new VisionShooterConversion(visionTable, shootingTable, 5);
     
+    public static double visionAnglePrecision = 2.5;
     public static int visionPersistTicks = 100;
 
     public static VisionWeightedAverage visionTarget = new VisionWeightedAverage();
