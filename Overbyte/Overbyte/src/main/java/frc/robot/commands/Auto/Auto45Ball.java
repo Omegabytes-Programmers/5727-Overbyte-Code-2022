@@ -71,7 +71,7 @@ public class Auto45Ball extends SequentialCommandGroup {
         shooterSubsystem,
         storageSubsystem, 
         intakeSubsystem,
-        9.5,
+        10.7,
         false
       )
     );

@@ -31,8 +31,8 @@ public class ShootCommand extends CommandBase {
   private boolean takeSnapshot;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(VisionSubsystem vision, PneumaticsSubsystem pneumatics, ShooterSubsystem shooter, StorageSubsystem storage, IntakeSubsystem intake){
-    this(vision, pneumatics, shooter, storage, intake, 0.0);
+  public ShootCommand(VisionSubsystem visionSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, IntakeSubsystem intakeSubsystem){
+    this(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 0.0);
   }
 
 
@@ -172,7 +172,7 @@ public class ShootCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(!Constants.driveController.getRawButton(Constants.readyToShootButton)){
+    if(! Constants.driveController.getRawButton(Constants.readyToShootButton) && !Constants.manipController.getRawButton(Constants.overwriteShootCloseButton) && !Constants.manipController.getRawButton(Constants.overwriteShootFarButton)){
       timeoutThreshold = 0.25;
     }
 

@@ -162,6 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
     odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), states);
     robotPose = odometry.getPoseMeters();
 
+    System.out.println("Stopping swerve");
     flm.set(0.0, Math.toRadians(0.0));
     frm.set(0.0, Math.toRadians(0.0));
     rlm.set(0.0, Math.toRadians(0.0));
@@ -171,6 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] states) {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
 
+    System.out.println("Setting module states");
     flm.set(states[0].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[0].angle.getRadians());
     frm.set(-states[1].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[1].angle.getRadians());
     rlm.set(states[2].speedMetersPerSecond / Constants.maxVelocity * Constants.maxVoltage, states[2].angle.getRadians());
@@ -182,12 +184,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pose X", robotPose.getTranslation().getX());
     SmartDashboard.putNumber("Pose Y", robotPose.getTranslation().getY());
     SmartDashboard.putNumber("Pose Rotation", robotPose.getRotation().getDegrees());
-
 }
 
   @Override
   public void periodic() {
-
     if (!RobotState.isAutonomous()){
       SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);

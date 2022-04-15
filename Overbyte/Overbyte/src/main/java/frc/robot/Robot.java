@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
 
   private int tick = 0;
   private int tickMax = 50 / 2;
+  
   private void checkSwerveMotors() {
     if (tick == 0) {
       m_robotContainer.updateAngle();

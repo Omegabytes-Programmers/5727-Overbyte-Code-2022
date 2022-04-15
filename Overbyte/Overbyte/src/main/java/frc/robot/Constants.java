@@ -182,16 +182,14 @@ public final class Constants {
     
     public static double maxAngularVelocity = maxVelocity /
         Math.hypot(wheelBase / 2.0, wheelBase / 2.0);
-
-
     public static final TrapezoidProfile.Constraints rotationConstraints = new TrapezoidProfile.Constraints(maxAngularVelocity, maxAngularVelocity);
-
 
     public static double falconRPMToUPS = 2048.0 / 600.0;
 
-    public static PIDController translationXController = new PIDController(0.1, 0, 0); //10
-    public static PIDController translationYController = new PIDController(0.1, 0, 0);
-    public static ProfiledPIDController rotationController = new ProfiledPIDController(5.0, 0, 0, Constants.rotationConstraints); // 1.2
+    // Was 0.1, 0.1
+    public static PIDController translationXController = new PIDController(3.0, 0, 0); //10
+    public static PIDController translationYController = new PIDController(3.0, 0, 0);
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(4.0, 0, 0, Constants.rotationConstraints); // 1.2
     
     public static double shooterkF = 1023.0/20660.0;
     public static double shooterkP = 0.1;

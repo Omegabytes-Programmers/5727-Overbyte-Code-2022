@@ -9,7 +9,9 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -18,19 +20,20 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class Auto3Ball extends SequentialCommandGroup {
-  
-  PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall3", 8.0, 5.0);
+public class Auto1BallNew extends SequentialCommandGroup {
+  public Auto1BallNew(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
+    Constants.translationXController.reset();
+    Constants.translationYController.reset();
+    Constants.rotationController.reset(0.0);
 
-  public Auto3Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
+    PathPlannerTrajectory movementPathBall1 = PathPlanner.loadPath("oneBallNew", 3.0, 1.5);
+
     addCommands(
-      new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
-      new InstantCommand(() -> Constants.translationXController.reset()),
-      new InstantCommand(() -> Constants.translationYController.reset()),
-      new InstantCommand(() -> Constants.rotationController.reset(0.0)),
-
+      new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
+      new WaitCommand(1.0),
+      new InstantCommand(() -> driveSubsystem.resetPose(-6.07, -4.38)),
       new PPSwerveControllerCommand(
-        movementPath,
+        movementPathBall1,
         driveSubsystem::getPose,
         driveSubsystem.getKinematics(),
         Constants.translationYController,
@@ -40,16 +43,8 @@ public class Auto3Ball extends SequentialCommandGroup {
         driveSubsystem
       ),
       new InstantCommand(() -> driveSubsystem.stop()),
-
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem, 
-        intakeSubsystem,
-        9.5,
-        true
-      )
+      new WaitCommand(0.5),
+      new ShootAutonomouslyCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 11.4)
     );
   }
 }
