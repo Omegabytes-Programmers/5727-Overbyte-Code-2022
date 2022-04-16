@@ -20,6 +20,7 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.commands.ShootCommand;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -56,7 +57,7 @@ public class Auto2BallAlt extends SequentialCommandGroup {
         false,
         3.0
       ),
-      new ShootAutonomouslyCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 9.5),
+      new ShootCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 9.5),
       
       new InstantCommand(() -> Constants.translationXController.reset()),
       new InstantCommand(() -> Constants.translationYController.reset()),

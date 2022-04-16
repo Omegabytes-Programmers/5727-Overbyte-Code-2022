@@ -25,6 +25,8 @@ import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
 
+  private boolean autoDriveEnabled = false;
+
   private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
           new Translation2d(Constants.wheelBase / 2.0, Constants.wheelBase / 2.0),
           new Translation2d(Constants.wheelBase / 2.0, -Constants.wheelBase / 2.0),
@@ -150,6 +152,14 @@ public class DriveSubsystem extends SubsystemBase {
     return robotOriented;
   }
 
+  public void enableAutoDrive() {
+    autoDriveEnabled = true;
+  }
+
+  public void disableAutoDrive() {
+    autoDriveEnabled = false;
+  }
+
   public void drive(ChassisSpeeds chassisSpeeds) {
     this.chassisSpeeds = chassisSpeeds;
   }
@@ -186,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!RobotState.isAutonomous()){
+    if (!RobotState.isAutonomous() || autoDriveEnabled){
       SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.maxVelocity);
 

@@ -61,8 +61,10 @@ public class RobotContainer {
   private final Auto3Ball auto3BallCommand = new Auto3Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto3BallNew auto3BallNew = new Auto3BallNew(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
   private final Auto45Ball auto45BallCommand = new Auto45Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
+  private final AutoWait autoWaitCommand = new AutoWait(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem);
 
-  SendableChooser<Command> chooser = new SendableChooser<>();
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
+  SendableChooser<Boolean> visionChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -72,19 +74,24 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Send auto commands to SmartDashboard
-    //chooser.setDefaultOption("4 or 5 Ball Auto", auto45BallCommand);
-    //chooser.addOption("3 Ball Auto", auto3BallCommand);
-    //chooser.addOption("2 Ball", auto2BallCommand);
-    //chooser.addOption("2 Ball Left", auto2BallAlt);
-    //chooser.addOption("1 Ball Alt", auto1BallCommand);
-    chooser.setDefaultOption("Delayed 2 Ball Left", auto2BallLeftWait);
-    chooser.addOption("New 2 Ball Left", auto2BallLeft);
-    chooser.addOption("New 2 Ball Right", auto2BallShoot);
-    chooser.addOption("New 1 Ball", auto1BallNewCommand);
-    chooser.addOption("New 3 Ball", auto3BallNew);
-    chooser.addOption("New 5 Ball", new Auto5BallNew(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem));
- 
-    SmartDashboard.putData(chooser);
+    //autoChooser.setDefaultOption("4 or 5 Ball Auto", auto45BallCommand);
+    //autoChooser.addOption("3 Ball Auto", auto3BallCommand);
+    //autoChooser.addOption("2 Ball", auto2BallCommand);
+    //autoChooser.addOption("2 Ball Left", auto2BallAlt);
+    //autoChooser.addOption("1 Ball Alt", auto1BallCommand);
+    autoChooser.setDefaultOption("Delayed 2 Ball Left", auto2BallLeftWait);
+    autoChooser.addOption("New 2 Ball Left", auto2BallLeft);
+    autoChooser.addOption("New 2 Ball Right", auto2BallShoot);
+    autoChooser.addOption("New 1 Ball", auto1BallNewCommand);
+    autoChooser.addOption("New 3 Ball", auto3BallNew);
+    autoChooser.addOption("New 5 Ball", new Auto5BallNew(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem));
+    autoChooser.addOption("Do Nothing", autoWaitCommand);
+    SmartDashboard.putData(autoChooser);
+
+    // Send auto vision to SmartDashboard
+    visionChooser.setDefaultOption("Do NOT use vision in auto", Boolean.FALSE);
+    visionChooser.addOption("Use vision in auto", Boolean.TRUE);
+    SmartDashboard.putData(visionChooser);
   }
 
   /**
@@ -127,7 +134,11 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return chooser.getSelected();
+    return autoChooser.getSelected();
+  }
+
+  public void setVisionAuto() {
+    visionSubsystem.setVisionAuto(visionChooser.getSelected().booleanValue());
   }
 
   public DriveSubsystem getDriveTrain(){

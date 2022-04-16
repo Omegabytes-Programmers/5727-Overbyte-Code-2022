@@ -36,7 +36,7 @@ public class Auto2BallShoot extends SequentialCommandGroup {
         driveSubsystem
       ),
       new InstantCommand(() -> driveSubsystem.stop()),
-      new ShootAutonomouslyCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 7.5)
+      new ShootAutonomouslyCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 7.5)
     );
   }
 }

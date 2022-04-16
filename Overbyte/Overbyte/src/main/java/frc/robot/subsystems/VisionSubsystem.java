@@ -34,6 +34,17 @@ public class VisionSubsystem extends SubsystemBase {
 
   private VisionWeightedAverage visionTarget;
 
+  private boolean visionAuto = false;
+
+  public void setVisionAuto(boolean value) {
+    visionAuto = value;
+  }
+
+  public boolean getVisionAuto() {
+    DataLogManager.log("VISION: vision auto == " + visionAuto);
+    return visionAuto;
+  }
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight");

@@ -8,8 +8,11 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -17,6 +20,8 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.commands.DriveManuallyCommand;
+import frc.robot.commands.ShootCommand;
 
 public class Auto3Ball extends SequentialCommandGroup {
   
@@ -25,6 +30,7 @@ public class Auto3Ball extends SequentialCommandGroup {
   public Auto3Ball(DriveSubsystem driveSubsystem, IntakeSubsystem intakeSubsystem, PneumaticsSubsystem pneumaticsSubsystem, ShooterSubsystem shooterSubsystem, StorageSubsystem storageSubsystem, VisionSubsystem visionSubsystem) {
     addCommands(
       new Auto2Ball(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
+      // TODO Dustin, why is the below here?
       new InstantCommand(() -> Constants.translationXController.reset()),
       new InstantCommand(() -> Constants.translationYController.reset()),
       new InstantCommand(() -> Constants.rotationController.reset(0.0)),
@@ -40,16 +46,23 @@ public class Auto3Ball extends SequentialCommandGroup {
         driveSubsystem
       ),
       new InstantCommand(() -> driveSubsystem.stop()),
-
-      new ShootAutonomouslyCommand(
-        visionSubsystem,
-        pneumaticsSubsystem,
-        shooterSubsystem,
-        storageSubsystem, 
-        intakeSubsystem,
-        9.5,
-        true
-      )
+      new InstantCommand(() -> driveSubsystem.enableAutoDrive()),
+      new ParallelRaceGroup(
+        new ShootCommand(
+          visionSubsystem,
+          pneumaticsSubsystem,
+          shooterSubsystem,
+          storageSubsystem, 
+          intakeSubsystem,
+          9.5,
+          true
+        ),
+        new ConditionalCommand(
+          new DriveManuallyCommand(driveSubsystem, intakeSubsystem, visionSubsystem, true),
+          new WaitCommand(15.0),
+          () -> visionSubsystem.getVisionAuto())
+      ),
+      new InstantCommand(() -> driveSubsystem.disableAutoDrive())
     );
   }
 }

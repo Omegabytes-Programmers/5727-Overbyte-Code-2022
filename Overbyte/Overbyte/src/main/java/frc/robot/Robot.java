@@ -112,6 +112,8 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.getDriveTrain().resetPose();
 
+    m_robotContainer.setVisionAuto();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

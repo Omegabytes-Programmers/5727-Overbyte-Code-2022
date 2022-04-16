@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -28,12 +29,17 @@ public class DriveManuallyCommand extends CommandBase {
   private double translationYPercent;
   private double rotationPercent;
 
-  
+  private boolean keepAligned = false;
 
-    public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision){
+  public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision){
+      this(drive, intake, vision, false);
+  }
+
+    public DriveManuallyCommand(DriveSubsystem drive, IntakeSubsystem intake, VisionSubsystem vision, boolean keepAligned){
         this.drive = drive;
         this.intake = intake;
         this.vision = vision;
+        this.keepAligned = keepAligned;
         addRequirements(drive);
 
         locateTimer = new Timer();
@@ -47,11 +53,15 @@ public class DriveManuallyCommand extends CommandBase {
 
     @Override
     public void execute() {
-        translationXPercent = -Constants.driveController.getRawAxis(1);
-        translationYPercent = -Constants.driveController.getRawAxis(0);
-        rotationPercent = -Constants.driveController.getRawAxis(4);
-
-
+        if (RobotState.isAutonomous()) {
+            translationXPercent = 0.0;
+            translationYPercent = 0.0;
+            rotationPercent = 0.0;
+        } else {
+            translationXPercent = -Constants.driveController.getRawAxis(1);
+            translationYPercent = -Constants.driveController.getRawAxis(0);
+            rotationPercent = -Constants.driveController.getRawAxis(4);
+        }
 
         if (Math.abs(translationXPercent) < Constants.deadzone){
             translationXPercent = 0.0;
@@ -73,9 +83,10 @@ public class DriveManuallyCommand extends CommandBase {
             locateTimer.reset();
         }
 
-        if ((Constants.driveController.getRawButton(Constants.readyToShootButton))) { // || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
+        if ((Constants.driveController.getRawButton(Constants.readyToShootButton)) || keepAligned) { // || (rotationPercent == 0.0 && locateTimer.get() >= 1.5)){
             double x = vision.getPosition();
 
+            System.out.println("DriveManually x == " + x);
             if (Math.abs(x) >= Constants.visionAnglePrecision) {
                 rotationPercent = .1 * -Math.signum(x);
             }
@@ -96,12 +107,12 @@ public class DriveManuallyCommand extends CommandBase {
         if (Math.abs(rotationPercent) < Constants.deadzone){
             rotationPercent = 0.0;
         }
-         
+        
         drive.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 translationXPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0), 
                 translationYPercent * Constants.maxVelocity * (drive.isHalfSpeed() ? 0.5 : 1.0),
-                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? Constants.driveController.getRawButton(Constants.readyToShootButton) ? 1.0 : 0.5 : 1.0),
+                rotationPercent * Constants.maxAngularVelocity * (drive.isHalfSpeed() ? ((Constants.driveController.getRawButton(Constants.readyToShootButton) || keepAligned) ? 1.0 : 0.5) : 1.0),
                 (drive.isRobotOriented() ? Rotation2d.fromDegrees(0.0) : drive.getGyroscopeRotation())
             )
         );
@@ -111,6 +122,6 @@ public class DriveManuallyCommand extends CommandBase {
     public void end(boolean interrupted) {
         // Stop the drive
         drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        System.out.println("End of drive manually");
     }
 }
-

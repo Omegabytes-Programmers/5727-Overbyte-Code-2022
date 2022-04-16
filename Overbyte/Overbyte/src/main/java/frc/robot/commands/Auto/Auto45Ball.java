@@ -19,6 +19,7 @@ import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StorageSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.commands.ShootCommand;
 
 public class Auto45Ball extends SequentialCommandGroup {
   PathPlannerTrajectory movementPathBall = PathPlanner.loadPath("moveToBall4", 8.0, 5.0);
@@ -65,7 +66,7 @@ public class Auto45Ball extends SequentialCommandGroup {
         driveSubsystem::setModuleStates,
         driveSubsystem
       ),
-      new ShootAutonomouslyCommand(
+      new ShootCommand(
         visionSubsystem,
         pneumaticsSubsystem,
         shooterSubsystem,

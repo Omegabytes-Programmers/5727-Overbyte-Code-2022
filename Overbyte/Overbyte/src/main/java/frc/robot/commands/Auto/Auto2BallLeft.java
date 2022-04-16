@@ -58,7 +58,7 @@ public class Auto2BallLeft extends SequentialCommandGroup {
           new WaitCommand(0.5)
         )
       ),
-      new ShootAutonomouslyCommand(visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 10)
+      new ShootAutonomouslyCommand(driveSubsystem, visionSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, intakeSubsystem, 10)
     );
   }
 }
