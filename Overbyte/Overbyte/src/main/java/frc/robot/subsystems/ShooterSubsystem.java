@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DataLogManager;
 import frc.omegabytes.ShooterConfiguration;
 import frc.robot.Constants;
 
@@ -74,7 +75,6 @@ public class ShooterSubsystem extends SubsystemBase {
 		bottomShooterMotor.config_kI(0, Constants.shooterkI);
 		bottomShooterMotor.config_kD(0, Constants.shooterkD);
     //#endregion
-
   }
  
 
@@ -95,7 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
       shooterSolenoids.set(shooterConfig.isHoodUp() ? Value.kForward : Value.kReverse); //
       //System.out.printf("DEBUG: Shooter spinning at %.1f and %.1f (%s)%n", topMotorSpeed, bottomMotorSpeed, (shooterConfig.isHoodUp() ? "up" : "down"));
     }else{
-      //System.out.println("DEBUG: Nothing to shoot at!");
+      //DataLogManager.log("SHOOTER: Nothing to shoot at!");
       // TODO Should we really stop, or run the motors at some idle speed, so that they will be ready more quickly when a target is found?
       stop();
     }
@@ -120,7 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   public void stop(){
-    //System.out.println("DEBUG: Stopping shooting");
+    //DataLogManager.log("SHOOTER: Stopping shooting");
     topShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     bottomShooterMotor.set(TalonFXControlMode.PercentOutput, 0.0); 
   }

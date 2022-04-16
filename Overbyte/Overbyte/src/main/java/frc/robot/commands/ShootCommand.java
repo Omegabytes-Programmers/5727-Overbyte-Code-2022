@@ -91,7 +91,7 @@ public class ShootCommand extends CommandBase {
         config = Constants.vsConversion.getValuesFromDistance(distance, shooter.isHoodUp());
       }
 
-      SmartDashboard.putNumber("Distannce", config.getDistance());
+      SmartDashboard.putNumber("Distance", config.getDistance());
       hasTarget = shooter.shoot(config);
 
       if (Math.abs(x) >= 3.0 && !linedUp){

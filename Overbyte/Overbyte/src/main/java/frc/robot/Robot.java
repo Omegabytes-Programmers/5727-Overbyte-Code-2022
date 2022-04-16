@@ -11,6 +11,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,6 +55,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     Constants.rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
+    DataLogManager.start();
   }
 
   /**
@@ -114,6 +116,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    DataLogManager.log("ROBOT: Start of auto");
   }
 
   /** This function is called periodically during autonomous. */
@@ -129,6 +133,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    DataLogManager.log("ROBOT: Start of teleop");
   }
 
   /** This function is called periodically during operator control. */
@@ -148,4 +154,3 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {}
 }
- 
