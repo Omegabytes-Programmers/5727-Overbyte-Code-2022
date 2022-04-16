@@ -76,7 +76,7 @@ public class Auto3BallNew extends SequentialCommandGroup {
           new WaitCommand(15.0)
         ),
         new SequentialCommandGroup(
-          new WaitCommand(0.5),
+          new WaitCommand(0.25),
           new PPSwerveControllerCommand(
             movementPath2,
             driveSubsystem::getPose,

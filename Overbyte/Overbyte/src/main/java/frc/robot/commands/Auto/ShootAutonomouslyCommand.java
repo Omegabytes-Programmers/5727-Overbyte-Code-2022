@@ -108,7 +108,6 @@ public class ShootAutonomouslyCommand extends CommandBase {
             intake.extend();
           }
           
-          System.out.println(storageTimer.get());
           if (storageTimer.get() > 0.5){
             storage.beltFeed();
           }else{

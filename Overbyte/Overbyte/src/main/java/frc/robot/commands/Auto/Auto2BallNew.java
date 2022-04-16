@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,11 +29,13 @@ public class Auto2BallNew extends SequentialCommandGroup {
     Constants.rotationController.reset(0.0);
 
     PathPlannerTrajectory movementPath = PathPlanner.loadPath("moveToBall2New", 3.0, 1.5);
+    Translation2d startXY = movementPath.getInitialPose().getTranslation();
 
     addCommands(
       new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
       new WaitCommand(1.0),
-      new InstantCommand(() -> driveSubsystem.resetPose(-7.65, -1.88)),
+      new InstantCommand(() -> driveSubsystem.resetPose(-startXY.getX(), -startXY.getY())),
+      new InstantCommand(() -> System.out.println("Running moveToBell2New path")),
       new ParallelCommandGroup(
         new SequentialCommandGroup(
           new PPSwerveControllerCommand(
@@ -45,8 +48,9 @@ public class Auto2BallNew extends SequentialCommandGroup {
             driveSubsystem::setModuleStates,
             driveSubsystem
           ),
-          new InstantCommand(() -> driveSubsystem.stop())
-        ),
+          new InstantCommand(() -> driveSubsystem.stop()),
+          new InstantCommand(() -> System.out.println("Path stopped"))
+          ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
