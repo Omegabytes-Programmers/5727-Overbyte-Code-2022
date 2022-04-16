@@ -55,7 +55,7 @@ public class Auto2BallNew extends SequentialCommandGroup {
           intakeSubsystem,
           storageSubsystem,
           false,
-          4.0
+          3.0
         )
       )
     );

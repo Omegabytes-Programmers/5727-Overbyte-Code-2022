@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -29,11 +30,6 @@ public class Auto3BallNew extends SequentialCommandGroup {
     addCommands(
       // Drive to pick up second ball
       new Auto2BallNew(driveSubsystem, intakeSubsystem, pneumaticsSubsystem, shooterSubsystem, storageSubsystem, visionSubsystem),
-
-      // Reset PID controllers
-/*      new InstantCommand(() -> Constants.translationXController.reset()),
-      new InstantCommand(() -> Constants.translationYController.reset()),
-      new InstantCommand(() -> Constants.rotationController.reset(0.0)),*/
 
       // Move to shooting position in front of third ball
       new PPSwerveControllerCommand(
@@ -59,21 +55,13 @@ public class Auto3BallNew extends SequentialCommandGroup {
         true
       ),
 
-      // Reset the PID controllers
-/*      new InstantCommand(() -> Constants.translationXController.reset()),
-      new InstantCommand(() -> Constants.translationYController.reset()),
-      new InstantCommand(() -> Constants.rotationController.reset(0.0)),*/
-
       // Pickup the third ball
-      new ParallelRaceGroup(
-        new SequentialCommandGroup(
-          new IntakeAutonomouslyCommand(
-            intakeSubsystem,
-            storageSubsystem,
-            false,
-            15.0
-          ),
-          new WaitCommand(15.0)
+      new ParallelCommandGroup(
+        new IntakeAutonomouslyCommand(
+          intakeSubsystem,
+          storageSubsystem,
+          false,
+          4.0
         ),
         new SequentialCommandGroup(
           new WaitCommand(0.25),
@@ -86,10 +74,10 @@ public class Auto3BallNew extends SequentialCommandGroup {
             Constants.rotationController,
             driveSubsystem::setModuleStates,
             driveSubsystem
-          )
+          ),
+          new InstantCommand(() -> driveSubsystem.stop())
         )
       ),
-      new InstantCommand(() -> driveSubsystem.stop()),
       new ShootAutonomouslyCommand(
         visionSubsystem,
         pneumaticsSubsystem,
