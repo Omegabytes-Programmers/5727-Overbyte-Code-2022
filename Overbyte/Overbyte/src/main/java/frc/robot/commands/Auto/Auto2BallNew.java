@@ -47,7 +47,7 @@ public class Auto2BallNew extends SequentialCommandGroup {
             driveSubsystem::setModuleStates,
             driveSubsystem
           ),
-          new InstantCommand(() -> driveSubsystem.stop()),
+          new InstantCommand(() -> driveSubsystem.stop())
         ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
