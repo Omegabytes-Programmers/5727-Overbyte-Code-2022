@@ -51,8 +51,7 @@ public class Auto3BallNew extends SequentialCommandGroup {
         shooterSubsystem,
         storageSubsystem, 
         intakeSubsystem,
-        7.5,
-        true
+        7.5
       ),
 
       // Pickup the third ball
@@ -84,8 +83,7 @@ public class Auto3BallNew extends SequentialCommandGroup {
         shooterSubsystem,
         storageSubsystem, 
         intakeSubsystem,
-        10.5,
-        true
+        10.5
       )
     );
   }

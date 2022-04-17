@@ -35,7 +35,6 @@ public class Auto2BallNew extends SequentialCommandGroup {
       new InstantCommand(() -> driveSubsystem.zeroGyroscope()),
       new WaitCommand(1.0),
       new InstantCommand(() -> driveSubsystem.resetPose(-startXY.getX(), -startXY.getY())),
-      new InstantCommand(() -> System.out.println("Running moveToBell2New path")),
       new ParallelCommandGroup(
         new SequentialCommandGroup(
           new PPSwerveControllerCommand(
@@ -49,8 +48,7 @@ public class Auto2BallNew extends SequentialCommandGroup {
             driveSubsystem
           ),
           new InstantCommand(() -> driveSubsystem.stop()),
-          new InstantCommand(() -> System.out.println("Path stopped"))
-          ),
+        ),
         new IntakeAutonomouslyCommand(
           intakeSubsystem,
           storageSubsystem,
