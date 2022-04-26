@@ -83,7 +83,8 @@ public class Auto3BallNew extends SequentialCommandGroup {
         shooterSubsystem,
         storageSubsystem, 
         intakeSubsystem,
-        10.5
+        10.5,
+        true
       )
     );
   }

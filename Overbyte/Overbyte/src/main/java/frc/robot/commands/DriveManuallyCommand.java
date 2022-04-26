@@ -65,8 +65,8 @@ public class DriveManuallyCommand extends CommandBase {
             rotationPercent = 0.0;
         }
 
-        translationXPercent *= .8;
-        translationYPercent *= .8;
+        translationXPercent *= .75;
+        translationYPercent *= .75;
         rotationPercent *= .4;
 
         if (rotationPercent != 0.0 || (intake.isIntaking() && locateTimer.get() < 1.5)){
